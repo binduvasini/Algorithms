@@ -54,17 +54,29 @@ public class Graph {
     }
 
     void DFS(GraphNode node) {
-        if (node == null) {
-            System.out.println("here--");
+        if (node == null)
             return;
-        }
         node.visited = true;
         System.out.println(node.data);
         for (GraphNode n : node.adjacentNodes) {
-            if (n.visited == false) {
+            if (!n.visited) {
                 DFS(n);
             }
         }
+    }
+
+    boolean DFScycle(GraphNode node, boolean[] recStack) {
+        node.visited = true;
+        System.out.println(node.data);
+        recStack[node.data] = true;
+        for (GraphNode n : node.adjacentNodes) {
+            if (!n.visited) {
+                DFScycle(n, recStack);
+            } else if (n.visited && recStack[n.data])
+                return true;
+        }
+        recStack[node.data] = false;
+        return false;
     }
 
     void BFS(GraphNode node) {
@@ -76,11 +88,32 @@ public class Graph {
             GraphNode gn = queue.remove();
             System.out.println(gn.data);
             for (GraphNode neighbor : gn.adjacentNodes) {
-                if (visited[neighbor.data] == false) {
+                if (!visited[neighbor.data]) {
                     queue.add(neighbor);
                     visited[neighbor.data] = true;
                 }
             }
         }
+    }
+
+    boolean Bipartite(GraphNode node) {
+        LinkedList<GraphNode> queue = new LinkedList<>();
+        boolean[] color = new boolean[nodes.size()];
+        boolean[] visited = new boolean[nodes.size()];
+        queue.add(node);
+        color[node.data] = true;
+        while (!queue.isEmpty()) {
+            GraphNode gn = queue.remove();
+            visited[gn.data] = true;
+            for (GraphNode neighbor : gn.adjacentNodes) {
+                if (!visited[neighbor.data]) {
+                    queue.add(neighbor);
+                    visited[neighbor.data] = true;
+                    color[neighbor.data] = !color[gn.data];
+                }
+                if (color[neighbor.data] == color[gn.data]) return false;
+            }
+        }
+        return true;
     }
 }
