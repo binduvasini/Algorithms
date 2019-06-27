@@ -2,37 +2,39 @@ package com.Algorithms;
 
 import java.util.*;
 
-class GraphNode {
-    int data;
-    boolean visited;
-    LinkedList<GraphNode> adjacentNodes = new LinkedList<>();
-
-    public GraphNode(int data) {
-        this.data = data;
-    }
-}
-
-class Edge {
-    GraphNode source;
-    GraphNode destination;
-    int weight;
-
-    public Edge(GraphNode source, GraphNode destination, int weight) {
-        this.source = source;
-        this.destination = destination;
-        this.weight = weight;
-    }
-}
-
 public class Graph {
+
+    static class GraphNode {
+        int data;
+        boolean visited;
+
+        public GraphNode(int data) {
+            this.data = data;
+        }
+    }
+
+    static class Edge {
+        GraphNode source;
+        GraphNode destination;
+        int weight;
+
+        public Edge(GraphNode source, GraphNode destination, int weight) {
+            this.source = source;
+            this.destination = destination;
+            this.weight = weight;
+        }
+    }
+
     Set<GraphNode> nodes;
     Set<Edge> edges;
-    Map<GraphNode, List<Edge>> adjList;
+    Map<GraphNode, List<Edge>> adjListofEdges;
+    Map<GraphNode, List<GraphNode>> adjListofNodes;
 
     public Graph() {
         nodes = new HashSet<>();
         edges = new HashSet<>();
-        adjList = new HashMap<>();
+        adjListofEdges = new HashMap<>();
+        adjListofNodes = new HashMap<>();
     }
 
     void addNode(int newdata) {
@@ -41,45 +43,92 @@ public class Graph {
     }
 
     void removeNode(int removedata) {
-        GraphNode removeNode = new GraphNode(removedata);
+        GraphNode removeNode = getNode(removedata);
         nodes.remove(removeNode);
     }
 
-    void addEdge(int source, int destination, int weight) {
-        Edge newEdge = new Edge(new GraphNode(source), new GraphNode(destination), weight);
-        edges.add(newEdge);
-        List<Edge> l = adjList.get(source);
-        l.add(newEdge);
-        adjList.put(new GraphNode(source), l);
+    GraphNode getNode(int nodeData) {
+        for (GraphNode node : nodes) {
+            if (node.data == nodeData)
+                return node;
+        }
+        return null;
     }
 
-    void DFS(GraphNode node) {
+    void addEdge(int source, int destination, int weight) {
+        GraphNode sourceNode = getNode(source);
+        GraphNode destNode = getNode(destination);
+        Edge newEdge = new Edge(sourceNode, destNode, weight);
+        edges.add(newEdge);
+        List<Edge> l;
+        if (adjListofEdges.get(source) != null)
+            l = adjListofEdges.get(source);
+        else
+            l = new LinkedList<>();
+        l.add(newEdge);
+        adjListofEdges.put(sourceNode, l);
+        adjListofNodes.computeIfAbsent(sourceNode, k -> new LinkedList<>()).add(destNode);
+    }
+
+    void DFS(int nodeData) {
+        GraphNode node = getNode(nodeData);
         if (node == null)
             return;
         node.visited = true;
         System.out.println(node.data);
-        for (GraphNode n : node.adjacentNodes) {
-            if (!n.visited) {
-                DFS(n);
+        if (adjListofNodes.containsKey(node)) {
+            for (GraphNode n : adjListofNodes.get(node)) {
+                if (!n.visited) {
+                    DFS(n.data);
+                }
             }
         }
     }
 
-    boolean DFScycle(GraphNode node, boolean[] recStack) {
+    boolean DFScycle(int nodeData, boolean[] recStack) {
+        GraphNode node = getNode(nodeData);
         node.visited = true;
         System.out.println(node.data);
         recStack[node.data] = true;
-        for (GraphNode n : node.adjacentNodes) {
-            if (!n.visited) {
-                DFScycle(n, recStack);
-            } else if (n.visited && recStack[n.data])
-                return true;
+        if (adjListofNodes.containsKey(node)) {
+            for (GraphNode n : adjListofNodes.get(node)) {
+                if (!n.visited) {
+                    DFScycle(n.data, recStack);
+                } else if (n.visited && recStack[n.data])
+                    return true;
+            }
         }
         recStack[node.data] = false;
         return false;
     }
 
-    void BFS(GraphNode node) {
+    void topologicalSort(int nodeData) {
+        GraphNode node = getNode(nodeData);
+        if (node==null)
+            return;
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        for (GraphNode graphNode : nodes) {
+            if(!graphNode.visited)
+                topologicalSortUtil(graphNode, stack);
+        }
+        if(!stack.isEmpty())
+            System.out.println(Arrays.toString(stack.toArray()));
+    }
+
+    private void topologicalSortUtil(GraphNode node, ArrayDeque<Integer> stack) {
+        node.visited = true;
+        if(adjListofNodes.containsKey(node)) {
+            for (GraphNode n : adjListofNodes.get(node)){
+                if(!n.visited){
+                    topologicalSortUtil(n, stack);
+                }
+            }
+        }
+        stack.push(node.data);
+    }
+
+    void BFS(int nodeData) {
+        GraphNode node = getNode(nodeData);
         LinkedList<GraphNode> queue = new LinkedList<>();
         boolean[] visited = new boolean[nodes.size()];
         queue.add(node);
@@ -87,16 +136,19 @@ public class Graph {
         while (!queue.isEmpty()) {
             GraphNode gn = queue.remove();
             System.out.println(gn.data);
-            for (GraphNode neighbor : gn.adjacentNodes) {
-                if (!visited[neighbor.data]) {
-                    queue.add(neighbor);
-                    visited[neighbor.data] = true;
+            if (adjListofNodes.containsKey(gn)) {
+                for (GraphNode neighbor : adjListofNodes.get(gn)) {
+                    if (!visited[neighbor.data]) {
+                        queue.add(neighbor);
+                        visited[neighbor.data] = true;
+                    }
                 }
             }
         }
     }
 
-    boolean Bipartite(GraphNode node) {
+    boolean Bipartite(int nodeData) {
+        GraphNode node = getNode(nodeData);
         LinkedList<GraphNode> queue = new LinkedList<>();
         boolean[] color = new boolean[nodes.size()];
         boolean[] visited = new boolean[nodes.size()];
@@ -105,13 +157,15 @@ public class Graph {
         while (!queue.isEmpty()) {
             GraphNode gn = queue.remove();
             visited[gn.data] = true;
-            for (GraphNode neighbor : gn.adjacentNodes) {
-                if (!visited[neighbor.data]) {
-                    queue.add(neighbor);
-                    visited[neighbor.data] = true;
-                    color[neighbor.data] = !color[gn.data];
+            if (adjListofNodes.containsKey(gn)) {
+                for (GraphNode neighbor : adjListofNodes.get(gn)) {
+                    if (!visited[neighbor.data]) {
+                        queue.add(neighbor);
+                        visited[neighbor.data] = true;
+                        color[neighbor.data] = !color[gn.data];
+                    }
+                    if (color[neighbor.data] == color[gn.data]) return false;
                 }
-                if (color[neighbor.data] == color[gn.data]) return false;
             }
         }
         return true;
