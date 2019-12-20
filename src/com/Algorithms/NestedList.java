@@ -1,10 +1,9 @@
 package com.Algorithms;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
-/**
- * @author vasin
- */
 public class NestedList {
     public static void main(String[] args) {
         List<Object> nestedList = lst(1, lst(2, lst(3, 4)), lst(5, 6, 7), 8, lst(lst(9, 10)), 9);

@@ -1,6 +1,13 @@
 package com.Algorithms;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Graph {
 
@@ -77,52 +84,52 @@ public class Graph {
         node.visited = true;
         System.out.println(node.data);
         if (adjListofNodes.containsKey(node)) {
-            for (GraphNode n : adjListofNodes.get(node)) {
-                if (!n.visited) {
-                    DFS(n.data);
+            adjListofNodes.forEach((graphNode, graphNodes) -> {
+                if (!graphNode.visited){
+                    DFS(graphNode.data);
                 }
-            }
+            });
         }
     }
 
-    boolean DFScycle(int nodeData, boolean[] recStack) {
+    boolean hasCycle(int nodeData, ArrayDeque<Integer> visiting) {
         GraphNode node = getNode(nodeData);
         node.visited = true;
         System.out.println(node.data);
-        recStack[node.data] = true;
+        visiting.add(node.data);
         if (adjListofNodes.containsKey(node)) {
             for (GraphNode n : adjListofNodes.get(node)) {
-                if (!n.visited) {
-                    DFScycle(n.data, recStack);
-                } else if (n.visited && recStack[n.data])
+                if (!n.visited && hasCycle(n.data, visiting)) {
+                    return true;
+                } else if (visiting.contains(n.data))
                     return true;
             }
         }
-        recStack[node.data] = false;
+        visiting.remove(node.data);
         return false;
     }
 
     void topologicalSort(int nodeData) {
         GraphNode node = getNode(nodeData);
-        if (node==null)
+        if (node == null)
             return;
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         for (GraphNode graphNode : nodes) {
-            if(!graphNode.visited)
+            if (!graphNode.visited)
                 topologicalSortUtil(graphNode, stack);
         }
-        if(!stack.isEmpty())
+        if (!stack.isEmpty())
             System.out.println(Arrays.toString(stack.toArray()));
     }
 
     private void topologicalSortUtil(GraphNode node, ArrayDeque<Integer> stack) {
         node.visited = true;
-        if(adjListofNodes.containsKey(node)) {
-            for (GraphNode n : adjListofNodes.get(node)){
-                if(!n.visited){
-                    topologicalSortUtil(n, stack);
+        if (adjListofNodes.containsKey(node)) {
+            adjListofNodes.forEach((graphNode, graphNodes) -> {
+                if (!graphNode.visited) {
+                    topologicalSortUtil(graphNode, stack);
                 }
-            }
+            });
         }
         stack.push(node.data);
     }
@@ -137,12 +144,12 @@ public class Graph {
             GraphNode gn = queue.remove();
             System.out.println(gn.data);
             if (adjListofNodes.containsKey(gn)) {
-                for (GraphNode neighbor : adjListofNodes.get(gn)) {
-                    if (!visited[neighbor.data]) {
-                        queue.add(neighbor);
-                        visited[neighbor.data] = true;
+                adjListofNodes.forEach((graphNode, graphNodes) -> {
+                    if (!visited[graphNode.data]){
+                        queue.add(graphNode);
+                        visited[graphNode.data] = true;
                     }
-                }
+                });
             }
         }
     }
