@@ -1,7 +1,6 @@
 package com.Algorithms;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -109,29 +108,35 @@ public class Graph {
         return false;
     }
 
-    void topologicalSort(int nodeData) {
+    Integer[] topologicalSort(int nodeData) {
         GraphNode node = getNode(nodeData);
         if (node == null)
-            return;
+            return new Integer[0];
         ArrayDeque<Integer> stack = new ArrayDeque<>();
+        HashSet<Integer> beingVisited = new HashSet<>();
         for (GraphNode graphNode : nodes) {
-            if (!graphNode.visited)
-                topologicalSortUtil(graphNode, stack);
+            if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, beingVisited))
+                return new Integer[0];
         }
-        if (!stack.isEmpty())
-            System.out.println(Arrays.toString(stack.toArray()));
+        return (Integer[]) stack.toArray();
     }
 
-    private void topologicalSortUtil(GraphNode node, ArrayDeque<Integer> stack) {
+    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> stack, HashSet<Integer> beingVisited) {
         node.visited = true;
+        beingVisited.add(node.data);
         if (adjListofNodes.containsKey(node)) {
-            adjListofNodes.forEach((graphNode, graphNodes) -> {
-                if (!graphNode.visited) {
-                    topologicalSortUtil(graphNode, stack);
+            for(GraphNode graphNode : adjListofNodes.get(node)){
+                if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, beingVisited)) {
+                    return false;
                 }
-            });
+                else if (beingVisited.contains(graphNode.data)){
+                    return false;
+                }
+            }
         }
+        beingVisited.remove(node.data);
         stack.push(node.data);
+        return true;
     }
 
     void BFS(int nodeData) {
