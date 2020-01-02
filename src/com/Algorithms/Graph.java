@@ -84,7 +84,7 @@ public class Graph {
         System.out.println(node.data);
         if (adjListofNodes.containsKey(node)) {
             adjListofNodes.forEach((graphNode, graphNodes) -> {
-                if (!graphNode.visited){
+                if (!graphNode.visited) {
                     DFS(graphNode.data);
                 }
             });
@@ -125,11 +125,10 @@ public class Graph {
         node.visited = true;
         beingVisited.add(node.data);
         if (adjListofNodes.containsKey(node)) {
-            for(GraphNode graphNode : adjListofNodes.get(node)){
+            for (GraphNode graphNode : adjListofNodes.get(node)) {
                 if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, beingVisited)) {
                     return false;
-                }
-                else if (beingVisited.contains(graphNode.data)){
+                } else if (beingVisited.contains(graphNode.data)) {
                     return false;
                 }
             }
@@ -150,7 +149,7 @@ public class Graph {
             System.out.println(gn.data);
             if (adjListofNodes.containsKey(gn)) {
                 adjListofNodes.forEach((graphNode, graphNodes) -> {
-                    if (!visited[graphNode.data]){
+                    if (!visited[graphNode.data]) {
                         queue.add(graphNode);
                         visited[graphNode.data] = true;
                     }
