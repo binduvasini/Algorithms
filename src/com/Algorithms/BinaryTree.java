@@ -115,6 +115,21 @@ public class BinaryTree {
         }
     }
 
+    void inOrderIterative(TreeNode node) {
+        ArrayDeque<TreeNode> stack = new ArrayDeque<>();
+
+        while (!stack.isEmpty() || node != null) {
+            if (node != null) {
+                stack.push(node);
+                node = node.left;
+            } else {
+                node = stack.pop();
+                System.out.println(node.data);
+                node = node.right;
+            }
+        }
+    }
+
     void levelOrder(TreeNode node) {
         LinkedList<TreeNode> queue = new LinkedList<>();
         queue.add(node);
