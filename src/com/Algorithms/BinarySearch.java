@@ -1,7 +1,7 @@
 package com.Algorithms;
 
 public class BinarySearch {
-    int search(int[] nums, int target) {
+    int searchRotatedArray(int[] nums, int target) {
         int lo = 0, hi = nums.length - 1;
 
         while (lo <= hi) {
@@ -25,5 +25,33 @@ public class BinarySearch {
             }
         }
         return -1;
+    }
+
+    public int[] searchFirstAndLastOccurrenceOfTarget(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        int firstIndex = -1, lastIndex = -1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (target == nums[mid]) {
+                firstIndex = mid;
+                hi = mid - 1;
+            } else if (target > nums[mid])
+                lo = mid + 1;
+            else
+                hi = mid - 1;
+        }
+        lo = 0;
+        hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (target == nums[mid]) {
+                lastIndex = mid;
+                lo = mid + 1;
+            } else if (target > nums[mid])
+                lo = mid + 1;
+            else
+                hi = mid - 1;
+        }
+        return new int[]{firstIndex, lastIndex};
     }
 }
