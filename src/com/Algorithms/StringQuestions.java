@@ -39,4 +39,34 @@ public class StringQuestions {
         }
         return longestPalSubstring;
     }
+
+    boolean isWildcardMatching(String s, String p) {
+        int n = s.length(), m = p.length();
+
+        //the first row and column will be dedicated to empty string and pattern respectively.
+        boolean[][] dp = new boolean[n + 1][m + 1];
+
+        //both the pattern and string are empty
+        dp[0][0] = true;
+
+        //string is empty. the pattern is * so we look at the prev column value.
+        for (int j = 1; j <= m; j++) {
+            if (p.charAt(j - 1) == '*') {
+                dp[0][j] = dp[0][j - 1];
+            }
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                } else {
+                    dp[i][j] = false;
+                }
+            }
+        }
+        return dp[n][m];
+    }
 }
