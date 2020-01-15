@@ -1,6 +1,7 @@
 package com.Algorithms;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 class TreeNode {
@@ -181,5 +182,31 @@ public class BinaryTree {
                 System.out.printf("%d ", node.data);
             }
         }
+    }
+
+    HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
+    int preIndex = 0;
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+
+        for (int i = 0; i < inorder.length; i++) {
+            inOrderIndices.put(inorder[i], i);
+        }
+
+        return buildRec(preorder, inorder, 0, inorder.length - 1);
+    }
+
+    TreeNode buildRec(int[] preorder, int[] inorder, int inStart, int inEnd) {
+        if (inStart > inEnd)
+            return null;
+
+        TreeNode root = new TreeNode(preorder[preIndex]);
+        preIndex += 1;
+
+        int rootInIndex = inOrderIndices.get(root.data);
+
+        root.left = buildRec(preorder, inorder, inStart, rootInIndex - 1);
+        root.right = buildRec(preorder, inorder, rootInIndex + 1, inEnd);
+        return root;
     }
 }
