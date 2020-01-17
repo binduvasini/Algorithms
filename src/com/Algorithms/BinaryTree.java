@@ -209,4 +209,33 @@ public class BinaryTree {
         root.right = buildRec(preorder, inorder, rootInIndex + 1, inEnd);
         return root;
     }
+
+    TreeNode swapFirst = null, swapSecond = null;
+    TreeNode prev;
+    public void recoverBST(TreeNode root) {
+        prev = new TreeNode(Integer.MIN_VALUE);  //We can't use the root as prev. So assign a minimum value
+        inOrderUtil(root);
+        if (swapFirst != null && swapSecond != null) {
+            int temp = swapFirst.data;  //Use the node's data to swap so that the tree will be updated.
+            swapFirst.data = swapSecond.data;
+            swapSecond.data = temp;
+        }
+    }
+
+    void inOrderUtil(TreeNode root) {
+        if (root == null)
+            return;
+
+        inOrderUtil(root.left);
+
+        if (swapFirst == null && prev.data > root.data)
+            swapFirst = prev;
+
+        if (swapFirst != null && prev.data > root.data)
+            swapSecond = root;
+
+        prev = root;
+
+        inOrderUtil(root.right);
+    }
 }
