@@ -212,6 +212,7 @@ public class BinaryTree {
 
     TreeNode swapFirst = null, swapSecond = null;
     TreeNode prev;
+
     public void recoverBST(TreeNode root) {
         prev = new TreeNode(Integer.MIN_VALUE);  //We can't use the root as prev. So assign a minimum value
         inOrderUtil(root);
@@ -237,5 +238,37 @@ public class BinaryTree {
         prev = root;
 
         inOrderUtil(root.right);
+    }
+
+    /**
+     * Predecessor and successor in a BST
+     */
+    int predecessor, successor;
+    void predSuc(TreeNode root, int val) {
+        if (root == null)
+            return;
+
+        if (val == root.data) {  //The value is at the root.
+            if (root.left != null) {  //LST is not null, so go to the right most element
+                TreeNode node = root.left;
+                while (node.right != null) {
+                    node = node.right;
+                }
+                predecessor = root.data;
+            }
+            if (root.right != null) {  //RST is not null, so go to the left most element
+                TreeNode node = root.right;
+                while (node.left != null) {
+                    node = node.left;
+                }
+                successor = root.data;
+            }
+        } else if (val < root.data) {  //The value is in the LST.
+            successor = root.data;  //During the recursion, the value will match the root and it might not have a RST and the successor might not be set. So, here we are setting it and calling the recursion.
+            predSuc(root.left, val);
+        } else {
+            predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST and the predecessor might not be set. So, here we are setting it and calling the recursion.
+            predSuc(root.right, val);
+        }
     }
 }
