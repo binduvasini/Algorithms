@@ -3,6 +3,7 @@ package com.Algorithms;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 class TreeNode {
     int data;
@@ -149,6 +150,29 @@ public class BinaryTree {
         }
     }
 
+    List<Integer> rightSideView(TreeNode root) {
+        if (root == null)
+            return new LinkedList<>();
+        List<Integer> rightSideList = new LinkedList<>();
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            for (int i = 1; i <= n; i++) {
+                TreeNode treeNode = queue.poll();
+                if (i == n && treeNode != null)
+                    rightSideList.add(treeNode.data);
+                if (treeNode.left != null) {
+                    queue.add(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    queue.add(treeNode.right);
+                }
+            }
+        }
+        return rightSideList;
+    }
+
     void printLeafNodes(TreeNode node) {
         if (node == null) {
             return;
@@ -210,6 +234,29 @@ public class BinaryTree {
         return root;
     }
 
+    /**
+     * Convert Array to BST
+     *
+     * @param nums
+     * @return
+     */
+    TreeNode sortedArrayToBST(int[] nums) {
+        return buildTree(nums, 0, nums.length - 1);
+    }
+
+    TreeNode buildTree(int[] nums, int start, int end) {
+        if (start > end)
+            return null;
+
+        int mid = (start + end) / 2;
+        TreeNode node = new TreeNode(nums[mid]);
+
+        node.left = buildTree(nums, start, mid - 1);
+        node.right = buildTree(nums, mid + 1, end);
+
+        return node;
+    }
+
     TreeNode swapFirst = null, swapSecond = null;
     TreeNode prev;
 
@@ -241,6 +288,28 @@ public class BinaryTree {
     }
 
     /**
+     * Invert a Binary Tree
+     *
+     * @param root
+     * @return
+     */
+    TreeNode invertTree(TreeNode root) {
+        preorderUtil(root);
+        return root;
+    }
+
+    void preorderUtil(TreeNode root) {
+        if (root == null)
+            return;
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+
+        preorderUtil(root.left);
+        preorderUtil(root.right);
+    }
+
+    /**
      * Predecessor and successor in a BST
      */
     int predecessor, successor;
@@ -265,10 +334,10 @@ public class BinaryTree {
                 successor = root.data;
             }
         } else if (val < root.data) {  //The value is in the LST.
-            successor = root.data;  //During the recursion, the value will match the root and it might not have a RST and the successor might not be set. So, here we are setting it and calling the recursion.
+            successor = root.data;  //During the recursion, the value will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
             predSuc(root.left, val);
         } else {
-            predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST and the predecessor might not be set. So, here we are setting it and calling the recursion.
+            predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST, so the predecessor might not be set. So, here we are setting it and calling the recursion.
             predSuc(root.right, val);
         }
     }
@@ -313,5 +382,27 @@ public class BinaryTree {
             successor = node.data;
         }
         return successor;
+    }
+
+    /**
+     * Check if a Binary Tree is symmetric.
+     *
+     * @param root
+     * @return
+     */
+    boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root, root);
+    }
+
+    boolean isSymmetric(TreeNode root1, TreeNode root2) {
+        if (root1 == null && root2 == null)
+            return true;
+
+        else if (root1 != null && root2 != null) {
+            return (root1.data == root2.data &&
+                    isSymmetric(root1.left, root2.right) &&
+                    isSymmetric(root1.right, root2.left));
+        }
+        return false;
     }
 }
