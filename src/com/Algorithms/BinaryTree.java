@@ -244,6 +244,7 @@ public class BinaryTree {
      * Predecessor and successor in a BST
      */
     int predecessor, successor;
+
     void predSuc(TreeNode root, int val) {
         if (root == null)
             return;
@@ -270,5 +271,47 @@ public class BinaryTree {
             predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST and the predecessor might not be set. So, here we are setting it and calling the recursion.
             predSuc(root.right, val);
         }
+    }
+
+    /**
+     * Delete a node from a BST
+     *
+     * @param root
+     * @param key
+     * @return
+     */
+    TreeNode deleteNodeFromBST(TreeNode root, int key) {
+        if (root == null)
+            return null;
+
+        if (key < root.data)  //Do your search in the LST
+            root.left = deleteNodeFromBST(root.left, key);
+
+        else if (key > root.data)  //Do your search in the RST
+            root.right = deleteNodeFromBST(root.right, key);
+
+        else {  //Found the node
+            //Node with one child or no children
+            if (root.left == null)
+                return root.right;
+            else if (root.right == null)
+                return root.left;
+            else {  //Node with two children
+                root.data = findSuccessor(root);  //Copy the data from successor to this node.
+                root.right = deleteNodeFromBST(root.right, root.data); //pass the RST of this node to recursion to delete the successor node.
+            }
+        }
+        return root;
+    }
+
+    int findSuccessor(TreeNode root) {
+        if (root.right != null) {
+            TreeNode node = root.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+            successor = node.data;
+        }
+        return successor;
     }
 }
