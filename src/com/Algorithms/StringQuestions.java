@@ -1,5 +1,7 @@
 package com.Algorithms;
 
+import java.util.HashMap;
+
 public class StringQuestions {
 
     public String longestPalindromeSubstring(String s) {
@@ -100,5 +102,22 @@ public class StringQuestions {
             }
         }
         return dp[n][m];
+    }
+
+    boolean isIsomorphic(String s, String t) {
+        HashMap<Character, Character> hm = new HashMap<>();
+        char[] sChar = s.toCharArray();
+        char[] tChar = t.toCharArray();
+        for (int i = 0; i < sChar.length; i++) {
+            if (hm.containsKey(sChar[i])) {
+                if (hm.get(sChar[i]) != tChar[i])
+                    return false;
+            } else {
+                if (hm.containsValue(tChar[i]))
+                    return false;
+                hm.put(sChar[i], tChar[i]);
+            }
+        }
+        return true;
     }
 }

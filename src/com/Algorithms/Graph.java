@@ -181,4 +181,38 @@ public class Graph {
         }
         return true;
     }
+
+    void weightedGraph() {
+        String[][] array = {{"JFK", "SFO"}, {"JFK", "ATL"}};
+        int[] weights = {5, 9};
+        HashMap<String, HashMap<String, Integer>> graph = new HashMap<>();
+        for (int i = 0; i < array.length; i++) {
+            graph.putIfAbsent(array[i][0], new HashMap<>());
+            graph.get(array[i][0]).put(array[i][1], weights[i]);
+        }
+    }
+
+    double dfsUtilToEvaluateEquation(String source, String dest,
+                                     HashMap<String, Map<String, Double>> graph,
+                                     HashSet<String> set,
+                                     double val) {
+
+        if (set.contains(source) || !graph.containsKey(source))
+            return -1.0;
+
+        if (source.equals(dest))
+            return val;
+
+        set.add(source);
+
+        Map<String, Double> neighbors = graph.get(source);
+        for (String neighbor : neighbors.keySet()) {
+            double result = dfsUtilToEvaluateEquation(neighbor, dest, graph, set, val * neighbors.get(neighbor));
+
+            if (result != -1.0)
+                return result;
+        }
+        set.remove(source);
+        return -1.0;
+    }
 }

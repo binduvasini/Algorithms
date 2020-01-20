@@ -3,6 +3,7 @@ package com.Algorithms;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class ArrayQuestions {
     static int kthLargestElement(int[] array, int k) {
@@ -34,6 +35,26 @@ public class ArrayQuestions {
         for (int[] inters : queue) {
             System.out.println(inters[0] + "," + inters[1]);
         }
+    }
+
+    boolean isDivideKConsecutivePossible(int[] nums, int k) {
+        TreeMap<Integer, Integer> tm = new TreeMap<>();
+        for (int num : nums) {  //Store the occurrences of elements in TreeMap
+            tm.put(num, tm.getOrDefault(num, 0) + 1);
+        }
+        while (!tm.isEmpty()) {  //Scan the TreeMap
+            int number = tm.firstKey();
+            for (int i = 0; i < k; i++) {
+                if (!tm.containsKey(number))
+                    return false;
+                if (tm.get(number) == 1)
+                    tm.remove(number);
+                else
+                    tm.put(number, tm.get(number) - 1);
+                number += 1;  //Next consecutive number
+            }
+        }
+        return true;
     }
 
     public static void main(String[] args) {
