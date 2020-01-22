@@ -112,7 +112,7 @@ public class Graph {
         GraphNode node = getNode(nodeData);
         if (node == null)
             return new Integer[0];
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        ArrayDeque<Integer> stack = new ArrayDeque<>();  //To store the sorted elements
         HashSet<Integer> beingVisited = new HashSet<>();
         for (GraphNode graphNode : nodes) {
             if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, beingVisited))
@@ -121,19 +121,19 @@ public class Graph {
         return (Integer[]) stack.toArray();
     }
 
-    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> stack, HashSet<Integer> beingVisited) {
+    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> stack, HashSet<Integer> set) {
         node.visited = true;
-        beingVisited.add(node.data);
+        set.add(node.data);
         if (adjListofNodes.containsKey(node)) {
             for (GraphNode graphNode : adjListofNodes.get(node)) {
-                if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, beingVisited)) {
+                if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, set)) {
                     return false;
-                } else if (beingVisited.contains(graphNode.data)) {
+                } else if (set.contains(graphNode.data)) {
                     return false;
                 }
             }
         }
-        beingVisited.remove(node.data);
+        set.remove(node.data);
         stack.push(node.data);
         return true;
     }
