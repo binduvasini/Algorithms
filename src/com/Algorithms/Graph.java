@@ -112,21 +112,21 @@ public class Graph {
         GraphNode node = getNode(nodeData);
         if (node == null)
             return new Integer[0];
-        ArrayDeque<Integer> stack = new ArrayDeque<>();  //To store the sorted elements
+        ArrayDeque<Integer> order = new ArrayDeque<>();  //To store the sorted elements
         HashSet<Integer> beingVisited = new HashSet<>();
         for (GraphNode graphNode : nodes) {
-            if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, beingVisited))
+            if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, beingVisited))
                 return new Integer[0];
         }
-        return (Integer[]) stack.toArray();
+        return (Integer[]) order.toArray();
     }
 
-    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> stack, HashSet<Integer> set) {
+    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> set) {
         node.visited = true;
         set.add(node.data);
         if (adjListofNodes.containsKey(node)) {
             for (GraphNode graphNode : adjListofNodes.get(node)) {
-                if (!graphNode.visited && !hasNoCycleUtil(graphNode, stack, set)) {
+                if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, set)) {
                     return false;
                 } else if (set.contains(graphNode.data)) {
                     return false;
@@ -134,7 +134,7 @@ public class Graph {
             }
         }
         set.remove(node.data);
-        stack.push(node.data);
+        order.push(node.data);
         return true;
     }
 
