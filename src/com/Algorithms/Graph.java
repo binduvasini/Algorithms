@@ -113,9 +113,8 @@ public class Graph {
         if (node == null)
             return new Integer[0];
         ArrayDeque<Integer> order = new ArrayDeque<>();  //To store the sorted elements
-        HashSet<Integer> beingVisited = new HashSet<>();
         for (GraphNode graphNode : nodes) {
-            if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, beingVisited))
+            if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, new HashSet<>()))
                 return new Integer[0];
         }
         return (Integer[]) order.toArray();

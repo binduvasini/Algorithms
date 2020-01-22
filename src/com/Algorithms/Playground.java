@@ -1,20 +1,106 @@
 package com.Algorithms;
 
+import java.util.*;
+
 public class Playground {
     public static void main(String[] args) {
-        BinaryTree binaryTree = new BinaryTree();
+//        int[] a = {1, 4, 45, 6, 10, 8};
+        int[] a = {8, 12, 7, 0, -2, 5, -6, 4, 15, -10};
 
-        binaryTree.addNodeSorted(1);
-        binaryTree.addNodeSorted(2);
-        binaryTree.addNodeSorted(5);
-        binaryTree.addNodeSorted(6);
-        binaryTree.addNodeSorted(4);
-        binaryTree.addNodeSorted(3);
+//        find3Numbers(a, a.length, 9);
+//        for (int i = 0; i < a.length-2; i++) {
+//            HashSet<Integer> hs = new HashSet<>();
+//            for (int j = i+1; j < a.length; j++) {
+//                int i1 = 9 - (a[i] + a[j]);
+//                if (hs.contains(i1)){
+//                    System.out.println(a[i]+", "+a[j]+", "+ i1);
+//                }
+//                else {
+//                    hs.add(a[j]);
+//                }
+//            }
+//        }
 
+        HashMap<String, Integer> hm = new HashMap<>();
+        hm.put("as", 4);
+        hm.put("kj", 1);
+        hm.put("de", 6);
+        hm.put("dd", 3);
+        hm.put("ee", 6);
 
-        binaryTree.levelOrder(binaryTree.root);
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(hm.entrySet());
+        list.sort(Map.Entry.comparingByValue(Collections.reverseOrder()));
 
-
+//        list.sort(Collections.reverseOrder());
+//        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> entry : list) {
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+        }
     }
 
+    static void find3Numbers(int A[],
+                             int arr_size, int sum) {
+        // Fix the first element as A[i]
+        for (int i = 0; i < arr_size - 2; i++) {
+
+            // Find pair in subarray A[i+1..n-1]
+            // with sum equal to sum - A[i]
+            HashSet<Integer> s = new HashSet<Integer>();
+            int curr_sum = sum - A[i];
+            for (int j = i + 1; j < arr_size; j++) {
+                if (s.contains(curr_sum - A[j]) && curr_sum - A[j] != (int) s.toArray()[s.size() - 1]) {
+                    System.out.printf("Triplet is %d, %d, %d", A[i],
+                            A[j], curr_sum - A[j]);
+                    System.out.println();
+                }
+                s.add(A[j]);
+            }
+        }
+    }
+
+    static boolean isPalindrome(String str) {
+        return isPalindrome(str, 0, str.length() - 1);
+    }
+
+    static boolean isPalindrome(String str, int start, int end) {
+        if (start >= end)
+            return true;
+        if (str.charAt(start) != str.charAt(end))
+            return false;
+        return isPalindrome(str, start + 1, end - 1);
+    }
+
+    private static int minDays(int[][] grid) {
+        Queue<int[]> q = new LinkedList<>();
+        int target = grid.length * grid[0].length;
+        int cnt = 0, res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 1) {
+                    q.offer(new int[]{i, j});
+                    cnt++;
+                }
+            }
+        }
+        int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        while (!q.isEmpty()) {
+            int size = q.size();
+            if (cnt == target)
+                return res;
+            for (int i = 0; i < size; i++) {
+                int[] cur = q.poll();
+                for (int[] dir : dirs) {
+                    int ni = cur[0] + dir[0];
+                    int nj = cur[1] + dir[1];
+                    if (ni >= 0 && ni < grid.length && nj >= 0 && nj < grid[0].length && grid[ni][nj] == 0) {
+                        cnt++;
+                        q.offer(new int[]{ni, nj});
+                        grid[ni][nj] = 1;
+                    }
+                }
+            }
+            res++;
+        }
+        return -1;
+    }
 }
