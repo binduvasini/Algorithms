@@ -339,14 +339,14 @@ public class BinaryTree {
                 while (node.right != null) {
                     node = node.right;
                 }
-                predecessor = root.data;
+                predecessor = node.data;
             }
             if (root.right != null) {  //RST is not null, so go to the left most element
                 TreeNode node = root.right;
                 while (node.left != null) {
                     node = node.left;
                 }
-                successor = root.data;
+                successor = node.data;
             }
         } else if (val < root.data) {  //The value is in the LST.
             successor = root.data;  //During the recursion, the value will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
