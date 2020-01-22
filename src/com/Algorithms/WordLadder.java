@@ -20,9 +20,10 @@ class WordLadder {
         sourceQueue.add(beginWord);
         targetQueue.add(endWord);
 
+        //The shortest transformation sequence is the sum of levels of the meet point node from both the ends. Thus, for every visited node we save its level as value in the visited dictionary.
         for (int trans = 2; !sourceQueue.isEmpty(); trans++) {
 
-            HashSet<String> transformedWords = new HashSet<>();  //
+            HashSet<String> transformedWords = new HashSet<>();  //At this level, the words are transformed, so save them here.
 
             for (String word : sourceQueue) {
                 char[] wordChar = word.toCharArray();
@@ -44,9 +45,10 @@ class WordLadder {
                     }
                 }
             }
+            // update the sourceQueue and targetQueue at every iteration.
             // always traverse the smaller one.
             // IN EVERY ITERATION WE ARE TRYING TO ALTERNATE BETWEEN SOURCE QUEUE & TARGET QUEUE
-            sourceQueue = (transformedWords.size() < targetQueue.size())
+            sourceQueue = (transformedWords.size() < targetQueue.size())  //From this transformed word, we need to transform further to get the endWord.
                     ? transformedWords
                     : targetQueue;
 

@@ -72,8 +72,7 @@ public class BinaryTree {
             return 0;
         int leftHeight = heightRec(root.left);
         int rightHeight = heightRec(root.right);
-        int bigger = Math.max(leftHeight, rightHeight);
-        return bigger + 1;
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
     int heightIterative() {
@@ -91,6 +90,22 @@ public class BinaryTree {
             node = node.right;
         }
         return Math.max(leftHeight, rightHeight);
+    }
+
+    int fulldiameter = 0;
+
+    int diameterOfBinaryTree(TreeNode root) {
+        diameter(root);
+        return fulldiameter;
+    }
+
+    private int diameter(TreeNode root) {
+        if (root == null)
+            return 0;
+        int left = diameter(root.left);
+        int right = diameter(root.right);
+        fulldiameter = Math.max(fulldiameter, left + right);
+        return Math.max(left, right) + 1;
     }
 
     void preOrder(TreeNode node) {
