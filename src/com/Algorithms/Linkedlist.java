@@ -1,6 +1,7 @@
 package com.Algorithms;
 
 import java.util.ArrayDeque;
+import java.util.PriorityQueue;
 
 class Node {
     int data;
@@ -161,6 +162,37 @@ public class Linkedlist {
             result.next = new Node(carry);
         }
         return resultHead;
+    }
+
+    /**
+     * Merge k sorted lists.
+     * Solve using Min Heap.
+     *
+     * @param lists
+     * @return
+     */
+    public Node mergeKLists(Node[] lists) {
+        if (lists.length == 0)
+            return null;
+
+        PriorityQueue<Node> minHeap = new PriorityQueue<>((o1, o2) -> o1.data - o2.data);
+        Node merged = new Node(0);
+        Node head = merged;
+
+        for (Node l : lists) {
+            if (l != null)
+                minHeap.add(l);
+        }
+
+        while (minHeap.size() > 0) {
+            Node smallest = minHeap.remove();
+            merged.next = smallest;
+            if (smallest.next != null)
+                minHeap.add(smallest.next);
+            merged = merged.next;
+        }
+
+        return head.next;
     }
 
 }
