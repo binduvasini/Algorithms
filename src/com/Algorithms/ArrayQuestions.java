@@ -6,6 +6,10 @@ import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 public class ArrayQuestions {
+    /**
+     * Find k-th largest element in an array
+     * Solve Using Min Heap
+     */
     static int kthLargestElement(int[] array, int k) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
         for (int value : array) {
@@ -60,5 +64,48 @@ public class ArrayQuestions {
     public static void main(String[] args) {
         int[][] array = {{15, 18}, {1, 3}, {8, 10}, {2, 6}};
         mergeIntervals(array);
+    }
+
+    /**
+     * Running median.
+     * Solve using Min Heap.
+     *
+     * @param array
+     * @return
+     */
+    double[] getMedians(int[] array) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        double[] medians = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            addNumberToHeap(array[i], minHeap, maxHeap); //Add the number to the right heap
+            rebalanceHeaps(minHeap, maxHeap); //Compare the sizes of two heaps and keep them close to the same size as possible
+            medians[i] = getMedianFromHeap(minHeap, maxHeap); //median so far
+        }
+        return medians;
+    }
+
+    private void addNumberToHeap(int number, PriorityQueue<Integer> minHeap, PriorityQueue<Integer> maxHeap) {
+        if (minHeap.size() == 0 || number < minHeap.peek())
+            minHeap.add(number);
+        else
+            maxHeap.add(number);
+    }
+
+    private void rebalanceHeaps(PriorityQueue<Integer> minHeap, PriorityQueue<Integer> maxHeap) {
+        PriorityQueue<Integer> biggerSizeHeap = (minHeap.size() > maxHeap.size()) ? minHeap : maxHeap;
+        PriorityQueue<Integer> smallerSizeHeap = (minHeap.size() > maxHeap.size()) ? maxHeap : minHeap;
+        if ((biggerSizeHeap.size() - smallerSizeHeap.size()) > 1) {
+            smallerSizeHeap.add(biggerSizeHeap.poll());
+        }
+    }
+
+    private double getMedianFromHeap(PriorityQueue<Integer> minHeap, PriorityQueue<Integer> maxHeap) {
+        PriorityQueue<Integer> biggerSizeHeap = (minHeap.size() > maxHeap.size()) ? minHeap : maxHeap;
+        PriorityQueue<Integer> smallerSizeHeap = (minHeap.size() > maxHeap.size()) ? maxHeap : minHeap;
+        if (biggerSizeHeap.size() == smallerSizeHeap.size())
+            return (double) (biggerSizeHeap.peek() + smallerSizeHeap.peek()) / 2;
+        else
+            return biggerSizeHeap.peek();
     }
 }
