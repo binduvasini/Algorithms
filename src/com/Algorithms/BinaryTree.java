@@ -250,7 +250,7 @@ public class BinaryTree {
     }
 
     /**
-     * Convert Array to BST
+     * Convert sorted array to BST
      *
      * @param nums
      * @return
@@ -272,6 +272,37 @@ public class BinaryTree {
         return node;
     }
 
+
+    /**
+     * Convert sorted LinkedList to BST
+     */
+
+    TreeNode sortedListToBST(Node head) {
+        return buildTree(head, null);
+    }
+
+    private TreeNode buildTree(Node head, Node tail) {
+        if (head == tail)
+            return null;
+        Node mid = middleElem(head, tail);
+        TreeNode node = new TreeNode(mid.data);
+        node.left = buildTree(head, mid);
+        node.right = buildTree(mid.next, tail);
+        return node;
+    }
+
+    private Node middleElem(Node head, Node tail) {  //We need an argument for tail because we will pass the middle element to this method.
+        Node fast = head, slow = head;
+        while (fast != tail && fast.next != tail) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    /**
+     * Recover a BST in which two nodes are misplaced.
+     */
     TreeNode swapFirst = null, swapSecond = null;
     TreeNode prev;
 
