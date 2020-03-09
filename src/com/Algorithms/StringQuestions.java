@@ -1,6 +1,7 @@
 package com.Algorithms;
 
 import java.util.HashMap;
+import java.util.PriorityQueue;
 
 public class StringQuestions {
 
@@ -119,5 +120,40 @@ public class StringQuestions {
             }
         }
         return true;
+    }
+
+    /**
+     * Given a string S, rearrange it such that the characters adjacent to each other are not the same.
+     *
+     * @param S
+     * @return
+     */
+    String reorganizeString(String S) {
+        StringBuilder sb = new StringBuilder();
+        HashMap<Character, Integer> map = new HashMap<>();
+        PriorityQueue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+
+        char[] sChar = S.toCharArray();
+        for (char c : sChar) {
+            int count = map.getOrDefault(c, 0) + 1;
+            map.put(c, count);
+            if (count > (S.length() + 1) / 2)
+                return "";
+        }
+
+        maxHeap.addAll(map.keySet());
+
+        char prev = '#';
+        while (!maxHeap.isEmpty()) {
+            char mostOccurChar = maxHeap.poll();
+            sb.append(mostOccurChar);
+            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+
+            if (map.containsKey(prev) && map.get(prev) >= 1)
+                maxHeap.add(prev);
+            prev = mostOccurChar;
+        }
+
+        return sb.toString();
     }
 }
