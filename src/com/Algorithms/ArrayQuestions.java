@@ -67,45 +67,41 @@ public class ArrayQuestions {
     }
 
     /**
-     * Running median.
-     * Solve using Min Heap.
+     * Running median in a data stream.
+     * Solve using MinHeap and MaxHeap.
+     * <p>
+     * void addNum(int num) - Add a integer number from the data stream to the data structure.
+     * double findMedian() - Return the median of all elements so far.
      *
      * @param array
      * @return
      */
-    double[] getMedians(int[] array) {
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        double[] medians = new double[array.length];
-        for (int i = 0; i < array.length; i++) {
-            addNumberToHeap(array[i], minHeap, maxHeap); //Add the number to the right heap
-            rebalanceHeaps(minHeap, maxHeap); //Compare the sizes of two heaps and keep them close to the same size as possible
-            medians[i] = getMedianFromHeap(minHeap, maxHeap); //median so far
-        }
-        return medians;
-    }
 
-    private void addNumberToHeap(int number, PriorityQueue<Integer> minHeap, PriorityQueue<Integer> maxHeap) {
-        if (minHeap.size() == 0 || number < minHeap.peek())
-            minHeap.add(number);
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+
+    void addNum(int num) {
+        if (minHeap.size() == 0 || num > minHeap.peek())
+            minHeap.add(num);
         else
-            maxHeap.add(number);
+            maxHeap.add(num);
+        rebalanceHeaps();
     }
 
-    private void rebalanceHeaps(PriorityQueue<Integer> minHeap, PriorityQueue<Integer> maxHeap) {
-        PriorityQueue<Integer> biggerSizeHeap = (minHeap.size() > maxHeap.size()) ? minHeap : maxHeap;
-        PriorityQueue<Integer> smallerSizeHeap = (minHeap.size() > maxHeap.size()) ? maxHeap : minHeap;
-        if ((biggerSizeHeap.size() - smallerSizeHeap.size()) > 1) {
-            smallerSizeHeap.add(biggerSizeHeap.poll());
+    double findMedian() {
+        if (minHeap.size() == maxHeap.size()) {
+            return (double) (minHeap.peek() + maxHeap.peek()) / 2;
+        } else if (minHeap.size() > maxHeap.size()) {
+            return (double) minHeap.peek();
         }
+        return (double) maxHeap.peek();
     }
 
-    private double getMedianFromHeap(PriorityQueue<Integer> minHeap, PriorityQueue<Integer> maxHeap) {
-        PriorityQueue<Integer> biggerSizeHeap = (minHeap.size() > maxHeap.size()) ? minHeap : maxHeap;
-        PriorityQueue<Integer> smallerSizeHeap = (minHeap.size() > maxHeap.size()) ? maxHeap : minHeap;
-        if (biggerSizeHeap.size() == smallerSizeHeap.size())
-            return (double) (biggerSizeHeap.peek() + smallerSizeHeap.peek()) / 2;
-        else
-            return biggerSizeHeap.peek();
+    private void rebalanceHeaps() {
+        if (minHeap.size() - maxHeap.size() > 1) {
+            maxHeap.add(minHeap.poll());
+        } else if (maxHeap.size() - minHeap.size() > 1) {
+            minHeap.add(maxHeap.poll());
+        }
     }
 }
