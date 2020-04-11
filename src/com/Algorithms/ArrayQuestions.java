@@ -104,4 +104,40 @@ public class ArrayQuestions {
             minHeap.add(maxHeap.poll());
         }
     }
+
+    /**
+     * Subarray with maximum sum. [2, -4, 1, 9, -6, 7, 3]. The subarray with maximum sum is 11: [1, 9, -6, 7].
+     *
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        return findMax(nums, 0, nums.length - 1);
+    }
+
+    private int findMax(int[] nums, int start, int end) {
+        if (start == end)
+            return nums[end];
+        int mid = (start + end) / 2;
+        int leftMax = findMax(nums, start, mid);
+        int rightMax = findMax(nums, mid + 1, end);
+        int crossingMax = crossingMax(nums, start, mid, end);
+        return Math.max(crossingMax, Math.max(rightMax, leftMax));
+    }
+
+    private int crossingMax(int[] nums, int start, int mid, int end) {
+        int left = Integer.MIN_VALUE;
+        int right = Integer.MIN_VALUE;
+        int current = 0;
+        for (int i = mid; i >= start; i--) {
+            current += nums[i];
+            left = Math.max(left, current);
+        }
+        current = 0;
+        for (int i = mid + 1; i <= end; i++) {
+            current += nums[i];
+            right = Math.max(right, current);
+        }
+        return left + right;
+    }
 }
