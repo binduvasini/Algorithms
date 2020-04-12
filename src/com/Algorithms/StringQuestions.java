@@ -156,4 +156,33 @@ public class StringQuestions {
 
         return sb.toString();
     }
+
+    /**
+     * Given two strings S and T, return if they are equal when both are typed into empty text editors.
+     * # means a backspace character.
+     * S = "ab#c", T = "ad#c" : true
+     *
+     * @param S
+     * @param T
+     * @return
+     */
+    public boolean backspaceCompare(String S, String T) {
+        return getActualString(S).equals(getActualString(T));
+    }
+
+    private String getActualString(String str) {
+        StringBuilder strBuild = new StringBuilder();
+        int hashCount = 0;
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if (str.charAt(i) == '#') {
+                hashCount += 1;
+            } else {
+                if (hashCount == 0)
+                    strBuild.append(str.charAt(i));
+                else
+                    hashCount -= 1;
+            }
+        }
+        return strBuild.toString();
+    }
 }
