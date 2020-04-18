@@ -106,6 +106,38 @@ public class ArrayQuestions {
     }
 
     /**
+     * Given a collection of stones weighing a non-negative number, each turn, we choose the two heaviest stones and smash them together.
+     * Suppose the stones have weights x and y, the result of this smash is
+     * If x == y, both stones are totally destroyed.
+     * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
+     * <p>
+     * Solve using max Heap.
+     *
+     * @param stones
+     * @return
+     */
+    public int lastStoneWeight(int[] stones) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for (int s : stones) {
+            maxHeap.add(s);
+        }
+        while (!maxHeap.isEmpty() && maxHeap.size() > 1) {
+            int x = maxHeap.remove();
+            int y = maxHeap.remove();
+            int z = 0;
+
+            if (x > y)
+                z = x - y;
+            else if (x < y)
+                z = y - x;
+            if (z == 0)
+                continue;
+            maxHeap.add(z);
+        }
+        return (!maxHeap.isEmpty()) ? maxHeap.poll() : 0;
+    }
+
+    /**
      * Subarray with maximum sum. [2, -4, 1, 9, -6, 7, 3]. The subarray with maximum sum is 11: [1, 9, -6, 7].
      *
      * @param nums
