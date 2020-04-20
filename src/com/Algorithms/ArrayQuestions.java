@@ -1,6 +1,7 @@
 package com.Algorithms;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
@@ -171,5 +172,31 @@ public class ArrayQuestions {
             right = Math.max(right, current);
         }
         return left + right;
+    }
+
+    /**Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+     * 
+     * @param nums
+     * @return
+     */
+    public int findMaxLength(int[] nums) {
+        int sumSofar = 0;
+        int longestSubarray = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int n = nums[i];
+            if (n == 0) {
+                n = -1;
+            }
+            sumSofar += n;
+            if (sumSofar == 0)
+                longestSubarray = i + 1;
+            if (map.containsKey(sumSofar)) {
+                if (longestSubarray < i - map.get(sumSofar))
+                    longestSubarray = i - map.get(sumSofar);
+            } else
+                map.put(sumSofar, i);
+        }
+        return longestSubarray;
     }
 }
