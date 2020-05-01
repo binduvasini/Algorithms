@@ -250,7 +250,31 @@ public class BinaryTree {
     }
 
     /**
-     * Convert sorted array to BST
+     * Construct BST from a preorder traversal
+     *
+     * @param preorder
+     * @return
+     */
+    public TreeNode bstFromPreorder(int[] preorder) {
+        return buildBST(preorder, 0, preorder.length - 1);
+    }
+
+    private TreeNode buildBST(int[] preorder, int start, int end) {
+        if (start > end)
+            return null;
+        TreeNode root = new TreeNode(preorder[start]);
+        int i = start;
+        for (; i <= end; i++) {
+            if (preorder[i] > preorder[start])
+                break;
+        }
+        root.left = buildBST(preorder, start + 1, i - 1);
+        root.right = buildBST(preorder, i, end);
+        return root;
+    }
+
+    /**
+     * Construct BST from a sorted array
      *
      * @param nums
      * @return
@@ -274,7 +298,7 @@ public class BinaryTree {
 
 
     /**
-     * Convert sorted LinkedList to BST
+     * Construct BST from a sorted list
      */
 
     TreeNode sortedListToBST(Node head) {
