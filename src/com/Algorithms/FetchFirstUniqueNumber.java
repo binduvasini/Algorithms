@@ -11,13 +11,11 @@ class FirstUniqueNumber {
         queue = new LinkedHashSet<>();
         set = new HashSet<>();
         for (int n : nums) {
-            if (!set.contains(n) && !queue.contains(n)) {
+            if (!set.contains(n) && !queue.contains(n))
                 set.add(n);
-                queue.add(n);
-            } else {
-                queue.add(n);
+            else
                 set.remove(n);
-            }
+            queue.add(n);
         }
     }
 
@@ -32,13 +30,11 @@ class FirstUniqueNumber {
     }
 
     public void add(int value) {
-        if (!set.contains(value) && !queue.contains(value)) {
+        if (!set.contains(value) && !queue.contains(value))
             set.add(value);
-            queue.add(value);
-        } else {
-            queue.add(value);
+        else
             set.remove(value);
-        }
+        queue.add(value);
     }
 }
 
