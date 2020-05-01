@@ -13,8 +13,6 @@ public class StackApproaches {
      * 5. An empty string is also valid.
      */
     public boolean checkValidString(String s) {
-        if (s.equals("(") || s.equals(")"))
-            return false;
         ArrayDeque<Integer> openStack = new ArrayDeque<>();
         ArrayDeque<Integer> starStack = new ArrayDeque<>();
         for (int i = 0; i < s.length(); i++) {
