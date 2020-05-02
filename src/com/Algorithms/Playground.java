@@ -4,38 +4,8 @@ import java.util.*;
 
 public class Playground {
     public static void main(String[] args) {
-//        int[] a = {1, 4, 45, 6, 10, 8};
-        int[] a = {8, 12, 7, 0, -2, 5, -6, 4, 15, -10};
-
-//        find3Numbers(a, a.length, 9);
-//        for (int i = 0; i < a.length-2; i++) {
-//            HashSet<Integer> hs = new HashSet<>();
-//            for (int j = i+1; j < a.length; j++) {
-//                int i1 = 9 - (a[i] + a[j]);
-//                if (hs.contains(i1)){
-//                    System.out.println(a[i]+", "+a[j]+", "+ i1);
-//                }
-//                else {
-//                    hs.add(a[j]);
-//                }
-//            }
-//        }
-
-        HashMap<String, Integer> hm = new HashMap<>();
-        hm.put("as", 4);
-        hm.put("kj", 1);
-        hm.put("de", 6);
-        hm.put("dd", 3);
-        hm.put("ee", 6);
-
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(hm.entrySet());
-        list.sort(Map.Entry.comparingByValue(Collections.reverseOrder()));
-
-//        list.sort(Collections.reverseOrder());
-//        Map<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> entry : list) {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
-        }
+        int n = 9/2;
+        System.out.println(n);
     }
 
     static void find3Numbers(int A[],

@@ -206,6 +206,7 @@ public class ArrayQuestions {
      * Return the max in each sliding window.
      * input [1,3,-1,-3,5,3,6,7], and k = 3
      * output [3,3,5,5,6,7]
+     *
      * @param nums
      * @param k
      * @return
@@ -224,5 +225,42 @@ public class ArrayQuestions {
             ind += 1;
         }
         return result;
+    }
+
+    /**
+     * Given an integer array, find one continuous subarray that if you only sort this subarray in ascending order, the whole array will be sorted.
+     * Input: [2, 6, 4, 8, 10, 9, 15]
+     * Output: 5
+     *
+     * @param nums
+     * @return
+     */
+    public int findUnsortedSubarray(int[] nums) {
+        int startInd = 0, endInd = 0, min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i - 1] > nums[i]) {
+                min = Math.min(min, nums[i]);
+            }
+        }
+        for (int i = nums.length - 2; i >= 0; i--) {
+            if (nums[i + 1] < nums[i]) {
+                max = Math.max(max, nums[i]);
+            }
+        }
+
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (nums[i] > min) {
+                startInd = i;
+                break;
+            }
+        }
+        for (int i = nums.length - 1; i > 0; i--) {
+            if (nums[i] < max) {
+                endInd = i;
+                break;
+            }
+        }
+
+        return (startInd == 0 && endInd == 0) ? 0 : endInd - startInd + 1;
     }
 }
