@@ -174,8 +174,9 @@ public class ArrayQuestions {
         return left + right;
     }
 
-    /**Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
-     * 
+    /**
+     * Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+     *
      * @param nums
      * @return
      */
@@ -198,5 +199,30 @@ public class ArrayQuestions {
                 map.put(sumSofar, i);
         }
         return longestSubarray;
+    }
+
+    /**
+     * Given an array, there is a sliding window of size k which is moving from left to right.
+     * Return the max in each sliding window.
+     * input [1,3,-1,-3,5,3,6,7], and k = 3
+     * output [3,3,5,5,6,7]
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int start = 0, end = k - 1, ind = 0;
+        int[] result = new int[nums.length - k + 1];
+        while (end < nums.length) {
+            PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+            for (int i = start; i <= end; i++) {
+                maxHeap.add(nums[i]);
+            }
+            result[ind] = maxHeap.peek();
+            start += 1;
+            end += 1;
+            ind += 1;
+        }
+        return result;
     }
 }
