@@ -185,4 +185,35 @@ public class StringQuestions {
         }
         return strBuild.toString();
     }
+
+    /**
+     * Longest substring with at Least k repeating Characters
+     * Input: s = "ababbc", k = 2
+     * Output: 5
+     * The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstring(String s, int k) {
+        return longest(s.toCharArray(), 0, s.length() - 1, k);
+    }
+
+    private int longest(char[] sChar, int start, int end, int k) {
+        int[] count = new int[26];
+        for (int i = start; i <= end; i++) {
+            char c = sChar[i];
+            count[c - 'a'] += 1;
+        }
+
+        for (int i = start; i <= end; i++) {
+            char c = sChar[i];
+            if (count[c - 'a'] > 0 && count[c - 'a'] < k) {  //Splitting criteria
+                return Math.max(longest(sChar, start, i - 1, k),
+                        longest(sChar, i + 1, end, k));
+            }
+        }
+        return end - start + 1;
+    }
 }
