@@ -47,40 +47,4 @@ public class Matrix {
         return dp[m - 1][n - 1];
     }
 
-    /**
-     * Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
-     *
-     * @param matrix
-     */
-    public void setZeroes(int[][] matrix) {
-        boolean firstRow = false, firstCol = false;
-        for (int r = 0; r < matrix.length; r++) {
-            for (int c = 0; c < matrix[r].length; c++) {
-                if (matrix[r][c] == 0) {
-                    if (r == 0)
-                        firstRow = true;
-                    if (c == 0)
-                        firstCol = true;
-                    matrix[0][c] = 0;
-                    matrix[r][0] = 0;
-                }
-            }
-        }
-        for (int r = 1; r < matrix.length; r++) {
-            for (int c = 1; c < matrix[r].length; c++) {
-                if (matrix[0][c] == 0 || matrix[r][0] == 0)
-                    matrix[r][c] = 0;
-            }
-        }
-        if (firstRow) {
-            for (int c = 0; c < matrix[0].length; c++) {
-                matrix[0][c] = 0;
-            }
-        }
-        if (firstCol) {
-            for (int r = 0; r < matrix.length; r++) {
-                matrix[r][0] = 0;
-            }
-        }
-    }
 }
