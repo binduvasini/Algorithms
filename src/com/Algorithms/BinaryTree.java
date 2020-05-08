@@ -44,24 +44,24 @@ public class BinaryTree {
         }
     }
 
-    boolean contains(int value) {
+    boolean contains(int dataue) {
         if (root == null) {
             return false;
         }
-        return containsRec(root, value);
+        return containsRec(root, dataue);
     }
 
-    private boolean containsRec(TreeNode current, int value) {
-        if (current.data == value)
+    private boolean containsRec(TreeNode current, int dataue) {
+        if (current.data == dataue)
             return true;
-        if (value < current.data) {
+        if (dataue < current.data) {
             if (current.left != null)
-                return containsRec(current.left, value);
+                return containsRec(current.left, dataue);
             else
                 return false;
         } else {
             if (current.right != null)
-                return containsRec(current.right, value);
+                return containsRec(current.right, dataue);
             else
                 return false;
         }
@@ -331,7 +331,7 @@ public class BinaryTree {
     TreeNode prev;
 
     public void recoverBST(TreeNode root) {
-        prev = new TreeNode(Integer.MIN_VALUE);  //We can't use the root as prev. So assign a minimum value
+        prev = new TreeNode(Integer.MIN_VALUE);  //We can't use the root as prev. So assign a minimum dataue
         inOrderUtil(root);
         if (swapFirst != null && swapSecond != null) {
             int temp = swapFirst.data;  //Use the node's data to swap so that the tree will be updated.
@@ -384,11 +384,11 @@ public class BinaryTree {
      */
     int predecessor, successor;
 
-    void predSuc(TreeNode root, int val) {
+    void predSuc(TreeNode root, int data) {
         if (root == null)
             return;
 
-        if (val == root.data) {  //The value is at the root.
+        if (data == root.data) {  //The dataue is at the root.
             if (root.left != null) {  //LST is not null, so go to the right most element
                 TreeNode node = root.left;
                 while (node.right != null) {
@@ -403,12 +403,12 @@ public class BinaryTree {
                 }
                 successor = node.data;
             }
-        } else if (val < root.data) {  //The value is in the LST.
-            successor = root.data;  //During the recursion, the value will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
-            predSuc(root.left, val);
+        } else if (data < root.data) {  //The dataue is in the LST.
+            successor = root.data;  //During the recursion, the dataue will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
+            predSuc(root.left, data);
         } else {
-            predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST, so the predecessor might not be set. So, here we are setting it and calling the recursion.
-            predSuc(root.right, val);
+            predecessor = root.data;  //During the recursion, the dataue will match the root and it might not have a LST, so the predecessor might not be set. So, here we are setting it and calling the recursion.
+            predSuc(root.right, data);
         }
     }
 
@@ -472,6 +472,47 @@ public class BinaryTree {
             return (root1.data == root2.data &&
                     isSymmetric(root1.left, root2.right) &&
                     isSymmetric(root1.right, root2.left));
+        }
+        return false;
+    }
+
+    /**
+     * Cousins in a Binary Tree
+     *
+     * @param root
+     * @param x
+     * @param y
+     * @return
+     */
+    public boolean isCousins(TreeNode root, int x, int y) {
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            boolean xExists = false, yExists = false;
+            for (int i = 0; i < size; i++) {
+                TreeNode treeNode = queue.poll();
+                if (treeNode.data == x)
+                    xExists = true;
+                if (treeNode.data == y)
+                    yExists = true;
+                if (treeNode.left != null && treeNode.right != null) { //Rather than checking if the children belong to a same parent, check if the parent's children are x & y.
+                    if ((treeNode.left.data == x && treeNode.right.data == y)
+                            ||
+                            (treeNode.right.data == x && treeNode.left.data == y))
+                        return false;
+                }
+                if (treeNode.left != null) {
+                    queue.add(treeNode.left);
+                }
+                if (treeNode.right != null) {
+                    queue.add(treeNode.right);
+                }
+            }
+            if (xExists && yExists) {
+                return true;
+            }
         }
         return false;
     }
