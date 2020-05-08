@@ -4,8 +4,13 @@ import java.util.*;
 
 public class Playground {
     public static void main(String[] args) {
-        int n = 9/2;
-        System.out.println(n);
+        int a = 48, b = 36;
+        while (b != 0) {
+            int temp = b;
+            b = a % b;  //The last number divisor (b) that gives remainder 0
+            a = temp;
+        }
+        System.out.println(a);
     }
 
     static void find3Numbers(int A[],
