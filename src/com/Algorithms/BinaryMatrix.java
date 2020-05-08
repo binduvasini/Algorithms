@@ -208,7 +208,7 @@ public class BinaryMatrix {
      */
     int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-    public void solve(char[][] board) {
+    public void surroundedRegions(char[][] board) {
         if (board.length == 0)
             return;
         int rows = board.length, cols = board[0].length;
