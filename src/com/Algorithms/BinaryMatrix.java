@@ -107,7 +107,7 @@ public class BinaryMatrix {
 
     /**
      * Given a board with m by n cells, each cell has an initial state live (1) or dead (0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
-     *
+     * <p>
      * 1) Any live cell with fewer than two live neighbors dies, as if caused by under-population.
      * 2) Any live cell with two or three live neighbors lives on to the next generation.
      * 3) Any live cell with more than three live neighbors dies, as if by over-population..
@@ -196,6 +196,62 @@ public class BinaryMatrix {
         if (firstCol) {
             for (int r = 0; r < matrix.length; r++) {
                 matrix[r][0] = 0;
+            }
+        }
+    }
+
+    /**
+     * Given a 2D board containing 'X' and 'O' (the letter O), flip all 'O's to 'X's on the regions surrounded by 'X'.
+     * You should ignore the boundaries (any 'O' on the border of the board must not be flipped to 'X'). Any 'O' that is connected to an 'O' on the border must not be flipped to 'X'.
+     *
+     * @param board
+     */
+    int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    public void solve(char[][] board) {
+        if (board.length == 0)
+            return;
+        int rows = board.length, cols = board[0].length;
+
+        //Do a DFS on all the 4 boundaries.
+        for (int c = 0; c < cols; c++) {
+            if (board[0][c] == 'O')
+                dfsUtil(board, 0, c);
+        }
+
+        for (int r = 0; r < rows; r++) {
+            if (board[r][0] == 'O')
+                dfsUtil(board, r, 0);
+        }
+
+        for (int c = cols - 1; c >= 0; c--) {
+            if (board[rows - 1][c] == 'O')
+                dfsUtil(board, rows - 1, c);
+        }
+
+        for (int r = rows - 1; r >= 0; r--) {
+            if (board[r][cols - 1] == 'O')
+                dfsUtil(board, r, cols - 1);
+        }
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (board[row][col] == 'O')
+                    board[row][col] = 'X';
+                else if (board[row][col] == '-')
+                    board[row][col] = 'O';
+            }
+        }
+
+    }
+
+    private void dfsUtil(char[][] board, int r, int c) {
+        board[r][c] = '-';
+        for (int[] dir : dirs) {
+            int neiR = r + dir[0];
+            int neiC = c + dir[1];
+            if (neiR >= 0 && neiR < board.length && neiC >= 0 && neiC < board[neiR].length && board[neiR][neiC] == 'O') {
+                dfsUtil(board, neiR, neiC);
             }
         }
     }
