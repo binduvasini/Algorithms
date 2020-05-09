@@ -71,6 +71,26 @@ public class BinarySearch {
     }
 
     public static void main(String[] args) {
-        System.out.println(binarySearchIterative(new int[]{ 3, 2, 1, 10, 23, 22, 21 }, 10));
+        System.out.println(binarySearchIterative(new int[]{3, 2, 1, 10, 23, 22, 21}, 10));
+    }
+
+    /**
+     * Given a positive integer num, write a function to determine whether num is a perfect square.
+     *
+     * @param num
+     * @return
+     */
+    public boolean isPerfectSquare(int num) {
+        int lo = 0, hi = (int) Math.pow(num, 0.5);  //If Math.sqrt isn't allowed, we can use this.
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if ((mid * mid) == num)
+                return true;
+            else if ((mid * mid) < num)
+                lo = mid + 1;
+            else
+                hi = mid - 1;
+        }
+        return false;
     }
 }
