@@ -280,7 +280,7 @@ public class ArrayQuestions {
      * @param numRows
      * @return
      */
-    public List<List<Integer>> generate(int numRows) {
+    public List<List<Integer>> generatePascalsTriangle(int numRows) {
         if (numRows == 0)
             return new LinkedList<>();
         List<List<Integer>> result = new LinkedList<>();
