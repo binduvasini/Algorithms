@@ -3,6 +3,7 @@ package com.Algorithms;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
@@ -262,5 +263,40 @@ public class ArrayQuestions {
         }
 
         return (startInd == 0 && endInd == 0) ? 0 : endInd - startInd + 1;
+    }
+
+    /**
+     * Given a non-negative integer numRows, generate the first numRows of Pascal's triangle.
+     * Input: 5
+     * Output:
+     * [
+     * [1],
+     * [1,1],
+     * [1,2,1],
+     * [1,3,3,1],
+     * [1,4,6,4,1]
+     * ]
+     *
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        if (numRows == 0)
+            return new LinkedList<>();
+        List<List<Integer>> result = new LinkedList<>();
+        List<Integer> prev = new LinkedList<>(List.of(1));
+        result.add(prev);
+        for (int i = 1; i < numRows; i++) {
+            List<Integer> list = new LinkedList<>();
+            for (int j = 0; j <= i; j++) {  //We need a for loop here to loop through the elements in the prev array
+                if (j == 0 || j == i)  //Left and right most elements are 1.
+                    list.add(1);
+                else
+                    list.add(prev.get(j - 1) + prev.get(j));
+            }
+            result.add(list);
+            prev = list;  //Save the prev array for the next run
+        }
+        return result;
     }
 }
