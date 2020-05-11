@@ -255,4 +255,49 @@ public class BinaryMatrix {
             }
         }
     }
+
+    /**
+     * Given a binary matrix, find the nearest 1 for each cell.
+     *
+     * @param matrix
+     * @return
+     */
+    public int[][] findNearest1(int[][] matrix) {
+        LinkedList<int[]> queue = new LinkedList<>();
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        boolean[][] visited = new boolean[m][n]; //We can’t use a HashSet<int[]> because the equality of new int[]{i,j} will differ.
+
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    queue.add(new int[]{i, j});
+                    visited[i][j] = true;
+                }
+            }
+        }
+
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
+        //BFS on this queue
+        while (!queue.isEmpty()) {
+            int[] cellPosition = queue.remove();
+
+            for (int[] dir : directions) {
+                int r = cellPosition[0] + dir[0];
+                int c = cellPosition[1] + dir[1];
+                int[] newCellPosition = new int[]{r, c};
+
+                if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c])
+                    continue;
+
+                matrix[r][c] = matrix[cellPosition[0]][cellPosition[1]] + 1; //From the old cell to the new cell position, add up the distance.
+                visited[r][c] = true;
+                queue.add(newCellPosition);
+            }
+        }
+        return matrix;
+    }
 }
