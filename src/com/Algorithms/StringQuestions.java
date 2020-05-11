@@ -216,4 +216,45 @@ public class StringQuestions {
         }
         return end - start + 1;
     }
+
+    /**
+     * Given two strings s and t, find the minimum window of t in s.
+     * Input: s = "ADOBECODEBANC", t = "ABC"
+     * Output: "BANC"
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minimumWindowSubstring(String s, String t) {
+        if (s == null || t == null || s.length() < t.length())
+            return "";
+
+        int start = 0, end = 0, minWindStart = 0, minWindLen = Integer.MAX_VALUE, tCount = t.length();
+
+        HashMap<Character, Integer> tMap = new HashMap<>();
+        for (char tc : t.toCharArray()) {
+            tMap.put(tc, tMap.getOrDefault(tc, 0) + 1);
+        }
+
+        while (end < s.length()) {
+            char sCharEnd = s.charAt(end);
+            if (tMap.containsKey(sCharEnd) && tMap.get(sCharEnd) > 0)
+                tCount -= 1;
+            tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
+            end += 1;  //Move the end pointer until you find all the characters of t.
+            while (tCount == 0) {  //Found all the characters of t, now move the start pointer until we find the required shortest size.
+                char sCharStart = s.charAt(start);
+                tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
+                if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)  //At this point, the value of character at sCharStart will be negative if it doesn't appear in t.
+                    tCount += 1;
+                if (minWindLen > end - start) {  //Update the minWindLen and the starting position of the substring.
+                    minWindLen = end - start;
+                    minWindStart = start;
+                }
+                start += 1;
+            }
+        }
+        return minWindLen == Integer.MAX_VALUE ? "" : s.substring(minWindStart, minWindStart + minWindLen);
+    }
 }
