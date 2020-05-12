@@ -93,4 +93,34 @@ public class BinarySearch {
         }
         return false;
     }
+
+    /**
+     * Given a sorted array where every element appears exactly twice, except for one element which appears exactly once. Find this single element that appears only once.
+     * Input: [1,1,2,3,3,4,4,8,8]
+     * Output: 2
+     *
+     * @param nums
+     * @return
+     */
+    public int singleNonDuplicate(int[] nums) {
+        if (nums.length == 1)
+            return nums[0];
+        int n = nums.length;
+        int lo = 0, hi = n - 1;
+        while (lo < hi) {  //
+            int mid = lo + (hi - lo) / 2;
+            if (mid % 2 == 0) {
+                if (nums[mid] == nums[mid + 1])
+                    lo = mid + 2;
+                else
+                    hi = mid - 1;
+            } else {
+                if (nums[mid] == nums[mid - 1])
+                    lo = mid + 1;
+                else
+                    hi = mid - 1;
+            }
+        }
+        return nums[lo];
+    }
 }
