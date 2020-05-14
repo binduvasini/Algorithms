@@ -257,4 +257,34 @@ public class StringQuestions {
         }
         return minWindLen == Integer.MAX_VALUE ? "" : s.substring(minWindStart, minWindStart + minWindLen);
     }
+
+    /**
+     * Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
+     * Input: num = "1432219", k = 3
+     * Output: "1219"
+     *
+     * @param num
+     * @param k
+     * @return
+     */
+    public String removeKdigits(String num, int k) {
+        StringBuilder builder = new StringBuilder(num);
+
+        while (k > 0) {
+            int i = 0;
+            while (i < builder.length() - 1 && builder.charAt(i) <= builder.charAt(i + 1)) {
+                i++;
+            }
+            builder.deleteCharAt(i);
+            k -= 1;
+        }
+
+        for (int i = 0; i < builder.length(); ) {
+            if (builder.charAt(i) == '0')
+                builder.deleteCharAt(i);
+            else
+                break;
+        }
+        return builder.toString().isBlank() ? "0" : builder.toString();
+    }
 }
