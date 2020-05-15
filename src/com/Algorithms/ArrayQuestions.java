@@ -299,4 +299,27 @@ public class ArrayQuestions {
         }
         return result;
     }
+
+    /**
+     * Given an array, rotate the array to the right by k steps.
+     * Input: nums = [1,2,3,4,5,6,7], k = 3
+     * Output: [5,6,7,1,2,3,4]
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;  //If k is greater than nums.length, rotating the array (k % nums.length) times gives the same result as it is for k times.
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+
+    private void reverse(int[] nums, int start, int end) {
+        for (int i = start; i < end; i++, end--) {
+            int tmp = nums[i];
+            nums[i] = nums[end];
+            nums[end] = tmp;
+        }
+    }
 }
