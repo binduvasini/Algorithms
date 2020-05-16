@@ -22,6 +22,13 @@ public class ArrayQuestions {
         return minHeap.remove();
     }
 
+    /**
+     * Given a collection of intervals, merge all overlapping intervals.
+     * Input: [[1,3],[2,6],[8,10],[15,18]]
+     * Output: [[1,6],[8,10],[15,18]]
+     *
+     * @param intervals
+     */
     public void mergeIntervals(int[][] intervals) {
         LinkedList<int[]> queue = new LinkedList<>();
         //sort the value in 0th index of each array
@@ -43,13 +50,22 @@ public class ArrayQuestions {
         }
     }
 
+    /**
+     * Given an array of integers nums and a positive integer k, find whether it's possible to divide this array into sets of k consecutive numbers.
+     * Input: nums = [3,3,2,2,1,1], k = 3
+     * Output: true
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
     public boolean isDivideKConsecutivePossible(int[] nums, int k) {
         TreeMap<Integer, Integer> tm = new TreeMap<>();
         for (int num : nums) {  //Store the occurrences of elements in TreeMap
             tm.put(num, tm.getOrDefault(num, 0) + 1);
         }
         while (!tm.isEmpty()) {  //Scan the TreeMap
-            int number = tm.firstKey();
+            int number = tm.firstKey();  //Start with the first Key every time.
             for (int i = 0; i < k; i++) {
                 if (!tm.containsKey(number))
                     return false;
