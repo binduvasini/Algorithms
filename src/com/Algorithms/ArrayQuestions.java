@@ -64,8 +64,6 @@ public class ArrayQuestions {
     }
 
     public static void main(String[] args) {
-        int[][] array = {{15, 18}, {1, 3}, {8, 10}, {2, 6}};
-        mergeIntervals(array);
     }
 
     /**
@@ -366,5 +364,60 @@ public class ArrayQuestions {
             nums[i] = nums[end];
             nums[end] = tmp;
         }
+    }
+
+    /**
+     * Given an unsorted integer array, find the smallest missing positive integer.
+     * Input: [3,4,-1,1]
+     * Output: 2
+     *
+     * @param nums
+     * @return
+     */
+    public int firstMissingPositive(int[] nums) {
+        if (nums.length == 0)
+            return 1;
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+                swap(nums, nums[i] - 1, i);  //Swap the numbers to keep in their positions. The non-positive numbers will end up in the positions of positive missing numbers.
+            }
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums[nums.length - 1] + 1;
+    }
+
+    private static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    /**
+     * Find all the elements that do not appear in an array of [1, n] inclusive.
+     * Input: [4,3,2,7,8,2,3,1]
+     * Output: [5,6]
+     *
+     * @param nums
+     * @return
+     */
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> list = new LinkedList<>();
+        for (int i = 0; i < nums.length; i++) {
+            while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+                swap(nums, nums[i] - 1, i);
+            }
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                list.add(i + 1);
+            }
+        }
+        return list;
     }
 }
