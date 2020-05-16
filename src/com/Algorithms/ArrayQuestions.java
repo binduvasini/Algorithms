@@ -12,7 +12,7 @@ public class ArrayQuestions {
      * Find k-th largest element in an array
      * Solve Using Min Heap
      */
-    static int kthLargestElement(int[] array, int k) {
+    public int kthLargestElement(int[] array, int k) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
         for (int value : array) {
             minHeap.add(value);
@@ -22,7 +22,7 @@ public class ArrayQuestions {
         return minHeap.remove();
     }
 
-    static void mergeIntervals(int[][] intervals) {
+    public void mergeIntervals(int[][] intervals) {
         LinkedList<int[]> queue = new LinkedList<>();
         //sort the value in 0th index of each array
         Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
@@ -43,7 +43,7 @@ public class ArrayQuestions {
         }
     }
 
-    boolean isDivideKConsecutivePossible(int[] nums, int k) {
+    public boolean isDivideKConsecutivePossible(int[] nums, int k) {
         TreeMap<Integer, Integer> tm = new TreeMap<>();
         for (int num : nums) {  //Store the occurrences of elements in TreeMap
             tm.put(num, tm.getOrDefault(num, 0) + 1);
@@ -61,9 +61,6 @@ public class ArrayQuestions {
             }
         }
         return true;
-    }
-
-    public static void main(String[] args) {
     }
 
     /**
