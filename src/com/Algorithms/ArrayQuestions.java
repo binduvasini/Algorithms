@@ -140,15 +140,36 @@ public class ArrayQuestions {
     }
 
     /**
-     * Subarray with maximum sum. [2, -4, 1, 9, -6, 7, 3]. The subarray with maximum sum is 11: [1, 9, -6, 7].
+     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]. The subarray with maximum sum is 6: [4, -1, 2, 1].
      *
      * @param nums
      * @return
      */
-    public int maxSubArray(int[] nums) {
-        return findMax(nums, 0, nums.length - 1);
+    public int subarrayWithMaxSum(int[] nums) {
+        return subArrayMaxSum(nums);
+//        return findMax(nums, 0, nums.length - 1);
     }
 
+    private int subArrayMaxSum(int[] nums) {
+        int subarrayMax = nums[0], endOfCurrMax = nums[0];  //Initializing with nums[0] rather than Integer.MIN_VALUE because the array may have all negative integers.
+        for (int i = 1; i < nums.length; i++) {
+            endOfCurrMax = Math.max(endOfCurrMax + nums[i], nums[i]);  //When nums[i] is greater than endOfCurrMax + nums[i], a new subarray starts.
+            subarrayMax = Math.max(subarrayMax, endOfCurrMax);  //When endOfCurrMax is greater than subarrayMax, the current max subarray ends.
+
+            //Use markers to mark the starting and ending positions of the subarray. Use the below conditions rather than Math.max
+            /*if (nums[i] > endOfCurrMax + nums[i]) {
+                endOfCurrMax = nums[i];
+                startInd = i;
+            }
+            if (endOfCurrMax > subarrayMax) {
+                subarrayMax = endOfCurrMax;
+                endInd = i;
+            }*/
+        }
+        return subarrayMax;
+    }
+
+    // Another approach - divide and conquer.
     private int findMax(int[] nums, int start, int end) {
         if (start == end)
             return nums[end];
@@ -173,6 +194,30 @@ public class ArrayQuestions {
             right = Math.max(right, current);
         }
         return left + right;
+    }
+
+    /**
+     * Given a circular array, find the subarray with maximum sum. A circular array means the end of the array connects to the beginning of the array.
+     * Input: [5,-3,5]
+     * Output: 10
+     *
+     * @param nums
+     * @return
+     */
+    public int maxSubarraySumCircular(int[] nums) {
+        int subarrayMax = Integer.MIN_VALUE, endOfCurrMax = 0;
+        int subarrayMin = Integer.MAX_VALUE, endOfCurrMin = 0;
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            endOfCurrMax = Math.max(endOfCurrMax + nums[i], nums[i]);
+            subarrayMax = Math.max(subarrayMax, endOfCurrMax);
+
+            endOfCurrMin = Math.min(endOfCurrMin + nums[i], nums[i]);
+            subarrayMin = Math.min(subarrayMin, endOfCurrMin);
+
+            sum += nums[i];
+        }
+        return subarrayMax > 0 ? Math.max(subarrayMax, sum - subarrayMin) : subarrayMax;
     }
 
     /**
