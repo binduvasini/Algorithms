@@ -195,5 +195,28 @@ public class Linkedlist {
         return head.next;
     }
 
+    /**
+     * Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node position and not the value in the nodes.
+     * Input: 2->1->3->5->6->4->7->NULL
+     * Output: 2->3->6->7->1->5->4->NULL
+     *
+     * @param head
+     * @return
+     */
+    public Node oddEvenList(Node head) {
+        if (head == null)
+            return null;
+        Node odd = head, even = head.next;
+        Node evenHead = even;
+
+        while (even != null && even.next != null) {
+            odd.next = even.next;
+            odd = odd.next;
+            even.next = odd.next;
+            even = even.next;
+        }
+        odd.next = evenHead;
+        return head;
+    }
 }
 
