@@ -516,4 +516,85 @@ public class BinaryTree {
         }
         return false;
     }
+
+    /**
+     * Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null)
+            return false;
+        sum -= root.data;
+        if (sum == 0 && isLeaf(root))  //If the sum becomes 0, and if it is a leaf node, then return true
+            return true;
+        boolean left = hasPathSum(root.left, sum);
+        boolean right = hasPathSum(root.right, sum);
+        return left || right;  //Either of the subtrees has found the sum
+    }
+
+    boolean isLeaf(TreeNode root) {
+        return (root.left == null) && (root.right == null);
+    }
+
+    /**
+     * Given a binary tree and a sum, find all root-to-leaf paths where each path's sum equals the given sum.
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    List<List<Integer>> pathlist = new LinkedList<>();
+
+    public List<List<Integer>> pathSumRootToLeaf(TreeNode root, int sum) {
+        List<Integer> currentPath = new LinkedList<>();
+        findPathForSum(root, sum, currentPath);
+        return pathlist;
+    }
+
+    public void findPathForSum(TreeNode node, int sum, List<Integer> currentPath) {
+        if (node == null)
+            return;
+        currentPath.add(node.data);
+        sum -= node.data;
+        if (sum == 0 && isLeaf(node)) {  //If the sum becomes 0, and if it is a leaf node, then return true
+            pathlist.add(new LinkedList(currentPath));
+            currentPath.remove(currentPath.size() - 1);
+            return;
+        }
+        findPathForSum(node.left, sum, currentPath);
+        findPathForSum(node.right, sum, currentPath);
+        currentPath.remove(currentPath.size() - 1);
+    }
+
+    /**
+     * Given a binary tree and a sum, find the number of paths that sum to the given sum. The path does not need to start or end at the root or a leaf, but it must go downwards (traveling only from parent nodes to child nodes).
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    int count = 0;
+
+    public int pathSumParentToChild(TreeNode root, int sum) {
+        if (root == null)
+            return 0;
+        countPath(root, sum);
+        pathSumParentToChild(root.left, sum);
+        pathSumParentToChild(root.right, sum);
+        return count;
+    }
+
+    private void countPath(TreeNode node, int sum) {
+        if (node == null)
+            return;
+        sum -= node.data;
+        if (sum == 0)
+            count += 1;
+        countPath(node.left, sum);
+        countPath(node.right, sum);
+    }
+
 }
