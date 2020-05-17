@@ -1,6 +1,8 @@
 package com.Algorithms;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class StringQuestions {
@@ -243,11 +245,13 @@ public class StringQuestions {
                 tCount -= 1;
             tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
             end += 1;  //Move the end pointer until you find all the characters of t.
+
             while (tCount == 0) {  //Found all the characters of t, now move the start pointer until we find the required shortest size.
                 char sCharStart = s.charAt(start);
                 tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
                 if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)  //At this point, the value of character at sCharStart will be negative if it doesn't appear in t.
                     tCount += 1;
+
                 if (minWindLen > end - start) {  //Update the minWindLen and the starting position of the substring.
                     minWindLen = end - start;
                     minWindStart = start;
@@ -256,6 +260,47 @@ public class StringQuestions {
             }
         }
         return minWindLen == Integer.MAX_VALUE ? "" : s.substring(minWindStart, minWindStart + minWindLen);
+    }
+
+    /**
+     * Given a string s and a non-empty string t, find all the start indices of t's anagrams in s.
+     * s: "abab" t: "ab"
+     * Output: [0, 1, 2]
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public List<Integer> findAnagrams(String s, String t) {
+        int start = 0, end = 0, tCount = t.length();
+        List<Integer> anagramsList = new LinkedList<>();
+
+        HashMap<Character, Integer> tMap = new HashMap<>();
+        for (char tc : t.toCharArray()) {
+            tMap.put(tc, tMap.getOrDefault(tc, 0) + 1);
+        }
+
+        while (end < s.length()) {
+            char sCharEnd = s.charAt(end);
+            if (tMap.containsKey(sCharEnd) && tMap.get(sCharEnd) > 0) {
+                tCount -= 1;
+            }
+            tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
+            end += 1;
+
+            while (tCount == 0) {
+                char sCharStart = s.charAt(start);
+                tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
+                if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)
+                    tCount += 1;
+
+                if (t.length() == end - start) {
+                    anagramsList.add(start);
+                }
+                start += 1;
+            }
+        }
+        return anagramsList;
     }
 
     /**
