@@ -597,4 +597,31 @@ public class BinaryTree {
         countPath(node.right, sum);
     }
 
+    /**
+     * Given a binary tree, find the maximum path sum. A path is defined as any sequence of nodes from any starting node to any node in the tree along the parent-child connections. The path must contain at least one node and does not need to go through the root.
+     *
+     * @param root
+     * @return
+     */
+    int maxVal;
+
+    public int maxPathSum(TreeNode root) {
+        maxVal = Integer.MIN_VALUE;
+        maxSum(root);
+        return maxVal;
+    }
+
+    private int maxSum(TreeNode root) {
+        if (root == null)
+            return 0;
+
+        int leftmax = Math.max(0, maxSum(root.left));
+        int rightmax = Math.max(0, maxSum(root.right));
+
+        int currentmax = Math.max(root.data, Math.max(leftmax + root.data, rightmax + root.data));
+
+        maxVal = Math.max(maxVal, leftmax + rightmax + root.data);
+
+        return currentmax;
+    }
 }
