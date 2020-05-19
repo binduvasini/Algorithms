@@ -335,31 +335,31 @@ public class StringQuestions {
     }
 
     /**
-     * Given two strings s1 and s2, write a function to return true if s2 contains the permutation of s1. In other words, one of the first string's permutations is the substring of the second string.
-     * Input:s1= "ab" s2 = "eidboaoo"
+     * Given two strings t and s, write a function to check if s contains the permutation of t.
+     * Input: t = "ab" s = "eidboaoo"
      * Output: False
      *
-     * @param s1
-     * @param s2
+     * @param t
+     * @param s
      * @return
      */
-    public boolean checkPermutationOfAString(String s1, String s2) {
-        int[] s1Chars = new int[26];
-        for (int i = 0; i < s1.length(); i++) {
-            char c = s1.charAt(i);
-            s1Chars[c - 'a'] += 1;
+    public boolean checkPermutationOfAString(String t, String s) {
+        int[] tChars = new int[26];
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            tChars[c - 'a'] += 1;
         }
 
-        int[] s2Chars = new int[26];
-        int start = 0, end = s1.length();
-        while (end <= s2.length()) {
+        int[] sChars = new int[26];
+        int start = 0, end = t.length();
+        while (end <= s.length()) {
             for (int i = start; i < end; i++) {
-                char c = s2.charAt(i);
-                s2Chars[c - 'a'] += 1;
+                char c = s.charAt(i);
+                sChars[c - 'a'] += 1;
             }
-            if (Arrays.equals(s1Chars, s2Chars))
+            if (Arrays.equals(tChars, sChars))
                 return true;
-            s2Chars = new int[26];
+            sChars = new int[26];
             start += 1;
             end += 1;
         }
