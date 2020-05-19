@@ -343,7 +343,7 @@ public class StringQuestions {
      * @param s2
      * @return
      */
-    public boolean checkInclusion(String s1, String s2) {
+    public boolean checkPermutationOfAString(String s1, String s2) {
         int[] s1Chars = new int[26];
         for (int i = 0; i < s1.length(); i++) {
             char c = s1.charAt(i);
