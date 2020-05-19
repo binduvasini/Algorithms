@@ -1,5 +1,6 @@
 package com.Algorithms;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -331,5 +332,37 @@ public class StringQuestions {
                 break;
         }
         return builder.toString().isBlank() ? "0" : builder.toString();
+    }
+
+    /**
+     * Given two strings s1 and s2, write a function to return true if s2 contains the permutation of s1. In other words, one of the first string's permutations is the substring of the second string.
+     * Input:s1= "ab" s2 = "eidboaoo"
+     * Output: False
+     *
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public boolean checkInclusion(String s1, String s2) {
+        int[] s1Chars = new int[26];
+        for (int i = 0; i < s1.length(); i++) {
+            char c = s1.charAt(i);
+            s1Chars[c - 'a'] += 1;
+        }
+
+        int[] s2Chars = new int[26];
+        int start = 0, end = s1.length();
+        while (end <= s2.length()) {
+            for (int i = start; i < end; i++) {
+                char c = s2.charAt(i);
+                s2Chars[c - 'a'] += 1;
+            }
+            if (Arrays.equals(s1Chars, s2Chars))
+                return true;
+            s2Chars = new int[26];
+            start += 1;
+            end += 1;
+        }
+        return false;
     }
 }
