@@ -161,6 +161,31 @@ public class StringQuestions {
     }
 
     /**
+     * Given a string, sort it in decreasing order based on the frequency of characters.
+     * @param s
+     * @return
+     */
+    public String frequencySort(String s) {
+        StringBuilder builder = new StringBuilder();
+        HashMap<Character, Integer> map = new HashMap<>();
+        PriorityQueue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+
+        char[] sChar = s.toCharArray();
+        for (char c : sChar) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        maxHeap.addAll(map.keySet());
+        while (!maxHeap.isEmpty()) {
+            char mostOccurChar = maxHeap.poll();
+            while(map.get(mostOccurChar) > 0){
+                builder.append(mostOccurChar);
+                map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
      * Given two strings S and T, return if they are equal when both are typed into empty text editors.
      * # means a backspace character.
      * S = "ab#c", T = "ad#c" : true
