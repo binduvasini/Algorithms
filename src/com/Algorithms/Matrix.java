@@ -12,7 +12,6 @@ public class Matrix {
                 matrix[j][i] = temp;
             }
         }
-
         //Swap the row values
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length / 2; j++) {
@@ -21,32 +20,6 @@ public class Matrix {
                 matrix[i][matrix.length - 1 - j] = temp;
             }
         }
-    }
-
-    /**
-     * All possible paths from the first cell to last cell in a matrix.
-     *
-     * @param m
-     * @param n
-     * @return uniquePaths
-     */
-    int uniquePaths(int m, int n) {
-        int[][] dp = new int[m][n];
-
-        for (int i = 0; i < m; i++) {
-            dp[i][0] = 1;
-        }
-
-        for (int j = 0; j < n; j++) {
-            dp[0][j] = 1;
-        }
-
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
-            }
-        }
-        return dp[m - 1][n - 1];
     }
 
     /**
@@ -106,19 +79,74 @@ public class Matrix {
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
         while (!queue.isEmpty()) {
             int[] cellPosition = queue.remove();
-
             for (int[] dir : directions) {
                 int r = cellPosition[0] + dir[0];
                 int c = cellPosition[1] + dir[1];
                 int[] newCellPosition = new int[]{r, c};
-
                 if (r < 0 || r >= m || c < 0 || c >= n || image[r][c] == newColor || image[r][c] != color)
                     continue;
-
                 image[r][c] = newColor;
                 queue.add(newCellPosition);
             }
         }
         return image;
+    }
+
+    /* Dynamic Programming */
+
+    /**
+     * All possible paths from the first cell to last cell in a matrix.
+     * A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid.
+     * How many possible unique paths are there?
+     *
+     * @param rows
+     * @param cols
+     * @return uniquePaths
+     */
+    int uniquePaths(int rows, int cols) {
+        int[][] dp = new int[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            dp[r][0] = 1;
+        }
+        for (int c = 0; c < cols; c++) {
+            dp[0][c] = 1;
+        }
+        for (int r = 1; r < rows; r++) {
+            for (int c = 1; c < cols; c++) {
+                dp[r][c] = dp[r - 1][c] + dp[r][c - 1];
+            }
+        }
+        return dp[rows - 1][cols - 1];
+    }
+
+    /**
+     * Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path. You can only move either down or right at any point in time.
+     * Input:
+     * [
+     * [1,3,1],
+     * [1,5,1],
+     * [4,2,1]
+     * ]
+     * Output: 7
+     * The path 1→3→1→1→1 minimizes the sum.
+     *
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        int[][] dp = new int[grid.length][grid[0].length];
+        dp[0][0] = grid[0][0];
+        for (int r = 1; r < grid.length; r++) {
+            dp[r][0] = dp[r - 1][0] + grid[r][0];
+        }
+        for (int c = 1; c < grid[0].length; c++) {
+            dp[0][c] = dp[0][c - 1] + grid[0][c];
+        }
+        for (int r = 1; r < grid.length; r++) {
+            for (int c = 1; c < grid[r].length; c++) {
+                dp[r][c] = Math.min(dp[r - 1][c], dp[r][c - 1]) + grid[r][c];
+            }
+        }
+        return dp[grid.length - 1][grid[0].length - 1];
     }
 }

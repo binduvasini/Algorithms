@@ -300,4 +300,77 @@ public class BinaryMatrix {
         }
         return matrix;
     }
+
+    /* Dynamic Programming */
+
+    /**
+     * Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+     *Input:
+     *
+     * 1 0 1 0 0
+     * 1 0 1 1 1
+     * 1 1 1 1 1
+     * 1 0 0 1 0
+     *
+     * Output: 4
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare(char[][] matrix) {
+        if(matrix.length == 0)
+            return 0;
+        int[][] dp = new int[matrix.length+1][matrix[0].length+1];
+        int rows = matrix.length, cols = matrix[0].length, maxSide = 0;
+
+        for (int r = 1; r <= rows; r++) {
+            for (int c = 1; c <= cols; c++) {
+                if(matrix[r-1][c-1] == '1'){
+                    dp[r][c] = Math.min(Math.min(dp[r][c-1], dp[r-1][c]), dp[r-1][c-1]) + 1;
+                    maxSide = Math.max(maxSide, dp[r][c]);
+                }
+            }
+        }
+
+        return maxSide * maxSide;
+    }
+
+    /**
+     * Given a m * n matrix of ones and zeros, return how many square submatrices have all ones.
+     *
+     *
+     *
+     * Example 1:
+     *
+     * Input: matrix =
+     * [
+     *   [0,1,1,1],
+     *   [1,1,1,1],
+     *   [0,1,1,1]
+     * ]
+     * Output: 15
+     * Explanation:
+     * There are 10 squares of side 1.
+     * There are 4 squares of side 2.
+     * There is  1 square of side 3.
+     * Total number of squares = 10 + 4 + 1 = 15.
+     * @param matrix
+     * @return
+     */
+    public int countSquares(int[][] matrix) {
+        int[][] dp = new int[matrix.length+1][matrix[0].length+1];
+        int rows = matrix.length, cols = matrix[0].length, count = 0;
+
+        for (int r = 1; r <= rows; r++) {
+            for (int c = 1; c <= cols; c++) {
+                if(matrix[r-1][c-1] == 1){
+                    dp[r][c] = Math.min(Math.min(dp[r][c-1], dp[r-1][c]), dp[r-1][c-1]) + 1;
+                    count += dp[r][c];
+                }
+            }
+        }
+
+        return count;
+    }
+
 }
