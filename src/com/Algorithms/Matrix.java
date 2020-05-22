@@ -134,19 +134,22 @@ public class Matrix {
      * @return
      */
     public int minPathSum(int[][] grid) {
-        int[][] dp = new int[grid.length][grid[0].length];
+        int rows = grid.length, cols = grid[0].length;
+        int[][] dp = new int[rows][cols];
+
         dp[0][0] = grid[0][0];
-        for (int r = 1; r < grid.length; r++) {
+
+        for (int r = 1; r < rows; r++) {
             dp[r][0] = dp[r - 1][0] + grid[r][0];
         }
-        for (int c = 1; c < grid[0].length; c++) {
+        for (int c = 1; c < cols; c++) {
             dp[0][c] = dp[0][c - 1] + grid[0][c];
         }
-        for (int r = 1; r < grid.length; r++) {
-            for (int c = 1; c < grid[r].length; c++) {
+        for (int r = 1; r < rows; r++) {
+            for (int c = 1; c < cols; c++) {
                 dp[r][c] = Math.min(dp[r - 1][c], dp[r][c - 1]) + grid[r][c];
             }
         }
-        return dp[grid.length - 1][grid[0].length - 1];
+        return dp[rows - 1][cols - 1];
     }
 }
