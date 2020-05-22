@@ -74,7 +74,7 @@ public class BinaryMatrix {
 
 
     /**
-     * Find the largest region of connected 1s in a given 2D binary array.
+     * Find the largest region of connected 1s in a given binary matrix.
      *
      * @param grid
      * @return
@@ -106,8 +106,7 @@ public class BinaryMatrix {
     }
 
     /**
-     * Given a board with m by n cells, each cell has an initial state live (1) or dead (0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
-     * <p>
+     * Given a binary matrix, each cell has an initial state live (1) or dead (0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
      * 1) Any live cell with fewer than two live neighbors dies, as if caused by under-population.
      * 2) Any live cell with two or three live neighbors lives on to the next generation.
      * 3) Any live cell with more than three live neighbors dies, as if by over-population..
@@ -164,7 +163,7 @@ public class BinaryMatrix {
     }
 
     /**
-     * Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
+     * Given a binary matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
      *
      * @param matrix
      */
@@ -304,29 +303,27 @@ public class BinaryMatrix {
     /* Dynamic Programming */
 
     /**
-     * Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
-     *Input:
-     *
+     * Given a binary matrix, find the largest square containing only 1's and return its area.
+     * Input:
      * 1 0 1 0 0
      * 1 0 1 1 1
      * 1 1 1 1 1
      * 1 0 0 1 0
-     *
      * Output: 4
      *
      * @param matrix
      * @return
      */
     public int maximalSquare(char[][] matrix) {
-        if(matrix.length == 0)
+        if (matrix.length == 0)
             return 0;
-        int[][] dp = new int[matrix.length+1][matrix[0].length+1];
+        int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
         int rows = matrix.length, cols = matrix[0].length, maxSide = 0;
 
         for (int r = 1; r <= rows; r++) {
             for (int c = 1; c <= cols; c++) {
-                if(matrix[r-1][c-1] == '1'){
-                    dp[r][c] = Math.min(Math.min(dp[r][c-1], dp[r-1][c]), dp[r-1][c-1]) + 1;
+                if (matrix[r - 1][c - 1] == '1') {
+                    dp[r][c] = Math.min(Math.min(dp[r][c - 1], dp[r - 1][c]), dp[r - 1][c - 1]) + 1;
                     maxSide = Math.max(maxSide, dp[r][c]);
                 }
             }
@@ -336,40 +333,34 @@ public class BinaryMatrix {
     }
 
     /**
-     * Given a m * n matrix of ones and zeros, return how many square submatrices have all ones.
-     *
-     *
-     *
-     * Example 1:
-     *
+     * Given a binary matrix, return how many square submatrices have all ones.
      * Input: matrix =
      * [
-     *   [0,1,1,1],
-     *   [1,1,1,1],
-     *   [0,1,1,1]
+     * [0,1,1,1],
+     * [1,1,1,1],
+     * [0,1,1,1]
      * ]
      * Output: 15
-     * Explanation:
      * There are 10 squares of side 1.
      * There are 4 squares of side 2.
      * There is  1 square of side 3.
      * Total number of squares = 10 + 4 + 1 = 15.
+     *
      * @param matrix
      * @return
      */
     public int countSquares(int[][] matrix) {
-        int[][] dp = new int[matrix.length+1][matrix[0].length+1];
+        int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
         int rows = matrix.length, cols = matrix[0].length, count = 0;
 
         for (int r = 1; r <= rows; r++) {
             for (int c = 1; c <= cols; c++) {
-                if(matrix[r-1][c-1] == 1){
-                    dp[r][c] = Math.min(Math.min(dp[r][c-1], dp[r-1][c]), dp[r-1][c-1]) + 1;
+                if (matrix[r - 1][c - 1] == 1) {
+                    dp[r][c] = Math.min(Math.min(dp[r][c - 1], dp[r - 1][c]), dp[r - 1][c - 1]) + 1;
                     count += dp[r][c];
                 }
             }
         }
-
         return count;
     }
 
