@@ -30,7 +30,7 @@ public class BinaryTree {
         addNodeSortedRec(root, newNode);
     }
 
-    private void addNodeSortedRec(TreeNode current, TreeNode newNode) {
+    private TreeNode addNodeSortedRec(TreeNode current, TreeNode newNode) {
         if (newNode.data <= current.data) {
             if (current.left != null)
                 addNodeSortedRec(current.left, newNode);
@@ -42,6 +42,7 @@ public class BinaryTree {
             else
                 current.right = newNode;
         }
+        return current;
     }
 
     boolean contains(int dataue) {
