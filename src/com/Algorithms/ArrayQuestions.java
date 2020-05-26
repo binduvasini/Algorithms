@@ -1,11 +1,6 @@
 package com.Algorithms;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ArrayQuestions {
     /**
@@ -432,5 +427,29 @@ public class ArrayQuestions {
             }
         }
         return list;
+    }
+
+    /**
+     * Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
+     * Input: [100, 4, 200, 1, 3, 2]
+     * Output: 4
+     * The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        int currentLongestConsec = 1, longestConsec = 0;
+        TreeSet<Integer> set = new TreeSet<>();
+        for(int num : nums){
+            set.add(num);
+        }
+        for (int num : set) {
+            if (set.contains(num + 1))
+                currentLongestConsec += 1;
+            else
+                currentLongestConsec = 1;
+            longestConsec = Math.max(longestConsec, currentLongestConsec);
+        }
+        return longestConsec;
     }
 }
