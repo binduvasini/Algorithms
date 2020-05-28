@@ -1,10 +1,6 @@
 package com.Algorithms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class GraphQuestions {
 //    static HashMap<String, List<String>> graph = new HashMap<>();
@@ -39,5 +35,103 @@ public class GraphQuestions {
             graph.putIfAbsent(arr[0], new ArrayList<>());
             graph.get(arr[0]).add(arr[1]);
         }
+    }
+    /**
+     * There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
+     *
+     * Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+     *
+     * Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+     *
+     * Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+     * Output: false
+     * Explanation: There are a total of 2 courses to take.
+     *              To take course 1 you should have finished course 0, and to take course 0 you should
+     *              also have finished course 1. So it is impossible.
+     */
+
+    HashMap<Integer, List<Integer>> graph = new HashMap<>();
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        for (int i = 0; i < prerequisites.length; i++) {
+            graph.putIfAbsent(prerequisites[i][1], new ArrayList<>());
+            graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        }
+
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        HashSet<Integer> visited = new HashSet<>();
+        for(Integer n : graph.keySet()){
+            if(!visited.contains(n) && !dfsDetectCycle(n, visited, stack)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean dfsDetectCycle(Integer node, HashSet<Integer> visited, ArrayDeque<Integer> stack){
+        visited.add(node);
+        stack.add(node);
+        if(graph.containsKey(node)){
+            for(Integer n : graph.get(node)){
+                if(!visited.contains(n) && !dfsDetectCycle(n, visited, stack)){
+                    return false;
+                }
+                else if(stack.contains(n)){
+                    return false;
+                }
+            }
+        }
+        stack.remove(node);
+        return true;
+    }
+
+    /**
+     * Given a set of N people (numbered 1, 2, ..., N), we would like to split everyone into two groups of any size.
+     *
+     * Each person may dislike some other people, and they should not go into the same group.
+     *
+     * Formally, if dislikes[i] = [a, b], it means it is not allowed to put the people numbered a and b into the same group.
+     *
+     * Return true if and only if it is possible to split everyone into two groups in this way.
+     *
+     * Input: N = 3, dislikes = [[1,2],[1,3],[2,3]]
+     * Output: false
+     * @param N
+     * @param dislikes
+     * @return
+     */
+    public boolean possibleBipartition(int N, int[][] dislikes) {
+        HashMap<Integer, List<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < dislikes.length; i++) {
+            graph.putIfAbsent(dislikes[i][0], new ArrayList<>());
+            graph.get(dislikes[i][0]).add(dislikes[i][1]);
+            graph.putIfAbsent(dislikes[i][1], new ArrayList<>());
+            graph.get(dislikes[i][1]).add(dislikes[i][0]);
+        }
+        LinkedList<Integer> queue = new LinkedList<>();
+        HashSet<Integer> visited = new HashSet<>();
+        boolean[] color = new boolean[N + 1];
+        for (int i = 1; i <= N; i++){
+            if (visited.contains(i))
+                continue;
+            queue.add(i);
+            visited.add(i);
+            color[i] = true;
+            while (!queue.isEmpty()) {
+                int node = queue.remove();
+                if (graph.containsKey(node)){
+                    for (int neighbor : graph.get(node)) {
+                        if (!visited.contains(neighbor)) {
+                            queue.add(neighbor);
+                            visited.add(neighbor);
+                            color[neighbor] = !color[node];
+                        }
+                        if (color[neighbor] == color[node]){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
