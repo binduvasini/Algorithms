@@ -5,7 +5,7 @@ import java.util.*;
 public class GraphQuestions {
 //    static HashMap<String, List<String>> graph = new HashMap<>();
 
-    static HashMap<Integer, List<Integer>> graph = new HashMap<>();
+    HashMap<Integer, List<Integer>> graph = new HashMap<>();
 
     int BFSshortestpath(Integer source, Integer destination) {
         int[] distance = new int[50];  //We don't need visited array cuz we can track everything in distance array
@@ -28,14 +28,7 @@ public class GraphQuestions {
         return distance[destination];
     }
 
-    public static void main(String[] args) {
-//        String[][] array = {{"JFK", "SFO"}, {"JFK", "ATL"}, {"SFO", "ATL"}, {"ATL", "JFK"}, {"ATL", "SFO"}};
-        int[][] array = {{4, 1}, {7, 9}, {10, 2}, {16, 19}};
-        for (int[] arr : array) {
-            graph.putIfAbsent(arr[0], new ArrayList<>());
-            graph.get(arr[0]).add(arr[1]);
-        }
-    }
+
     /**
      * There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
      *
@@ -50,11 +43,11 @@ public class GraphQuestions {
      *              also have finished course 1. So it is impossible.
      */
 
-    HashMap<Integer, List<Integer>> graph = new HashMap<>();
+    graph = new HashMap<>();
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        for (int i = 0; i < prerequisites.length; i++) {
-            graph.putIfAbsent(prerequisites[i][1], new ArrayList<>());
-            graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        for (int[] prerequisite : prerequisites) {
+            graph.putIfAbsent(prerequisite[1], new ArrayList<>());
+            graph.get(prerequisite[1]).add(prerequisite[0]);
         }
 
         ArrayDeque<Integer> stack = new ArrayDeque<>();
@@ -98,20 +91,19 @@ public class GraphQuestions {
      *              courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
      *              So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3]
      */
-    HashMap<Integer, List<Integer>> graph = new HashMap<>();
+    graph = new HashMap<>();
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         for(int i=0; i<numCourses; i++){
             List<Integer> l = new ArrayList<>();
             graph.put(i, l);
         }
-
-        for (int i = 0; i < prerequisites.length; i++) {
-            if (graph.containsKey(prerequisites[i][1])) {
-                graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        for (int[] prerequisite : prerequisites) {
+            if (graph.containsKey(prerequisite[1])) {
+                graph.get(prerequisite[1]).add(prerequisite[0]);
             } else {
                 List<Integer> l = new ArrayList<>();
-                l.add(prerequisites[i][0]);
-                graph.put(prerequisites[i][1], l);
+                l.add(prerequisite[0]);
+                graph.put(prerequisite[1], l);
             }
         }
 
@@ -169,11 +161,11 @@ public class GraphQuestions {
      */
     public boolean possibleBipartition(int N, int[][] dislikes) {
         HashMap<Integer, List<Integer>> graph = new HashMap<>();
-        for (int i = 0; i < dislikes.length; i++) {
-            graph.putIfAbsent(dislikes[i][0], new ArrayList<>());
-            graph.get(dislikes[i][0]).add(dislikes[i][1]);
-            graph.putIfAbsent(dislikes[i][1], new ArrayList<>());
-            graph.get(dislikes[i][1]).add(dislikes[i][0]);
+        for (int[] dislike : dislikes) {
+            graph.putIfAbsent(dislike[0], new ArrayList<>());
+            graph.get(dislike[0]).add(dislike[1]);
+            graph.putIfAbsent(dislike[1], new ArrayList<>());
+            graph.get(dislike[1]).add(dislike[0]);
         }
         LinkedList<Integer> queue = new LinkedList<>();
         HashSet<Integer> visited = new HashSet<>();

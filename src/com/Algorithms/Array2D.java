@@ -2,6 +2,7 @@ package com.Algorithms;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class Array2D {
 
@@ -34,5 +35,36 @@ public class Array2D {
         }
 
         return list.toArray(new int[list.size()][]);
+    }
+
+    /**
+     * Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.
+     *
+     * Note that it is the kth smallest element in the sorted order, not the kth distinct element.
+     *
+     * Example:
+     *
+     * matrix = [
+     *    [ 1,  5,  9],
+     *    [10, 11, 14],
+     *    [12, 14, 15]
+     * ],
+     * k = 8,
+     *
+     * return 14.
+     * @param matrix
+     * @param k
+     * @return
+     */
+    public int kthSmallest(int[][] matrix, int k) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for (int[] cells : matrix) {
+            for (int cell : cells) {
+                maxHeap.add(cell);
+                if (maxHeap.size() > k)
+                    maxHeap.remove();
+            }
+        }
+        return maxHeap.remove();
     }
 }
