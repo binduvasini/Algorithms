@@ -43,7 +43,7 @@ public class GraphQuestions {
      *              also have finished course 1. So it is impossible.
      */
 
-    graph = new HashMap<>();
+//    graph = new HashMap<>();
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         for (int[] prerequisite : prerequisites) {
             graph.putIfAbsent(prerequisite[1], new ArrayList<>());
@@ -91,7 +91,7 @@ public class GraphQuestions {
      *              courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
      *              So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3]
      */
-    graph = new HashMap<>();
+//    graph = new HashMap<>();
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         for(int i=0; i<numCourses; i++){
             List<Integer> l = new ArrayList<>();

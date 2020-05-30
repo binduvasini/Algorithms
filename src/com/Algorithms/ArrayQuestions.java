@@ -474,10 +474,12 @@ public class ArrayQuestions {
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
         if(nums1.length == 0 || nums2.length == 0)
             return new LinkedList<>();
+        // The below declaration is equivalent to new PriorityQueue<>((o1, o2) -> (o1.get(0)+o1.get(1)) - (o2.get(0)+o2.get(1)));
         PriorityQueue<List<Integer>> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> (o.get(0) + o.get(1))));
         for (int num1 : nums1) {
             for (int num2 : nums2) {
                 minHeap.add(List.of(num1, num2));
+                //We need to throw all the elements into minHeap. So we aren't checking if the size > k and removing elements.
             }
         }
         List<List<Integer>> list = new LinkedList<>();
@@ -488,5 +490,34 @@ public class ArrayQuestions {
             k -= 1;
         }
         return list;
+    }
+
+    /**
+     * We have a list of points on the plane.  Find the k closest points to the origin (0, 0).
+     * (Here, the distance between two points on a plane is the Euclidean distance.)
+     * Input: points = [[3,3],[5,-1],[-2,4]], k = 2
+     * Output: [[3,3],[-2,4]]
+     * @param points
+     * @param k
+     * @return
+     */
+    public int[][] kClosestPoints(int[][] points, int k) {
+        //Remember the comparator needs to return an int 0 or 1 or -1.
+        //Directly subtracting two doubles and returning as it is will throw compile time error.
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>((o1, o2) -> {
+            double o1Distance = Math.sqrt(o1[0] * o1[0] + o1[1] * o1[1]);
+            double o2Distance = Math.sqrt(o2[0] * o2[0] + o2[1] * o2[1]);
+            return Double.compare(o2Distance, o1Distance);
+        });
+        for(int[] point : points){
+            maxHeap.add(point);
+            if(maxHeap.size() > k)
+                maxHeap.remove();
+        }
+        List<int[]> list = new LinkedList<>();
+        while(!maxHeap.isEmpty()){
+            list.add(maxHeap.remove());
+        }
+        return list.toArray(new int[list.size()][]);
     }
 }
