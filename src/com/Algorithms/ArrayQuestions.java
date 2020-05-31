@@ -520,4 +520,27 @@ public class ArrayQuestions {
         }
         return list.toArray(new int[list.size()][]);
     }
+
+    /**
+     * Given an unsorted array return whether an increasing subsequence of length 3 exists or not in the array.
+     * Input: [1,2,3,4,5]
+     * Output: true
+     *
+     * Input: [5,4,3,2,1]
+     * Output: false
+     * @param nums
+     * @return
+     */
+    public boolean increasingTriplet(int[] nums) {
+        int firstNum = Integer.MAX_VALUE, secondNum = Integer.MAX_VALUE;
+        for(int num : nums){
+            if(num <= firstNum)
+                firstNum = num;
+            else if(num <= secondNum)
+                secondNum = num;
+            else
+                return true;
+        }
+        return false;
+    }
 }
