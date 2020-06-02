@@ -63,17 +63,17 @@ public class Recursion {
      */
     public List<List<Integer>> subsetsWithoutDup(int[] nums) {
         List<Integer> tmp = new ArrayList<>();
-        List<List<Integer>> l = new ArrayList<>();
+        List<List<Integer>> resultList = new ArrayList<>();
         Arrays.sort(nums);
-        subsetsWithDup(l, tmp, nums, 0);
-        return l;
+        subsetsWithoutDup(resultList, tmp, nums, 0);
+        return resultList;
     }
 
-    private void subsetsWithoutDup(List<List<Integer>> l, List<Integer> tmp, int[] nums, int point) {
-        l.add(new ArrayList<>(tmp));
+    private void subsetsWithoutDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int point) {
+        resultList.add(new ArrayList<>(tmp));
         for (int i = point; i < nums.length; i++) {
             tmp.add(nums[i]);
-            subsetsWithDup(l, tmp, nums, i + 1);
+            subsetsWithoutDup(resultList, tmp, nums, i + 1);
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -250,11 +250,58 @@ public class Recursion {
     void permuteUtil(int[] nums, List<Integer> tmp, List<List<Integer>> l) {
         if (tmp.size() == nums.length)
             l.add(new ArrayList<>(tmp));
-        for (int i = 0; i < nums.length; i++) {
-            if (tmp.contains(nums[i])) continue;
-            tmp.add(nums[i]);
+        for (int num : nums) {
+            if (tmp.contains(num)) continue;
+            tmp.add(num);
             permuteUtil(nums, tmp, l);
             tmp.remove(tmp.size() - 1);
         }
+    }
+
+    /**
+     * Given a string s, partition s such that every substring of the partition is a palindrome.
+     *
+     * Return all possible palindrome partitioning of s.
+     *
+     * Example:
+     *
+     * Input: "aab"
+     * Output:
+     * [
+     *   ["aa","b"],
+     *   ["a","a","b"]
+     * ]
+     * @param s
+     * @return
+     */
+    public List<List<String>> palindromePartition(String s) {
+        List<String> tmp = new ArrayList<>();
+        List<List<String>> resultList = new ArrayList<>();
+        char[] sChar = s.toCharArray();  //Do not sort the array for this question.
+        subsetsWithoutDup(resultList, tmp, sChar, 0);
+        return resultList;
+    }
+
+    private void subsetsWithoutDup(List<List<String>> resultList, List<String> tmp, char[] sChar, int point) {
+        if(point == sChar.length)  //Add the list only when we consider all the characters in the given string
+            resultList.add(new ArrayList<>(tmp));
+        StringBuilder builder = new StringBuilder();
+        for (int i = point; i < sChar.length; i++) {
+            builder.append(sChar[i]);
+            if(isPalindrome(builder.toString(), 0, builder.length()-1)){
+                tmp.add(builder.toString());
+
+                subsetsWithoutDup(resultList, tmp, sChar, i + 1);
+                tmp.remove(tmp.size() - 1);
+            }
+        }
+    }
+
+    private boolean isPalindrome(String str, int start, int end){
+        if (start >= end)
+            return true;
+        if (str.charAt(start) != str.charAt(end))
+            return false;
+        return isPalindrome(str, start + 1, end - 1);
     }
 }
