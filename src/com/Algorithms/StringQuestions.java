@@ -141,7 +141,7 @@ public class StringQuestions {
             int count = map.getOrDefault(c, 0) + 1;
             map.put(c, count);
             if (count > (S.length() + 1) / 2)
-                return "";
+                return "";  //If the given string contains a character that occurs more than half of its length, we cannot rearrange it.
         }
 
         maxHeap.addAll(map.keySet());
