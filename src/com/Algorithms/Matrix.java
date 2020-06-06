@@ -95,7 +95,7 @@ public class Matrix {
     /* Dynamic Programming */
 
     /**
-     * All possible paths from the first cell to last cell in a matrix.
+     * Return the count of all possible paths from the first cell to the last cell in a matrix.
      * A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid.
      * How many possible unique paths are there?
      *
@@ -120,7 +120,8 @@ public class Matrix {
     }
 
     /**
-     * Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+     * Given a m x n grid filled with non-negative numbers,
+     * find a path from top left to bottom right which minimizes the sum of all numbers along its path.
      * You can only move either down or right at any point in time.
      * Input:
      * [

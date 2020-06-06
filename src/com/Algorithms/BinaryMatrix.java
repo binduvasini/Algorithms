@@ -303,7 +303,7 @@ public class BinaryMatrix {
     /* Dynamic Programming */
 
     /**
-     * Given a binary matrix, find the largest square containing only 1's and return its area.
+     * Given a binary matrix, find the largest square containing only 1s and return its area.
      * Input:
      * 1 0 1 0 0
      * 1 0 1 1 1
@@ -333,7 +333,7 @@ public class BinaryMatrix {
     }
 
     /**
-     * Given a binary matrix, return how many square submatrices have all ones.
+     * Given a binary matrix, return how many square sub-matrices have all 1s.
      * Input: matrix =
      * [
      * [0,1,1,1],
