@@ -158,6 +158,7 @@ public class StringQuestions {
 
     /**
      * Given a string, sort it in decreasing order based on the frequency of characters.
+     *
      * @param s
      * @return
      */
@@ -173,7 +174,7 @@ public class StringQuestions {
         maxHeap.addAll(map.keySet());
         while (!maxHeap.isEmpty()) {
             char mostOccurChar = maxHeap.poll();
-            while(map.get(mostOccurChar) > 0){
+            while (map.get(mostOccurChar) > 0) {
                 builder.append(mostOccurChar);
                 map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
             }
@@ -397,6 +398,7 @@ public class StringQuestions {
      * A = [2,5,1,2,5]
      * B = [10,5,2,1,5,2]
      * Output: 3
+     *
      * @param A
      * @param B
      * @return
@@ -416,13 +418,13 @@ public class StringQuestions {
 
     /**
      * Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
-     *
+     * <p>
      * You have the following 3 operations permitted on a word:
-     *
+     * <p>
      * Insert a character
      * Delete a character
      * Replace a character
-     *
+     * <p>
      * Input: word1 = "intention", word2 = "execution"
      * Output: 5
      * Explanation:
@@ -431,26 +433,27 @@ public class StringQuestions {
      * enention -> exention (replace 'n' with 'x')
      * exention -> exection (replace 'n' with 'c')
      * exection -> execution (insert 'u')
+     *
      * @param word1
      * @param word2
      * @return
      */
     public int minDistance(String word1, String word2) {
         int[][] dp = new int[word1.length() + 1][word2.length() + 1];
-        for(int i=0; i <= word1.length(); i++){
+        for (int i = 0; i <= word1.length(); i++) {
             dp[i][0] = i;
         }
 
-        for(int j=0; j <= word2.length(); j++){
+        for (int j = 0; j <= word2.length(); j++) {
             dp[0][j] = j;
         }
 
-        for(int i=1; i <= word1.length(); i++){
-            for(int j=1; j <= word2.length(); j++){
-                if(word1.charAt(i-1) == word2.charAt(j-1))
-                    dp[i][j] = dp[i-1][j-1];
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1];
                 else
-                    dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1])) + 1;
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1])) + 1;
             }
         }
         return dp[word1.length()][word2.length()];
@@ -458,18 +461,19 @@ public class StringQuestions {
 
     /**
      * Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks. Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
-     *
+     * <p>
      * However, there is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
-     *
+     * <p>
      * You need to return the least number of intervals the CPU will take to finish all the given tasks.
-     *
-     *
-     *
+     * <p>
+     * <p>
+     * <p>
      * Example:
-     *
+     * <p>
      * Input: tasks = ["A","A","A","B","B","B"], n = 2
      * Output: 8
      * Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+     *
      * @param tasks
      * @param n
      * @return
@@ -486,15 +490,15 @@ public class StringQuestions {
         int count = 0;
         while (!maxHeap.isEmpty()) {
             List<Character> list = new ArrayList<>();  //Store the removed characters and add it back after the completion of the task interval.
-            for(int i=0; i<=n; i++){
-                if(!maxHeap.isEmpty()){
+            for (int i = 0; i <= n; i++) {
+                if (!maxHeap.isEmpty()) {
                     char mostOccurChar = maxHeap.poll();
                     map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-                    if(map.get(mostOccurChar) >= 1)
+                    if (map.get(mostOccurChar) >= 1)
                         list.add(mostOccurChar);  //Add to the list only when this character's occurrence is at least 1.
                 }
                 count += 1;
-                if(maxHeap.isEmpty() && list.isEmpty())
+                if (maxHeap.isEmpty() && list.isEmpty())
                     break;
             }
             maxHeap.addAll(list);  //Add the removed characters back. We checked for the occurrences already inside the for loop.
