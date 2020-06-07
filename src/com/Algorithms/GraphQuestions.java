@@ -41,7 +41,7 @@ public class GraphQuestions {
      */
 
 //    graph = new HashMap<>();
-    public boolean canFinish(int numCourses, int[][] prerequisites) {
+    public boolean canFinishCourses(int numCourses, int[][] prerequisites) {
         for (int[] prerequisite : prerequisites) {
             graph.putIfAbsent(prerequisite[1], new ArrayList<>());
             graph.get(prerequisite[1]).add(prerequisite[0]);
@@ -74,30 +74,21 @@ public class GraphQuestions {
     }
 
     /**
-     * There are a total of n courses you have to take, labeled from 0 to n-1.
+     * There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
      * Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
      * Given the total number of courses and a list of prerequisite pairs, return the ordering of courses you should take to finish all courses.
      * There may be multiple correct orders, you just need to return one of them. If it is impossible to finish all courses, return an empty array.
-     * Input: 4, [[1,0],[2,0],[3,1],[3,2]]
+     * Input: numCourses = 4, [[1,0],[2,0],[3,1],[3,2]]
      * Output: [0,1,2,3] or [0,2,1,3]
-     * Explanation: There are a total of 4 courses to take. To take course 3 you should have finished both
-     * courses 1 and 2. Both courses 1 and 2 should be taken after you finished course 0.
-     * So one correct course order is [0,1,2,3]. Another correct ordering is [0,2,1,3]
+     * There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2.
+     * Both courses 1 and 2 should be taken after you finished course 0.
+     * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
      */
 //    graph = new HashMap<>();
-    public int[] findOrder(int numCourses, int[][] prerequisites) {
-        for (int i = 0; i < numCourses; i++) {
-            List<Integer> l = new ArrayList<>();
-            graph.put(i, l);
-        }
+    public int[] findOrderOfCourses(int numCourses, int[][] prerequisites) {
         for (int[] prerequisite : prerequisites) {
-            if (graph.containsKey(prerequisite[1])) {
-                graph.get(prerequisite[1]).add(prerequisite[0]);
-            } else {
-                List<Integer> l = new ArrayList<>();
-                l.add(prerequisite[0]);
-                graph.put(prerequisite[1], l);
-            }
+            graph.putIfAbsent(prerequisite[1], new ArrayList<>());
+            graph.get(prerequisite[1]).add(prerequisite[0]);
         }
 
         ArrayDeque<Integer> stack = new ArrayDeque<>();
@@ -138,13 +129,9 @@ public class GraphQuestions {
 
     /**
      * Given a set of N people (numbered 1, 2, ..., N), we would like to split everyone into two groups of any size.
-     * <p>
      * Each person may dislike some other people, and they should not go into the same group.
-     * <p>
      * Formally, if dislikes[i] = [a, b], it means it is not allowed to put the people numbered a and b into the same group.
-     * <p>
      * Return true if and only if it is possible to split everyone into two groups in this way.
-     * <p>
      * Input: N = 3, dislikes = [[1,2],[1,3],[2,3]]
      * Output: false
      *
