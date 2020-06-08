@@ -259,12 +259,8 @@ public class Recursion {
     }
 
     /**
-     * Given a string s, partition s such that every substring of the partition is a palindrome.
-     *
+     * Given a string s, partition it such that every substring is a palindrome.
      * Return all possible palindrome partitioning of s.
-     *
-     * Example:
-     *
      * Input: "aab"
      * Output:
      * [
@@ -283,12 +279,12 @@ public class Recursion {
     }
 
     private void subsetsWithoutDup(List<List<String>> resultList, List<String> tmp, char[] sChar, int point) {
-        if(point == sChar.length)  //Add the list only when we consider all the characters in the given string
+        if (point == sChar.length)  //Add the list only when we consider all the characters in the given string
             resultList.add(new ArrayList<>(tmp));
         StringBuilder builder = new StringBuilder();
         for (int i = point; i < sChar.length; i++) {
             builder.append(sChar[i]);
-            if(isPalindrome(builder.toString(), 0, builder.length()-1)){
+            if (isPalindrome(builder.toString(), 0, builder.length() - 1)) {
                 tmp.add(builder.toString());
 
                 subsetsWithoutDup(resultList, tmp, sChar, i + 1);
@@ -297,7 +293,7 @@ public class Recursion {
         }
     }
 
-    private boolean isPalindrome(String str, int start, int end){
+    private boolean isPalindrome(String str, int start, int end) {
         if (start >= end)
             return true;
         if (str.charAt(start) != str.charAt(end))
