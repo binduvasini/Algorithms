@@ -415,16 +415,12 @@ public class StringQuestions {
 
     /**
      * Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
-     * <p>
      * You have the following 3 operations permitted on a word:
-     * <p>
-     * Insert a character
-     * Delete a character
-     * Replace a character
-     * <p>
+     * 1) Insert a character
+     * 2) Delete a character
+     * 3) Replace a character
      * Input: word1 = "intention", word2 = "execution"
      * Output: 5
-     * Explanation:
      * intention -> inention (remove 't')
      * inention -> enention (replace 'i' with 'e')
      * enention -> exention (replace 'n' with 'x')
@@ -435,13 +431,13 @@ public class StringQuestions {
      * @param word2
      * @return
      */
-    public int minDistance(String word1, String word2) {
+    public int editMinDistance(String word1, String word2) {
         int[][] dp = new int[word1.length() + 1][word2.length() + 1];
-        for (int i = 0; i <= word1.length(); i++) {
+        for (int i = 0; i <= word1.length(); i++) {  //Initialize the first column
             dp[i][0] = i;
         }
 
-        for (int j = 0; j <= word2.length(); j++) {
+        for (int j = 0; j <= word2.length(); j++) {  //Initialize the first row
             dp[0][j] = j;
         }
 
@@ -458,24 +454,17 @@ public class StringQuestions {
 
     /**
      * Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks. Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
-     * <p>
-     * However, there is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
-     * <p>
-     * You need to return the least number of intervals the CPU will take to finish all the given tasks.
-     * <p>
-     * <p>
-     * <p>
-     * Example:
-     * <p>
+     * However, there is a cooling interval n between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
+     * Return the intervals and task count by which the CPU will take to finish all the given tasks.
      * Input: tasks = ["A","A","A","B","B","B"], n = 2
      * Output: 8
-     * Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+     * A -> B -> idle -> A -> B -> idle -> A -> B.
      *
      * @param tasks
-     * @param n
+     * @param k
      * @return
      */
-    public int leastInterval(char[] tasks, int n) {
+    public int cpuTasks(char[] tasks, int k) {
         HashMap<Character, Integer> map = new HashMap<>();
         PriorityQueue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
 
@@ -487,7 +476,7 @@ public class StringQuestions {
         int count = 0;
         while (!maxHeap.isEmpty()) {
             List<Character> list = new ArrayList<>();  //Store the removed characters and add it back after the completion of the task interval.
-            for (int i = 0; i <= n; i++) {
+            for (int i = 0; i <= k; i++) {
                 if (!maxHeap.isEmpty()) {
                     char mostOccurChar = maxHeap.poll();
                     map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
