@@ -491,4 +491,32 @@ public class StringQuestions {
         }
         return count;
     }
+
+    /**
+     * Given strings s and t, check if t is a subsequence of s.
+     * A subsequence of a string is a new string which is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (ie, "ace" is a subsequence of "abcde" while "aec" is not).
+     * s = "ahbgdc"
+     * t = "acb"
+     * return false.
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubsequence(String s, String t) {
+        if(t.isEmpty())
+            return true;
+        else if(s.isEmpty())
+            return false;
+        int sPointer = 0, tPointer = 0, count = t.length();
+        while(sPointer < s.length()){
+            if(s.charAt(sPointer) == t.charAt(tPointer)){
+                count -= 1;
+                tPointer += 1;
+            }
+            if(count == 0)
+                return true;
+            sPointer += 1;
+        }
+        return false;
+    }
 }
