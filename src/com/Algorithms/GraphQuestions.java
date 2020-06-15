@@ -1,9 +1,17 @@
 package com.Algorithms;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 public class GraphQuestions {
-//    static HashMap<String, List<String>> graph = new HashMap<>();
 
     HashMap<Integer, List<Integer>> graph = new HashMap<>();
 
@@ -15,7 +23,8 @@ public class GraphQuestions {
         distance[source] = 0;  //distance to get to the source is 0
         while (!queue.isEmpty()) {
             Integer gn = queue.remove();
-            if (gn.equals(destination)) break;
+            if (gn.equals(destination))
+                break;
             if (graph.containsKey(gn)) {
                 for (Integer neighbor : graph.get(gn)) {
                     if (distance[neighbor] == -1) {
@@ -171,5 +180,84 @@ public class GraphQuestions {
             }
         }
         return true;
+    }
+
+    /**
+     * There are N network nodes, labelled 1 to N. Given a list of travel times as directed edges times[i] = (u, v, w), where u is the source node, v is the target node, and w is the time it takes for a signal to travel from source to target. We send a signal from a certain node source. How long will it take for all nodes to receive the signal? If it is impossible, return -1.
+     * @param times
+     * @param N
+     * @param source
+     * @return
+     */
+    public int networkDelayTime(int[][] times, int N, int source) {
+        HashMap<Integer, Map<Integer, Integer>> graph = new HashMap<>();
+        for (int[] time : times) {
+            graph.putIfAbsent(time[0], new HashMap<>());
+            graph.get(time[0]).put(time[1], time[2]);
+        }
+        //We don't need the distance array separately as in BFSShortestPath.
+        // We make use of the minHeap to store the distance.
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        boolean[] visited = new boolean[N+1];
+        minHeap.add(new int[]{source, 0});
+        int totalDistance = 0;
+        while (!minHeap.isEmpty()) {
+            int[] nodeDist = minHeap.remove();
+            int node = nodeDist[0], distance = nodeDist[1];
+            //Setting visited = true for this node before the while loop and
+            // having a !visited condition for every neighbor
+            // doesn't work.
+            if (visited[node])
+                continue;
+            visited[node] = true;
+            totalDistance = distance;
+            N -= 1;
+            if (graph.containsKey(node)) {
+                Map<Integer, Integer> neighbors = graph.get(node);
+                for (Integer neighbor : neighbors.keySet()) {
+                    int neighborDist = distance + neighbors.get(neighbor);
+                    minHeap.add(new int[]{neighbor, neighborDist});
+                }
+            }
+        }
+        return N == 0 ? totalDistance : -1;
+    }
+
+    /**
+     * There are N cities connected by M flights. Each flight starts from city u and arrives at v with a price w.
+     * Given all the cities and flights, together with starting city source and the destination dest, your task is to find the cheapest price from source to dest with up to k stops. If there is no such route, return -1.
+     * @param n
+     * @param flights
+     * @param source
+     * @param dest
+     * @param K
+     * @return
+     */
+    public int findCheapestPrice(int n, int[][] flights, int source, int dest, int K) {
+        HashMap<Integer, Map<Integer, Integer>> graph = new HashMap<>();
+        for (int[] flight : flights) {
+            graph.putIfAbsent(flight[0], new HashMap<>());
+            graph.get(flight[0]).put(flight[1], flight[2]);
+        }
+
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        minHeap.add(new int[]{source, 0, K + 1});
+        while (!minHeap.isEmpty()) {
+            int[] nodeDist = minHeap.remove();
+            int node = nodeDist[0], price = nodeDist[1], stops = nodeDist[2];
+            // It fails when we include the visited logic. This solution doesn't need a visited array.
+            if(node == dest)  //Found the destination.
+                return price;
+            if(stops > 0){  //Checking if (stops < 0) and breaking the loop doesn't work.
+                if (graph.containsKey(node)) {
+                    Map<Integer, Integer> neighbors = graph.get(node);
+                    for (Integer neighbor : neighbors.keySet()) {
+                        int neighborDist = price + neighbors.get(neighbor);
+                        minHeap.add(new int[]{neighbor, neighborDist, stops - 1});
+                    }
+                }
+            }
+        }
+        return -1;
     }
 }
