@@ -184,6 +184,10 @@ public class GraphQuestions {
 
     /**
      * There are N network nodes, labelled 1 to N. Given a list of travel times as directed edges times[i] = (u, v, w), where u is the source node, v is the target node, and w is the time it takes for a signal to travel from source to target. We send a signal from a certain node source. How long will it take for all nodes to receive the signal? If it is impossible, return -1.
+     * times = [[1,2,1],[2,3,2],[1,3,4]]
+     * N = 3
+     * source = 1
+     * output: 3.
      * @param times
      * @param N
      * @param source
@@ -226,14 +230,17 @@ public class GraphQuestions {
     /**
      * There are N cities connected by M flights. Each flight starts from city u and arrives at v with a price w.
      * Given all the cities and flights, together with starting city source and the destination dest, your task is to find the cheapest price from source to dest with up to k stops. If there is no such route, return -1.
-     * @param n
+     * N = 3, flights = [[0,1,100],[1,2,100],[0,2,500]]
+     * source = 0, dest = 2, K = 0
+     * Output: 500
+     * @param N
      * @param flights
      * @param source
      * @param dest
      * @param K
      * @return
      */
-    public int findCheapestPrice(int n, int[][] flights, int source, int dest, int K) {
+    public int findCheapestPrice(int N, int[][] flights, int source, int dest, int K) {
         HashMap<Integer, Map<Integer, Integer>> graph = new HashMap<>();
         for (int[] flight : flights) {
             graph.putIfAbsent(flight[0], new HashMap<>());
