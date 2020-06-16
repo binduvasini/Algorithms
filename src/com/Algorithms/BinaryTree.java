@@ -45,24 +45,24 @@ public class BinaryTree {
         return current;
     }
 
-    boolean contains(int dataue) {
+    boolean contains(int value) {
         if (root == null) {
             return false;
         }
-        return containsRec(root, dataue);
+        return containsRec(root, value);
     }
 
-    private boolean containsRec(TreeNode current, int dataue) {
-        if (current.data == dataue)
-            return true;
-        if (dataue < current.data) {
+    private boolean containsRec(TreeNode current, int value) {  //Use the same method for searching a value in a BST.
+        if (current.data == value)
+            return true;  //return current
+        if (value < current.data) {
             if (current.left != null)
-                return containsRec(current.left, dataue);
+                return containsRec(current.left, value);
             else
-                return false;
+                return false;  //return null
         } else {
             if (current.right != null)
-                return containsRec(current.right, dataue);
+                return containsRec(current.right, value);
             else
                 return false;
         }
@@ -332,7 +332,7 @@ public class BinaryTree {
     TreeNode prev;
 
     public void recoverBST(TreeNode root) {
-        prev = new TreeNode(Integer.MIN_VALUE);  //We can't use the root as prev. So assign a minimum dataue
+        prev = new TreeNode(Integer.MIN_VALUE);  //We can't use the root as prev. So assign a minimum value
         inOrderUtil(root);
         if (swapFirst != null && swapSecond != null) {
             int temp = swapFirst.data;  //Use the node's data to swap so that the tree will be updated.
@@ -389,7 +389,7 @@ public class BinaryTree {
         if (root == null)
             return;
 
-        if (data == root.data) {  //The dataue is at the root.
+        if (data == root.data) {  //The value is at the root.
             if (root.left != null) {  //LST is not null, so go to the right most element
                 TreeNode node = root.left;
                 while (node.right != null) {
@@ -404,11 +404,11 @@ public class BinaryTree {
                 }
                 successor = node.data;
             }
-        } else if (data < root.data) {  //The dataue is in the LST.
-            successor = root.data;  //During the recursion, the dataue will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
+        } else if (data < root.data) {  //The value is in the LST.
+            successor = root.data;  //During the recursion, the value will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
             predSuc(root.left, data);
         } else {
-            predecessor = root.data;  //During the recursion, the dataue will match the root and it might not have a LST, so the predecessor might not be set. So, here we are setting it and calling the recursion.
+            predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST, so the predecessor might not be set. So, here we are setting it and calling the recursion.
             predSuc(root.right, data);
         }
     }
@@ -485,7 +485,7 @@ public class BinaryTree {
      * @param y
      * @return
      */
-    public boolean isCousins(TreeNode root, int x, int y) {
+    public boolean areCousins(TreeNode root, int x, int y) {
         LinkedList<TreeNode> queue = new LinkedList<>();
         queue.add(root);
 
