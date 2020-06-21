@@ -365,7 +365,7 @@ public class StringQuestions {
      * @param s
      * @return
      */
-    public boolean checkPermutationOfAString(String t, String s) {
+    public boolean checkIfStringSContainsPermutationOfT(String s, String t) {
         int[] tChars = new int[26];
         for (int i = 0; i < t.length(); i++) {
             char c = t.charAt(i);

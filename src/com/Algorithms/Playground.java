@@ -1,16 +1,23 @@
 package com.Algorithms;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Playground {
 
     public static void main(String[] args) {
-
+        char[] sChar1 = {'c'};
+        char[] sChar2 = {'C'};
+        List<String> list = new ArrayList<>();
+        list.add(String.valueOf(sChar1));
+        System.out.println(list.contains(String.valueOf(sChar2)));
+        System.out.println(String.valueOf(sChar1));
+        System.out.println(String.valueOf(sChar2));
     }
 
-    static void find3Numbers(int A[],
+    static void find3Numbers(int[] A,
                              int arr_size, int sum) {
-        // Fix the first element as A[i]
+        // Fix first element as A[i]
         for (int i = 0; i < arr_size - 2; i++) {
 
             // Find pair in subarray A[i+1..n-1]
@@ -98,130 +105,4 @@ public class Playground {
         }
         return false;
     }
-
-    int[] count;
-
-    public List<Integer> countSmaller(int[] nums) {
-        List<Integer> res = new ArrayList<Integer>();
-
-        count = new int[nums.length];
-        int[] indexes = new int[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            indexes[i] = i;
-        }
-        mergesort(nums, indexes, 0, nums.length - 1);
-        for (int i = 0; i < count.length; i++) {
-            res.add(count[i]);
-        }
-        return res;
-    }
-
-    private void mergesort(int[] nums, int[] indexes, int start, int end) {
-        if (end <= start) {
-            return;
-        }
-        int mid = (start + end) / 2;
-        mergesort(nums, indexes, start, mid);
-        mergesort(nums, indexes, mid + 1, end);
-
-        merge(nums, indexes, start, end);
-    }
-
-    private void merge(int[] nums, int[] indexes, int start, int end) {
-        int mid = (start + end) / 2;
-        int left_index = start;
-        int right_index = mid + 1;
-        int inversionCount = 0;
-        int[] new_indexes = new int[end - start + 1];
-
-        int sort_index = 0;
-        while (left_index <= mid && right_index <= end) {
-            if (nums[indexes[left_index]] <= nums[indexes[right_index]]) {
-                new_indexes[sort_index] = indexes[left_index];
-                count[indexes[left_index]] += inversionCount;
-                left_index++;
-            }
-            else {
-                new_indexes[sort_index] = indexes[right_index];
-                inversionCount++;
-                right_index++;
-            }
-            sort_index++;
-        }
-        while (left_index <= mid) {
-            new_indexes[sort_index] = indexes[left_index];
-            count[indexes[left_index]] += inversionCount;
-            left_index++;
-            sort_index++;
-        }
-        while (right_index <= end) {
-            new_indexes[sort_index++] = indexes[right_index++];
-        }
-        if (end + 1 - start >= 0) System.arraycopy(new_indexes, 0, indexes, start, end + 1 - start);
-    }
-
-
-    /*
-
-    HashMap<Integer, Integer> map;
-    public List<Integer> countSmaller(int[] nums) {
-        int[] num = nums.clone();
-        map = new HashMap<>();
-        int[] tmp = new int[nums.length];
-        divide(nums, 0, nums.length - 1, tmp);
-
-        List<Integer> result = new LinkedList<>();
-
-        for(int i = 0; i < num.length; i++){
-            if(map.containsKey(i))
-                result.add(map.get(i));
-            else
-                result.add(0);
-        }
-
-        return result;
-    }
-
-    private void divide(int[] nums, int start, int end, int[] tmp){
-        if(start >= end)
-            return;
-        int middle = start + (end - start) / 2;
-        divide(nums, start, middle, tmp);
-        divide(nums, middle + 1, end, tmp);
-        conquer(nums, start, end, tmp);
-    }
-
-    private void conquer(int[] array, int leftStart, int rightEnd, int[] tmp) {
-        int leftEnd = leftStart + (rightEnd - leftStart) / 2; //determine the leftEnd for left array
-        int rightStart = leftEnd + 1; //determine the rightStart for the right array
-        int i = leftStart, lefti = leftStart, righti = rightStart, inversionCount = 0;
-
-        while (lefti <= leftEnd && righti <= rightEnd) {
-            if (array[lefti] <= array[righti]) {
-                map.put(lefti, map.getOrDefault(lefti, 0)+inversionCount);
-                tmp[i] = array[lefti];
-                lefti += 1;
-            } else {
-                inversionCount += 1;
-                tmp[i] = array[righti];
-                righti += 1;
-            }
-            i += 1;
-        }
-        while(lefti <= leftEnd){
-            map.put(lefti, map.getOrDefault(lefti, 0)+inversionCount);
-            tmp[i] = array[lefti];
-            lefti += 1;
-            i += 1;
-        }
-        while(righti <= rightEnd){
-            tmp[i] = array[righti];
-            righti += 1;
-            i += 1;
-        }
-        System.arraycopy(tmp, leftStart, array, leftStart, rightEnd - leftStart + 1);
-    }
-
-     */
-
 }
