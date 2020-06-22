@@ -1,5 +1,6 @@
 package com.Algorithms;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class BinaryMatrix {
@@ -15,7 +16,7 @@ public class BinaryMatrix {
         }
     }
 
-    static int shortestPathInABinaryMatrix(int[][] matrix, int[] source, int[] dest) {
+    static int shortestPathInABinaryMatrixUsingNodeClass(int[][] matrix, int[] source, int[] dest) {
         LinkedList<Node> queue = new LinkedList<>();
 
         int m = matrix.length;
@@ -30,13 +31,15 @@ public class BinaryMatrix {
         while (!queue.isEmpty()) {
             Node node = queue.remove();
 
-            if (node.row == dest[0] && node.col == dest[1]) return node.dist;
+            if (node.row == dest[0] && node.col == dest[1])
+                return node.dist;
 
             for (int[] d : directions) {
                 int r = node.row + d[0];
                 int c = node.col + d[1];
 
-                if (r < 0 || r >= m || c < 0 || c >= n) continue;
+                if (r < 0 || r >= m || c < 0 || c >= n)
+                    continue;
 
                 if (matrix[r][c] == 1 && !visited[r][c]) {
                     queue.add(new Node(r, c, node.dist + 1));
@@ -59,7 +62,7 @@ public class BinaryMatrix {
                 {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
                 {1, 1, 0, 0, 0, 0, 1, 0, 0, 1}};
 
-        System.out.println(shortestPathInABinaryMatrix(mat, new int[]{0, 0}, new int[]{3, 4}));
+        System.out.println(shortestPathInABinaryMatrixUsingNodeClass(mat, new int[]{0, 0}, new int[]{3, 4}));
 
         int[][] island = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
@@ -72,6 +75,55 @@ public class BinaryMatrix {
         System.out.println(maxAreaOfIsland(island));
     }
 
+    /**
+     * Given a grid, each cell is either empty (0) or blocked (1). Adjacent cells are connected 8-directionally.
+     * Return the length of the shortest clear path from top-left to bottom-right. If such a path does not exist, return -1.
+     * Input: [
+     * [0,0,0],
+     * [1,1,0],
+     * [1,1,0]
+     * ]
+     * Output: 4
+     * @param grid
+     * @return
+     */
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        if (grid[0][0] == 1)
+            return -1;
+
+        LinkedList<int[]> queue = new LinkedList<>();
+        int rows = grid.length, cols = grid[0].length;
+
+        int[][] distance = new int[rows][cols];  //We can use distance array rather than boolean visited array.
+        for (int[] row : distance) {
+            Arrays.fill(row, -1);
+        }
+        queue.add(new int[]{0, 0});
+        distance[0][0] = 1;
+
+        int[][] directions = {{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
+        while (!queue.isEmpty()) {
+            int[] cellPosition = queue.remove();
+
+            if (cellPosition[0] == rows - 1 && cellPosition[1] == cols - 1)
+                return distance[rows - 1][cols - 1];
+
+            for (int[] d : directions) {
+                int r = cellPosition[0] + d[0];
+                int c = cellPosition[1] + d[1];
+
+                if (r < 0 || r >= rows || c < 0 || c >= cols)
+                    continue;
+
+                if (grid[r][c] == 0 && distance[r][c] == -1) {
+                    queue.add(new int[]{r, c});
+                    distance[r][c] = distance[cellPosition[0]][cellPosition[1]] + 1;
+                }
+            }
+        }
+
+        return -1;
+    }
 
     /**
      * Find the largest region of connected 1s in a given binary matrix.

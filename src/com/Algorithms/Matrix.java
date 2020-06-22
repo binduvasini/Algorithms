@@ -154,4 +154,42 @@ public class Matrix {
         }
         return dp[rows - 1][cols - 1];
     }
+
+    /**
+     * The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of M x N rooms laid out in a 2D grid. Our valiant knight (K) was initially positioned in the top-left room and must fight his way through the dungeon to rescue the princess.
+     * The knight has an initial health point represented by a positive integer. If at any point his health point drops to 0, he can't proceed.
+     * Some of the rooms are guarded by demons, so the knight loses health (negative integers) upon entering these rooms; other rooms are either empty (0's) or contain magic orbs that increase the knight's health (positive integers). The knight moves only rightward or downward in each step.
+     * Determine the knight's minimum initial health so that he is able to rescue the princess.
+     * Input: [
+     * [-2 (K),	-3,	3],
+     * [-5,	-10, 1],
+     * [10,	30,	-5 (P)]
+     * ]
+     * Output: 7.
+     * @param dungeon
+     * @return
+     */
+    public int calculateMinimumHP(int[][] dungeon) {
+        int rows = dungeon.length, cols = dungeon[0].length;
+        int[][] dp = new int[rows + 1][cols + 1];
+
+        for (int r = rows; r >= 0; r--) {
+            dp[r][cols] = Integer.MAX_VALUE;
+        }
+
+        for (int c = cols; c >= 0; c--) {
+            dp[rows][c] = Integer.MAX_VALUE;
+        }
+
+        dp[rows][cols - 1] = 1;
+        dp[rows - 1][cols] = 1;
+
+        for (int r = rows - 1; r >= 0; r--) {
+            for (int c = cols - 1; c >= 0; c--) {
+                dp[r][c] = Math.max(Math.min(dp[r + 1][c], dp[r][c + 1]) - dungeon[r][c], 1);
+            }
+        }
+
+        return dp[0][0];
+    }
 }
