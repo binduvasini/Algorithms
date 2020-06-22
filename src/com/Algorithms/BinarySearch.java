@@ -1,22 +1,58 @@
 package com.Algorithms;
 
 public class BinarySearch {
-    static int binarySearchIterative(int[] a, int target) {
-        int low = 0;
-        int high = a.length - 1;
-        while (low <= high) {
-            int mid = low + (high - low) / 2; //To avoid integer overflow. sometimes low+high will be greater than 2147483647
-            if (target < a[mid])
-                high = mid - 1;
-            else if (target > a[mid])
-                low = mid + 1;
+    public int binarySearchIterative(int[] nums, int target) {
+        int lo = 0;
+        int hi = nums.length - 1;
+        while (lo <= hi) {  //Because we go from lo till hi (lo <= hi), we do mid - 1 and mid + 1.
+            int mid = lo + (hi - lo) / 2; //To avoid integer overflow. sometimes low+high will be greater than 2147483647
+            if (target < nums[mid])
+                hi = mid - 1;
+            else if (target > nums[mid])
+                lo = mid + 1;
             else
                 return mid; // key found
         }
         return -1;  // key not found.
     }
 
-    int searchRotatedArray(int[] nums, int target) {
+    /**
+     * Find the value at pivot index in a rotated sorted array. In other words, find the minimum element in a rotated sorted array.
+     * nums = [12, 14, 1, 5, 8, 9]
+     * Output: 1
+     * @param nums
+     * @return
+     */
+    public int findMinRotatedSortedArray(int[] nums) {
+        if (nums.length == 1)
+            return nums[0];
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            if (nums[lo] < nums[hi])
+                return nums[lo];
+
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] < nums[hi]) {
+                if (mid > lo && nums[mid - 1] > nums[mid])
+                    return nums[mid];
+                hi = mid - 1;
+            }
+            else {
+                if (mid < nums.length - 1 && nums[mid + 1] < nums[mid])
+                    return nums[mid + 1];
+                lo = mid + 1;
+            }
+        }
+        return nums[lo];
+    }
+
+    /**
+     * Search an element in a rotated sorted array.
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchRotatedSortedArray(int[] nums, int target) {
         int lo = 0, hi = nums.length - 1;
 
         while (lo <= hi) {
@@ -26,7 +62,7 @@ public class BinarySearch {
                 return mid;
 
             else if (nums[mid] < nums[hi]) { //the right side is sorted for sure.
-                if (target > nums[mid] && target <= nums[hi]) //we need these two conditions to determine the target lies in nums[mid...hi]
+                if (target > nums[mid] && target <= nums[hi]) //we need these two conditions to determine whether the target lies in nums[mid...hi]
                     lo = mid + 1;
 
                 else
@@ -68,10 +104,6 @@ public class BinarySearch {
                 hi = mid - 1;
         }
         return new int[]{firstIndex, lastIndex};
-    }
-
-    public static void main(String[] args) {
-        System.out.println(binarySearchIterative(new int[]{3, 2, 1, 10, 23, 22, 21}, 10));
     }
 
     /**
