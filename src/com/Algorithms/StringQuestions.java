@@ -519,4 +519,99 @@ public class StringQuestions {
         }
         return false;
     }
+
+    /**
+     *
+     * Given a string s that consists of only uppercase English letters, you can perform at most k operations on that string.
+     *
+     * In one operation, you can choose any character of the string and change it to any other uppercase English character.
+     *
+     * Find the length of the longest sub-string containing all repeating letters you can get after performing the above operations.
+     * Input:
+     * s = "AABABBA", k = 1
+     *
+     * Output:
+     * 4
+     * @param s
+     * @param k
+     * @return
+     */
+    public int LongestSubstringReplacingAtmostKChars(String s, int k) {
+        int start = 0, end = 0;
+        int[] charFreq = new int[26];
+        int maxFreq = 0, longestLength = 0;
+        while(end < s.length()) {
+            int c = s.charAt(end) - 'A';
+            charFreq[c] += 1;
+            maxFreq = Math.max(maxFreq, charFreq[c]);
+            int otherCharsCount = end - start + 1 - maxFreq;
+            if (otherCharsCount > k) {
+                int cStart = s.charAt(start) - 'A';
+                charFreq[cStart] -= 1;
+                start += 1;
+            }
+            longestLength = Math.max(longestLength, end - start + 1);
+            end += 1;
+        }
+        return longestLength;
+    }
+
+    /**
+     * Given an array A of 0s and 1s, we may change up to K values from 0 to 1.
+     *
+     * Return the length of the longest (contiguous) subarray that contains only 1s.
+     * @param A
+     * @param k
+     * @return
+     */
+    public int longestOnesReplacingAtMostKZeros(int[] A, int k) {
+        int start = 0, end = 0;
+        int zeroCount = 0, longestOnesLength = 0;
+        while (end < A.length) {
+            if (A[end] == 0)
+                zeroCount += 1;
+            if (zeroCount > k) {
+                if (A[start] == 0)
+                    zeroCount -= 1;
+                start += 1;
+            }
+            longestOnesLength = Math.max(longestOnesLength, end - start + 1);
+            end += 1;
+        }
+        return longestOnesLength;
+    }
+
+    /**
+     * Longest substring with at most k distinct characters.
+     * s = "AABBCC", k = 2.
+     * Output: 4. (Either "AABB" or "BBCC")
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstringWithAtmostKDistinctChars(String s, int k) {
+        int start = 0, end = 0;
+        int[] charFreq = new int[26];
+        int longestLength = 0;
+        HashSet<Integer> uniqueCharSet = new HashSet<>();
+        while(end < s.length()) {
+            int c = s.charAt(end) - 'A';
+            charFreq[c] += 1;
+            uniqueCharSet.add(c);
+            if (uniqueCharSet.size() > k) {
+                int cStart = s.charAt(start) - 'A';
+                int charToRemove = cStart;
+                while (cStart == charToRemove && charFreq[cStart] > 0) {  //While loop because we need to decrement the char count that we are getting rid of.
+                    cStart = s.charAt(start) - 'A';
+                    charFreq[cStart] -= 1;
+                    start += 1;
+                }
+                uniqueCharSet.remove(charToRemove);
+            }
+            longestLength = Math.max(longestLength, end - start + 1);
+            end += 1;
+        }
+        return longestLength;
+    }
+
 }

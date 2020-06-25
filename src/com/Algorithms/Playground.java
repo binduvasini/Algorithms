@@ -6,13 +6,7 @@ import java.util.regex.Pattern;
 public class Playground {
 
     public static void main(String[] args) {
-        char[] sChar1 = {'c'};
-        char[] sChar2 = {'C'};
-        List<String> list = new ArrayList<>();
-        list.add(String.valueOf(sChar1));
-        System.out.println(list.contains(String.valueOf(sChar2)));
-        System.out.println(String.valueOf(sChar1));
-        System.out.println(String.valueOf(sChar2));
+
     }
 
     static void find3Numbers(int[] A,
