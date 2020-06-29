@@ -625,4 +625,62 @@ public class BinaryTree {
 
         return currentmax;
     }
+
+    /**
+     * Given a binary tree containing digits from 0-9 only, each root-to-leaf path could represent a number.
+     *
+     * An example is the root-to-leaf path 1->2->3 which represents the number 123.
+     *
+     * Find the total sum of all root-to-leaf numbers.
+     *
+     * Note: A leaf is a node with no children.
+     *
+     * Input: [4,9,0,5,1]
+     *     4
+     *    / \
+     *   9   0
+     *  / \
+     * 5   1
+     * Output: 1026
+     * Explanation:
+     * The root-to-leaf path 4->9->5 represents the number 495.
+     * The root-to-leaf path 4->9->1 represents the number 491.
+     * The root-to-leaf path 4->0 represents the number 40.
+     * Therefore, sum = 495 + 491 + 40 = 1026.
+     * @param root
+     * @return
+     */
+    private int sum = 0;
+    public int sumNumbers(TreeNode root) {
+        sumRootToLeafNumbers(root, new StringBuilder());
+        return sum;
+//        return sumRootToLeafNumbers(root, 0);
+    }
+
+    //This is the solution I came up with. It requires declaring a sum class variable.
+    private void sumRootToLeafNumbers(TreeNode root, StringBuilder builder) {
+        if (root == null)
+            return;
+        builder.append(root.data);
+        if (isLeaf(root)) {
+            sum += Integer.parseInt(builder.toString());
+            builder.setLength(builder.length() - 1);  //We need to remove the last inserted value here
+            return;  //Return to avoid the IndexOutOfBoundsException at the last line.
+        }
+        sumRootToLeafNumbers(root.left, builder);
+        sumRootToLeafNumbers(root.right, builder);
+        builder.setLength(builder.length() - 1);  //We need to remove the last inserted value here as well.
+    }
+
+    //This sounds like a better solution.
+    private int sumRootToLeafNumbers(TreeNode root, int currentSum) {
+        if (root == null)
+            return 0;
+        currentSum = currentSum * 10 + root.data;
+        if (isLeaf(root))
+            return currentSum;
+        int leftSum = sumRootToLeafNumbers(root.left, currentSum);  //Here is where the new sum is calculated at every subtree.
+        int rightSum = sumRootToLeafNumbers(root.right, currentSum);  //Here is where the new sum is calculated at every subtree.
+        return leftSum + rightSum;
+    }
 }

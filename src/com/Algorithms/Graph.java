@@ -112,7 +112,7 @@ public class Graph {
         GraphNode node = getNode(nodeData);
         if (node == null)
             return new Integer[0];
-        ArrayDeque<Integer> order = new ArrayDeque<>();  //To store the sorted elements
+        ArrayDeque<Integer> order = new ArrayDeque<>();  //To store the sorted elements. We use a stack because we will push the nodes in the order of highest in-degrees. So when we pop them out, the nodes with 0 in-degree will come out first.
         for (GraphNode graphNode : nodes) {
             if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, new HashSet<>()))
                 return new Integer[0];
@@ -120,19 +120,19 @@ public class Graph {
         return (Integer[]) order.toArray();
     }
 
-    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> set) {
+    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> indegreeSet) {
         node.visited = true;
-        set.add(node.data);
+        indegreeSet.add(node.data);  //A set to maintain the in-degree of every node.
         if (adjListofNodes.containsKey(node)) {
             for (GraphNode graphNode : adjListofNodes.get(node)) {
-                if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, set)) {
+                if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, indegreeSet)) {
                     return false;
-                } else if (set.contains(graphNode.data)) {
+                } else if (indegreeSet.contains(graphNode.data)) {
                     return false;
                 }
             }
         }
-        set.remove(node.data);
+        indegreeSet.remove(node.data);
         order.push(node.data);
         return true;
     }

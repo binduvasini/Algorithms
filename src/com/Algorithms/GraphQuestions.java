@@ -56,27 +56,27 @@ public class GraphQuestions {
 
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         HashSet<Integer> visited = new HashSet<>();
-        for (Integer n : graph.keySet()) {
-            if (!visited.contains(n) && !hasNoCycle(n, visited, stack)) {
+        for (Integer prereq : graph.keySet()) {
+            if (!visited.contains(prereq) && !hasNoCycleUtil(prereq, visited, stack)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean hasNoCycle(Integer node, HashSet<Integer> visited, ArrayDeque<Integer> stack) {
-        visited.add(node);
-        stack.add(node);
-        if (graph.containsKey(node)) {
-            for (Integer n : graph.get(node)) {
-                if (!visited.contains(n) && !hasNoCycle(n, visited, stack)) {
+    private boolean hasNoCycleUtil(Integer prereq, HashSet<Integer> visited, ArrayDeque<Integer> stack) {
+        visited.add(prereq);
+        stack.add(prereq);
+        if (graph.containsKey(prereq)) {  //We need to check this cuz we come back here during recursion with the actual course of prerequisites
+            for (Integer course : graph.get(prereq)) {
+                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, stack)) {
                     return false;
-                } else if (stack.contains(n)) {
+                } else if (stack.contains(course)) {
                     return false;
                 }
             }
         }
-        stack.remove(node);
+        stack.remove(prereq);
         return true;
     }
 
@@ -93,44 +93,47 @@ public class GraphQuestions {
      */
 //    graph = new HashMap<>();
     public int[] findOrderOfCourses(int numCourses, int[][] prerequisites) {
+        for (int i = 0; i < numCourses; i++) {  //This is to cover test case: numCourses = 2, []. Output: [1,0]
+            graph.putIfAbsent(i, new ArrayList<>());
+        }
         for (int[] prerequisite : prerequisites) {
             graph.putIfAbsent(prerequisite[1], new ArrayList<>());
             graph.get(prerequisite[1]).add(prerequisite[0]);
         }
 
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        //Use topological sort.
+        ArrayDeque<Integer> courseOrder = new ArrayDeque<>();
         HashSet<Integer> visited = new HashSet<>();
         HashSet<Integer> beingVisited = new HashSet<>();
-        for (Integer n : graph.keySet()) {
-            if (!visited.contains(n) && !topologicalSortUtil(n, visited, stack, beingVisited)) {
+        for (Integer prereq : graph.keySet()) {
+            if (!visited.contains(prereq) && !hasNoCycleUtil(prereq, visited, courseOrder, new HashSet<>())) {
                 return new int[0];
             }
         }
 
         int i = 0;
         int[] order = new int[numCourses];
-        while (!stack.isEmpty()) {
-            order[i++] = stack.pop();
+        while (!courseOrder.isEmpty()) {
+            order[i++] = courseOrder.pop();
         }
 
         return order;
     }
 
-    private boolean topologicalSortUtil(Integer node, HashSet<Integer> visited, ArrayDeque<Integer> stack, HashSet<Integer> beingVisited) {
-        visited.add(node);
-        beingVisited.add(node);
-        if (graph.containsKey(node)) {
-            for (Integer n : graph.get(node)) {
-                if (!visited.contains(n) && !topologicalSortUtil(n, visited, stack, beingVisited)) {
+    private boolean hasNoCycleUtil(Integer prereq, HashSet<Integer> visited, ArrayDeque<Integer> courseOrder, HashSet<Integer> indegreeSet) {
+        visited.add(prereq);
+        indegreeSet.add(prereq);
+        if (graph.containsKey(prereq)) {  //We need to check this cuz we come back here during recursion with the actual course of prerequisites
+            for (Integer course : graph.get(prereq)) {
+                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, courseOrder, indegreeSet)) {
                     return false;
-                } else if (beingVisited.contains(n)) {
+                } else if (indegreeSet.contains(course)) {
                     return false;
                 }
             }
         }
-        beingVisited.remove(node);
-        stack.push(node);
-
+        indegreeSet.remove(prereq);
+        courseOrder.push(prereq);
         return true;
     }
 
@@ -266,5 +269,33 @@ public class GraphQuestions {
             }
         }
         return -1;
+    }
+
+    /**
+     * Given a list of airline tickets represented by pairs of departure and arrival airports [from, to], reconstruct the itinerary in order. All of the tickets belong to a man who departs from JFK. Thus, the itinerary must begin with JFK.
+     * Input: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+     * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+     * @param tickets
+     * @return
+     */
+    private HashMap<String, PriorityQueue<String>> iteneraryGraph = new HashMap<>();
+    private LinkedList<String> orderedItenerary = new LinkedList<>();
+    public List<String> orderItinerary(List<List<String>> tickets) {
+        for (List<String> ticket : tickets) {
+            iteneraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
+            iteneraryGraph.get(ticket.get(0)).add(ticket.get(1));
+        }
+        dfsUtil("JFK");
+        return orderedItenerary;
+    }
+
+    private void dfsUtil(String flight) {
+        if (iteneraryGraph.containsKey(flight)) {
+            PriorityQueue<String> connectingFlights = iteneraryGraph.get(flight);
+            while (!connectingFlights.isEmpty()) {
+                dfsUtil(connectingFlights.remove());
+            }
+        }
+        orderedItenerary.addFirst(flight);
     }
 }

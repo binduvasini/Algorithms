@@ -4,20 +4,21 @@ import java.util.LinkedList;
 
 public class Matrix {
     void rotate(int[][] matrix) {
-        //Transpose the matrix
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = i; j < matrix[i].length; j++) {
-                int temp = matrix[i][j];
-                matrix[i][j] = matrix[j][i];
-                matrix[j][i] = temp;
+        int rows = matrix.length, cols = matrix[0].length;
+        //Transpose the matrix. Rows become columns and columns become rows.
+        for (int r = 0; r < rows; r++) {
+            for (int c = r; c < cols; c++) {
+                int temp = matrix[r][c];
+                matrix[r][c] = matrix[c][r];  //We are swapping the row value with column value.
+                matrix[c][r] = temp;
             }
         }
         //Swap the row values
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix.length / 2; j++) {
-                int temp = matrix[i][j];
-                matrix[i][j] = matrix[i][matrix.length - 1 - j];
-                matrix[i][matrix.length - 1 - j] = temp;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols / 2; c++) {  //Traverse only till the first half of the column.
+                int temp = matrix[r][c];
+                matrix[r][c] = matrix[r][cols - 1 - c];
+                matrix[r][cols - 1 - c] = temp;
             }
         }
     }
@@ -91,6 +92,8 @@ public class Matrix {
         }
         return image;
     }
+
+
 
     /* Dynamic Programming */
 

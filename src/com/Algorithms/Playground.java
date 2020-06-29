@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 public class Playground {
 
     public static void main(String[] args) {
-
     }
 
     static void find3Numbers(int[] A,
