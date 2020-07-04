@@ -620,4 +620,30 @@ public class ArrayQuestions {
         }
         return cells;
     }
+
+    /**
+     * Write a program to find the n-th ugly number.
+     *
+     * Ugly numbers are positive numbers whose prime factors only include 2, 3, 5.
+     *
+     * Example:
+     *
+     * Input: n = 10
+     * Output: 12
+     * Explanation: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 is the sequence of the first 10 ugly numbers.
+     * @param n
+     * @return
+     */
+    public int nthUglyNumber(int n) {
+        TreeSet<Long> set = new TreeSet<>();
+        set.add(1L);
+        for (int i = 1; i < n; i++) {
+            long first = set.pollFirst();
+            set.add(first*2);
+            set.add(first*3);
+            set.add(first*5);
+        }
+
+        return set.pollFirst().intValue();
+    }
 }
