@@ -571,4 +571,53 @@ public class ArrayQuestions {
         }
         return output;
     }
+
+    /**
+     * There are 8 prison cells in a row, and each cell is either occupied or vacant.
+     *
+     *     Each day, whether the cell is occupied or vacant changes according to the following rules:
+     *
+     *     If a cell has two adjacent neighbors that are both occupied or both vacant, then the cell becomes occupied.
+     *     Otherwise, it becomes vacant.
+     *             (Note that because the prison is a row, the first and the last cells in the row can't have two adjacent neighbors.)
+     *
+     *     We describe the current state of the prison in the following way: cells[i] == 1 if the i-th cell is occupied, else cells[i] == 0.
+     *
+     *     Given the initial state of the prison, return the state of the prison after N days (and N such changes described above.)
+     *
+     * Input: cells = [1,0,0,1,0,0,1,0], N = 1000000000
+     * Output: [0,0,1,1,1,1,1,0]
+     * @param cells
+     * @param N
+     * @return
+     */
+    public int[] prisonAfterNDays(int[] cells, int N) {
+        int[] nextDay = new int[cells.length];
+        HashSet<String> set = new HashSet<>();
+        boolean hasCycle = false;
+        int cycle = 0;
+        for (int i = 1; i <= N; i++) {
+            for (int c = 1; c < cells.length - 1; c++) {
+                nextDay[c] = (cells[c - 1] == cells[c + 1])? 1 : 0;  //Calculate the nextDay and store it in cells.
+            }
+            String cellString = Arrays.toString(nextDay);
+            if (set.contains(cellString)) {
+                hasCycle = true;
+                break;
+            }
+            set.add(cellString);
+            cycle += 1;
+            cells = nextDay.clone();
+        }
+        if (hasCycle) {
+            N = N % cycle;
+            for (int i = 1; i <= N; i++) {
+                for (int c = 1; c < cells.length - 1; c++) {
+                    nextDay[c] = (cells[c - 1] == cells[c + 1])? 1 : 0;
+                }
+                cells = nextDay.clone();
+            }
+        }
+        return cells;
+    }
 }
