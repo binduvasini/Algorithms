@@ -62,7 +62,7 @@ public class BinaryMatrix {
                 {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
                 {1, 1, 0, 0, 0, 0, 1, 0, 0, 1}};
 
-        System.out.println(shortestPathInABinaryMatrixUsingNodeClass(mat, new int[]{0, 0}, new int[]{3, 4}));
+//        System.out.println(shortestPathInABinaryMatrixUsingNodeClass(mat, new int[]{0, 0}, new int[]{3, 4}));
 
         int[][] island = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
@@ -72,7 +72,7 @@ public class BinaryMatrix {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0}};
-        System.out.println(maxAreaOfIsland(island));
+        System.out.println(maxSizeOfIsland(island));
     }
 
     /**
@@ -131,12 +131,13 @@ public class BinaryMatrix {
      * @param grid
      * @return
      */
-    static int maxAreaOfIsland(int[][] grid) {
+    static int maxSizeOfIsland(int[][] grid) {
         int maxsize = 0;
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] == 1) {
-                    int size = DFSUtil(grid, row, col);
+                    int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+                    int size = DFSUtil(grid, row, col, directions);
                     maxsize = Math.max(size, maxsize);
                 }
             }
@@ -144,17 +145,16 @@ public class BinaryMatrix {
         return maxsize;
     }
 
-    private static int DFSUtil(int[][] grid, int r, int c) {
-        if (r < 0 || c < 0 || r >= grid.length || c >= grid[r].length)
-            return 0;
-        if (grid[r][c] == 0)
-            return 0;
-        grid[r][c] = 0;
-        return 1 +
-                DFSUtil(grid, r - 1, c) +
-                DFSUtil(grid, r, c - 1) +
-                DFSUtil(grid, r + 1, c) +
-                DFSUtil(grid, r, c + 1);
+    private static int DFSUtil(int[][] grid, int row, int col, int[][] directions) {
+        grid[row][col] = 0;  //Mark this cell as visited
+        int size = 1;
+        for (int[] dir : directions) {
+            int r = row + dir[0];
+            int c = col + dir[1];
+            if (r >= 0 && c >= 0 && r < grid.length && c < grid[r].length && grid[r][c] == 1)
+                size += DFSUtil(grid, r, c, directions);
+        }
+        return size;
     }
 
     /**
@@ -416,4 +416,36 @@ public class BinaryMatrix {
         return count;
     }
 
+    /**
+     * Given a binary array that has exactly one island (i.e., one or more connected land cells). One cell is a square with side length 1. Determine the perimeter of the island.
+     * Input:
+     * [[0,1,0,0],
+     *  [1,1,1,0],
+     *  [0,1,0,0],
+     *  [1,1,0,0]]
+     *
+     * Output: 16
+     * @param grid
+     * @return
+     */
+    public int islandPerimeter(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length, perimeter = 0;
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (grid[row][col] == 1) {
+                    for (int[] dir : directions) {
+                        int r = row + dir[0];
+                        int c = col + dir[1];
+
+                        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
+                            perimeter += 1;
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+        return perimeter;
+    }
 }

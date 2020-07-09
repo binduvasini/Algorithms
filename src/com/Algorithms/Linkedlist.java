@@ -10,6 +10,10 @@ class Node {
     public Node(int data) {
         this.data = data;
     }
+    public Node(int data, Node next) {
+        this.data = data;
+        this.next = next;
+    }
 }
 
 public class Linkedlist {
@@ -27,7 +31,6 @@ public class Linkedlist {
         Node newNode = new Node(newData);
         newNode.next = head;
         head = newNode;
-
     }
 
     public void addLast(int newData) {
@@ -217,6 +220,31 @@ public class Linkedlist {
         }
         odd.next = evenHead;
         return head;
+    }
+
+    /**
+     * Given a linked list, swap every two adjacent nodes and return its head.
+     * You may not modify the values in the list's nodes, only nodes itself may be changed.
+     * Example:
+     *
+     * Given 1->2->3->4, you should return the list as 2->1->4->3.
+     * @param head
+     * @return
+     */
+    public Node swapPairs(Node head) {
+        Node newHead = new Node(0, head);
+        Node current = newHead;
+        while (current.next != null && current.next.next != null) {
+            current.next = swap(current.next, current.next.next);
+            current = current.next.next;
+        }
+        return newHead.next;
+    }
+
+    private Node swap(Node node1, Node node2) {
+        node1.next = node2.next;
+        node2.next = node1;
+        return node2;
     }
 }
 
