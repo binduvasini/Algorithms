@@ -1,8 +1,62 @@
 package com.Algorithms;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
 
 public class StackApproaches {
+
+    /**
+     * For every element in the array, find its next greater element print it in this value’s position or print -1. The Next greater element of a number is the first greater number to its right.
+     * Input: [4, 1, 6, 5, 9, 3, 2, 7]
+     * Output: [6, 6, 9, 9, -1, 7, 7, -1]
+     * @param nums
+     * @return
+     */
+    public int[] nextGreaterElementsWithoutDuplicates(int[] nums) {
+        int[] nextGreaterElements = new int[nums.length];
+        ArrayDeque<Integer> stack = new ArrayDeque<>();  //Use ArrayDeque class which will at least restrict the access to one of the ends, instead of Stack (that offers search & elementAt)
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            while (!stack.isEmpty() && num >= stack.peek()) {
+                map.put(stack.pop(), num);
+            }
+            stack.push(num);
+        }
+        for (int i = 0; i < nums.length; i++) {
+            nextGreaterElements[i] = map.getOrDefault(nums[i], -1);
+        }
+        return nextGreaterElements;
+    }
+
+    /**
+     * Given a circular array (the next element of the last element is the first element of the array), print the Next Greater Number for every element. The Next Greater Number of a number x is the first greater number to its traversing-order next in the array, which means you could search circularly to find its next greater number. If it doesn't exist, output -1 for this number.
+     *
+     * Example 1:
+     * Input: [1,2,1]
+     * Output: [2,-1,2]
+     * Explanation: The first 1's next greater number is 2;
+     * The number 2 can't find next greater number;
+     * The second 1's next greater number needs to search circularly, which is also 2.
+     * @param nums
+     * @return
+     */
+    public int[] nextGreaterElementsWithDuplicates(int[] nums) {
+        int[] nextGreaterElements = new int[nums.length];
+        ArrayDeque<int[]> stack = new ArrayDeque<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < 2 * n; i++) {
+            int num = nums[i % n];
+            while (!stack.isEmpty() && num > stack.peek()[1]) {
+                map.put(stack.pop()[0], num);
+            }
+            stack.push(new int[]{i, num});
+        }
+        for (int i = 0; i < n; i++) {
+            nextGreaterElements[i] = map.getOrDefault(i, -1);
+        }
+        return nextGreaterElements;
+    }
 
     /**
      * Given a string containing only three types of characters: '(', ')' and '*', write a function to check whether this string is valid. We define the validity of a string by these rules:
