@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 class Node {
     int data;
     Node next;
+    Node prev;
+    Node child;
 
     public Node(int data) {
         this.data = data;
@@ -50,7 +52,7 @@ public class Linkedlist {
         tail = newLastNode;
     }
 
-    Node reverseList(Node head) {
+    public Node reverseList(Node head) {
         Node curr = head;
         Node prev = null;
         while (curr != null) {
@@ -63,11 +65,11 @@ public class Linkedlist {
         return head;
     }
 
-    Node reverseListRec(Node head) {
+    public Node reverseListRec(Node head) {
         return reverseListRec(head, null);
     }
 
-    Node reverseListRec(Node curr, Node prev) {
+    private Node reverseListRec(Node curr, Node prev) {
         if (curr == null)
             return prev;
         Node temp = curr.next;
@@ -75,7 +77,7 @@ public class Linkedlist {
         return reverseListRec(temp, curr);
     }
 
-    boolean hasCycle(Node head) {
+    public boolean hasCycle(Node head) {
         if (head == null || head.next == null)
             return false;
 
@@ -91,7 +93,7 @@ public class Linkedlist {
         return true;
     }
 
-    Node getIntersectionNode(Node headA, Node headB) {
+    public Node getIntersectionNode(Node headA, Node headB) {
         //Two pointers to traverse list A and list B respectively and swap when one of them reaches the end of its list.
         Node pointerA = headA;
         Node pointerB = headB;
@@ -103,7 +105,7 @@ public class Linkedlist {
         return pointerA;
     }
 
-    boolean isPalidrome(Node head) {
+    public boolean isPalidrome(Node head) {
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         Node curr = head;
 
@@ -124,12 +126,12 @@ public class Linkedlist {
 
     Node headCopy;
 
-    boolean isPalindromeRecursive(Node head) {
+    public boolean isPalindromeRecursive(Node head) {
         headCopy = head;
         return isPalindromeRec(head);
     }
 
-    boolean isPalindromeRec(Node curr) {
+    private boolean isPalindromeRec(Node curr) {
         if (curr == null) {
             return true;
         }
@@ -245,6 +247,35 @@ public class Linkedlist {
         node1.next = node2.next;
         node2.next = node1;
         return node2;
+    }
+
+    /**
+     * You are given a doubly linked list which in addition to the next and previous pointers, it could have a child pointer, which may or may not point to a separate doubly linked list. These child lists may have one or more children of their own, and so on, to produce a multilevel data structure, as shown in the example below.
+     *
+     * Flatten the list so that all the nodes appear in a single-level, doubly linked list. You are given the head of the first level of the list.
+     * @param head
+     * @return
+     */
+    public Node flattenDoublyLinkedList(Node head) {
+        ArrayDeque<Node> stack = new ArrayDeque<>();
+        Node curr = head;
+        while (curr != null) {
+            if (curr.child != null) {
+                if (curr.next != null)
+                    stack.push(curr.next);
+                curr.child.prev = curr;
+                curr.next = curr.child;
+                curr.child = null;
+            }
+            else {
+                if (curr.next == null && !stack.isEmpty()) {
+                    curr.next = stack.pop();
+                    curr.next.prev = curr;
+                }
+            }
+            curr = curr.next;
+        }
+        return head;
     }
 }
 

@@ -9,7 +9,7 @@ public class NestedList {
         return flattenHelper(nestedList, new LinkedList<>());
     }
 
-    public static List<Integer> flattenHelper(List<?> nestedList, List<Integer> flatList) {
+    private static List<Integer> flattenHelper(List<?> nestedList, List<Integer> flatList) {
         for (Object item : nestedList) {
             if (item instanceof List<?>) {
                 flattenHelper((List<?>) item, flatList);
