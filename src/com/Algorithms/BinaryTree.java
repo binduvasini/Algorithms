@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 class TreeNode {
     int data;
@@ -682,5 +683,45 @@ public class BinaryTree {
         int leftSum = sumRootToLeafNumbers(root.left, currentSum);  //Here is where the new sum is calculated at every subtree.
         int rightSum = sumRootToLeafNumbers(root.right, currentSum);  //Here is where the new sum is calculated at every subtree.
         return leftSum + rightSum;
+    }
+
+    /**
+     * Given a binary tree, write a function to get the maximum width of the given tree. The width of a tree is the maximum width among all levels. The binary tree has the same structure as a full binary tree, but some nodes are null. The width of one level is defined as the length between the end-nodes (the leftmost and right most non-null nodes in the level, where the null nodes between the end-nodes are also counted into the length calculation.
+     * Input: [1,1,1,1,null,null,1,1,null,null,1]
+     * Output: 8
+     * @param root
+     * @return
+     */
+    public int maxWidthOfBinaryTree(TreeNode root) {
+        int maxWidth = 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        Queue<Integer> indexQueue = new LinkedList<>();
+        queue.add(root);
+        indexQueue.add(1);
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size(); //The queue size here is the number of nodes in this level
+            int start = 0, end = 0;
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode treeNode = queue.remove();
+                int index = indexQueue.remove();
+
+                if (i == 0)
+                    start = index;  //Record the left most node
+                if (i == levelSize - 1)
+                    end = index;  //Record the right most node
+
+                if (treeNode.left != null) {
+                    queue.add(treeNode.left);
+                    indexQueue.add(2 * index);
+                }
+                if (treeNode.right != null) {
+                    queue.add(treeNode.right);
+                    indexQueue.add(2 * index + 1);
+                }
+            }
+            maxWidth = Math.max(maxWidth, end - start + 1);
+        }
+        return maxWidth;
     }
 }
