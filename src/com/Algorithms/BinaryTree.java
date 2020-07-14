@@ -457,16 +457,47 @@ public class BinaryTree {
     }
 
     /**
+     * Given two binary trees, write a function to check if they are the same or not.
+     * Two binary trees are considered the same if they are structurally identical and the nodes have the same value.
+     * @param p
+     * @param q
+     * @return
+     */
+    public boolean isSame(TreeNode p, TreeNode q) {
+        List<Integer> pList = preorder(p, new LinkedList<>());
+        List<Integer> qList = preorder(q, new LinkedList<>());
+        return pList.equals(qList);
+    }
+
+    private List<Integer> preorder(TreeNode node, LinkedList<Integer> list){
+        if (node == null)
+            list.add(-1);
+        if (node != null) {
+            list.add(node.data);
+            preorder(node.left, list);
+            preorder(node.right, list);
+        }
+        return list;
+    }
+
+    /**
      * Check if a Binary Tree is symmetric.
+     * Input:
+     *     1
+     *    / \
+     *   2   2
+     *  / \ / \
+     * 3  4 4  3
+     * Output: true
      *
      * @param root
      * @return
      */
-    boolean isSymmetric(TreeNode root) {
+    public boolean isSymmetric(TreeNode root) {
         return isSymmetric(root, root);
     }
 
-    boolean isSymmetric(TreeNode root1, TreeNode root2) {
+    private boolean isSymmetric(TreeNode root1, TreeNode root2) {
         if (root1 == null && root2 == null)
             return true;
 
@@ -480,7 +511,14 @@ public class BinaryTree {
 
     /**
      * Cousins in a Binary Tree
-     *
+     * Input:
+     *     1
+     *    / \
+     *   2   3
+     *    \   \
+     *     4   5
+     * x = 4, y = 5.
+     * Output: true
      * @param root
      * @param x
      * @param y
