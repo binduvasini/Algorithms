@@ -277,5 +277,25 @@ public class Linkedlist {
         }
         return head;
     }
+
+    /**
+     * Remove all elements from a linked list that have value val.
+     * Input:  1->2->6->3->4->5->6, val = 6
+     * Output: 1->2->3->4->5
+     * @param head
+     * @param val
+     * @return
+     */
+    public Node removeElements(Node head, int val) {
+        Node curr = head, prev = new Node(0, head), newHead = prev;
+        while (curr != null) {
+            if (curr.data == val)
+                prev.next = curr.next;
+            else
+                prev = prev.next;
+            curr = curr.next;
+        }
+        return newHead.next;
+    }
 }
 
