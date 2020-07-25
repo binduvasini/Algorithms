@@ -203,7 +203,7 @@ public class GraphQuestions {
             graph.get(time[0]).put(time[1], time[2]);
         }
         //We don't need the distance array separately as in BFSShortestPath.
-        // We make use of the minHeap to store the distance.
+        // We can make use of the minHeap to store the distance.
         PriorityQueue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
         boolean[] visited = new boolean[N+1];
         minHeap.add(new int[]{source, 0});

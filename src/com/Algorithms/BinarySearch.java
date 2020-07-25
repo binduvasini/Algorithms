@@ -23,7 +23,37 @@ public class BinarySearch {
      * @param nums
      * @return
      */
-    public int findMinRotatedSortedArray(int[] nums) {
+    public int findMinRotatedSortedArrayWithoutDuplicates(int[] nums) {
+        if (nums.length == 1)
+            return nums[0];
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            if (nums[lo] < nums[hi])  //For case: nums = [1,2,3]
+                return nums[lo];
+
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] < nums[hi]) {  //The minimum is in the left half.
+                if (mid > lo && nums[mid - 1] > nums[mid])  //If the mid element is the minimum. Have a boundary check.
+                    return nums[mid];
+                hi = mid - 1;
+            }
+            else {  //The minimum is in the right half.
+                if (mid < nums.length - 1 && nums[mid] > nums[mid + 1])  //If mid+1 element is the minimum. Have a boundary check.
+                    return nums[mid + 1];
+                lo = mid + 1;
+            }
+        }
+        return nums[lo];  //For any other case, return the lo element.
+    }
+
+    /**
+     * Find the value at pivot index in a rotated sorted array. In other words, find the minimum element in a rotated sorted array.
+     * nums = [3,3,1,3]
+     * Output: 1
+     * @param nums
+     * @return
+     */
+    public int findMinRotatedSortedArrayWithDuplicates(int[] nums) {
         if (nums.length == 1)
             return nums[0];
         int lo = 0, hi = nums.length - 1;
@@ -37,11 +67,13 @@ public class BinarySearch {
                     return nums[mid];
                 hi = mid - 1;
             }
-            else {
+            else if (nums[mid] > nums[hi]) {
                 if (mid < nums.length - 1 && nums[mid + 1] < nums[mid])
                     return nums[mid + 1];
                 lo = mid + 1;
             }
+            else  //if (nums[mid] == nums[hi]) is true, either all elements between mid and hi are same or the minimum lies here.
+                hi -= 1;  //We need to consider every element one by one.
         }
         return nums[lo];
     }
@@ -52,22 +84,17 @@ public class BinarySearch {
      * @param target
      * @return
      */
-    public int searchRotatedSortedArray(int[] nums, int target) {
+    public int searchRotatedSortedArrayWithoutDuplicates(int[] nums, int target) {
         int lo = 0, hi = nums.length - 1;
-
         while (lo <= hi) {
             int mid = lo + (hi - lo) / 2;
-
             if (target == nums[mid])
                 return mid;
-
             else if (nums[mid] < nums[hi]) { //the right side is sorted for sure.
                 if (target > nums[mid] && target <= nums[hi]) //we need these two conditions to determine whether the target lies in nums[mid...hi]
                     lo = mid + 1;
-
                 else
                     hi = mid - 1;
-
             } else { //the left side is sorted for sure.
                 if (target < nums[mid] && target >= nums[lo])
                     hi = mid - 1;
@@ -78,7 +105,47 @@ public class BinarySearch {
         return -1;
     }
 
-    public int[] searchFirstAndLastOccurrenceOfTarget(int[] nums, int target) {
+    /**
+     * Search an element in a rotated sorted array with duplicates.
+     * nums = [1,1,1,1,5,1,1]. target = 5.
+     * Output: 4
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchRotatedSortedArrayWithDuplicates(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (target == nums[mid])
+                return mid;
+            else if (nums[mid] < nums[hi]) { //the right side is sorted for sure.
+                if (target > nums[mid] && target <= nums[hi]) //we need these two conditions to determine whether the target lies in nums[mid...hi]
+                    lo = mid + 1;
+                else
+                    hi = mid - 1;
+            }
+            else if (nums[mid] > nums[hi]) { //the left side is sorted for sure.
+                if (target < nums[mid] && target >= nums[lo])
+                    hi = mid - 1;
+                else
+                    lo = mid + 1;
+            }
+            else //if (nums[mid] == nums[hi]) is true, either all elements between mid and hi are same or the target lies here.
+                hi -= 1;  //We need to consider every element one by one.
+        }
+        return -1;
+    }
+
+    /**
+     * Find the first and last index of a repetitive element in a sorted array.
+     * nums = [2, 3, 5, 5, 5, 5, 5, 8, 9]. target = 5
+     * Output: [2, 6]
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchFirstAndLastIndexOfTarget(int[] nums, int target) {
         int lo = 0, hi = nums.length - 1;
         int firstIndex = -1, lastIndex = -1;
         while (lo <= hi) {
@@ -86,7 +153,8 @@ public class BinarySearch {
             if (target == nums[mid]) {
                 firstIndex = mid;
                 hi = mid - 1;
-            } else if (target > nums[mid])
+            }
+            else if (target > nums[mid])
                 lo = mid + 1;
             else
                 hi = mid - 1;
@@ -98,7 +166,8 @@ public class BinarySearch {
             if (target == nums[mid]) {
                 lastIndex = mid;
                 lo = mid + 1;
-            } else if (target > nums[mid])
+            }
+            else if (target > nums[mid])
                 lo = mid + 1;
             else
                 hi = mid - 1;
