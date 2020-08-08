@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.TreeMap;
 
 class TreeNode {
     int data;
@@ -150,7 +151,7 @@ public class BinaryTree {
     }
 
     void levelOrder(TreeNode node) {
-        LinkedList<TreeNode> queue = new LinkedList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.add(node);
 
         while (!queue.isEmpty()) {
@@ -171,7 +172,7 @@ public class BinaryTree {
         if (root == null)
             return new LinkedList<>();
         List<Integer> rightSideList = new LinkedList<>();
-        LinkedList<TreeNode> queue = new LinkedList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()) {
             int n = queue.size();
@@ -225,19 +226,55 @@ public class BinaryTree {
         }
     }
 
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        TreeMap<Integer, List<Integer>> positions = new TreeMap<>();
+        Queue<TreeNode> qNodes = new LinkedList<>();
+        Queue<Integer> qIndices = new LinkedList<>();
+
+        qNodes.add(root);
+        qIndices.add(0);
+        positions.putIfAbsent(0, new LinkedList<>());
+        positions.get(0).add(root.data);
+
+        while (!qNodes.isEmpty()) {
+            TreeNode treeNode = qNodes.remove();
+            int nodeIndex = qIndices.remove();
+            if (treeNode.left != null) {
+                int leftPosition = nodeIndex - 1;
+                positions.putIfAbsent(leftPosition, new LinkedList<>());
+                positions.get(leftPosition).add(treeNode.left.data);
+                qNodes.add(treeNode.left);
+                qIndices.add(leftPosition);
+            }
+            if (treeNode.right != null) {
+                int rightPosition = nodeIndex + 1;
+                positions.putIfAbsent(rightPosition, new LinkedList<>());
+                positions.get(rightPosition).add(treeNode.right.data);
+                qNodes.add(treeNode.right);
+                qIndices.add(rightPosition);
+            }
+        }
+        return new LinkedList<>(positions.values());
+    }
+
+    /**
+     * Given preorder and inorder traversal of a tree, construct the binary tree.
+     * preorder = [3,9,20,15,7]
+     * inorder = [9,3,15,20,7]
+     * @param preorder
+     * @param inorder
+     * @return
+     */
     HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
-    int preIndex = 0;
-
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-
+    int preIndex = 0;  //Initializing this inside the method throws ArraysIndexOutOfBoundsException during recursion.
+    public TreeNode buildTreeFromPreorderAndInorder(int[] preorder, int[] inorder) {
         for (int i = 0; i < inorder.length; i++) {
             inOrderIndices.put(inorder[i], i);
         }
-
         return buildRec(preorder, inorder, 0, inorder.length - 1);
     }
 
-    TreeNode buildRec(int[] preorder, int[] inorder, int inStart, int inEnd) {
+    private TreeNode buildRec(int[] preorder, int[] inorder, int inStart, int inEnd) {
         if (inStart > inEnd)
             return null;
 
@@ -252,8 +289,40 @@ public class BinaryTree {
     }
 
     /**
+     * Given inorder and postorder traversal of a tree, construct the binary tree.
+     * inorder = [9,3,15,20,7]
+     * postorder = [9,15,7,20,3]
+     * @param inorder
+     * @param postorder
+     * @return
+     */
+//    HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
+    int postIndex = 0;
+    public TreeNode buildTreeFromInorderAndPostorder(int[] inorder, int[] postorder) {
+        postIndex = postorder.length - 1;
+        for(int i=0; i<inorder.length; i++){
+            inOrderIndices.put(inorder[i], i);
+        }
+        return build(postorder, inorder, 0, inorder.length-1);
+    }
+    private TreeNode build(int[] postorder, int[] inorder, int inStart, int inEnd){
+        if(inStart > inEnd)
+            return null;
+
+        TreeNode root = new TreeNode(postorder[postIndex]);
+        postIndex -= 1;
+
+        int rootInIndex = inOrderIndices.get(root.data);
+
+        root.right = build(postorder, inorder, rootInIndex+1, inEnd);
+        root.left = build(postorder, inorder, inStart, rootInIndex-1);
+        return root;
+    }
+
+    /**
      * Construct BST from a preorder traversal
-     *
+     * Input: [8,5,1,7,10,12]
+     * Output: [8,5,10,1,7,null,12]
      * @param preorder
      * @return
      */
@@ -277,7 +346,7 @@ public class BinaryTree {
 
     /**
      * Construct BST from a sorted array
-     *
+     * Input: [-10,-3,0,5,9]
      * @param nums
      * @return
      */
@@ -300,9 +369,9 @@ public class BinaryTree {
 
 
     /**
-     * Construct BST from a sorted list
+     * Construct BST from a sorted list.
+     * Input: -10 -> -3 -> 0 -> 5 -> 9
      */
-
     TreeNode sortedListToBST(Node head) {
         return buildTree(head, null);
     }
@@ -328,6 +397,21 @@ public class BinaryTree {
 
     /**
      * Recover a BST in which two nodes are misplaced.
+     * Input: [1,3,null,null,2]
+     *
+     *    1
+     *   /
+     *  3
+     *   \
+     *    2
+     *
+     * Output: [3,1,null,null,2]
+     *
+     *    3
+     *   /
+     *  1
+     *   \
+     *    2
      */
     TreeNode swapFirst = null, swapSecond = null;
     TreeNode prev;
@@ -360,7 +444,20 @@ public class BinaryTree {
     }
 
     /**
-     * Invert a Binary Tree
+     * Invert a Binary Tree.
+     * Input:
+     *      4
+     *    /   \
+     *   2     7
+     *  / \   / \
+     * 1   3 6   9
+     *
+     * Output:
+     *      4
+     *    /   \
+     *   7     2
+     *  / \   / \
+     * 9   6 3   1
      *
      * @param root
      * @return
@@ -382,7 +479,7 @@ public class BinaryTree {
     }
 
     /**
-     * Predecessor and successor in a BST
+     * Predecessor and successor in a BST.
      */
     int predecessor, successor;
 
