@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class Graph {
@@ -139,7 +140,7 @@ public class Graph {
 
     void BFS(int nodeData) {
         GraphNode node = getNode(nodeData);
-        LinkedList<GraphNode> queue = new LinkedList<>();
+        Queue<GraphNode> queue = new LinkedList<>();
         boolean[] visited = new boolean[nodes.size()];
         queue.add(node);
         visited[node.data] = true;
@@ -159,7 +160,7 @@ public class Graph {
 
     boolean Bipartite(int nodeData) {
         GraphNode node = getNode(nodeData);
-        LinkedList<GraphNode> queue = new LinkedList<>();
+        Queue<GraphNode> queue = new LinkedList<>();
         boolean[] color = new boolean[nodes.size()];
         boolean[] visited = new boolean[nodes.size()];
         queue.add(node);

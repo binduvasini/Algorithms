@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class GraphQuestions {
 
@@ -18,7 +19,7 @@ public class GraphQuestions {
     int BFSshortestpath(Integer source, Integer destination) {
         int[] distance = new int[50];  //We don't need visited array cuz we can track everything in distance array
         Arrays.fill(distance, -1);  //When we don't find a node, return -1
-        LinkedList<Integer> queue = new LinkedList<>();
+        Queue<Integer> queue = new LinkedList<>();
         queue.add(source);
         distance[source] = 0;  //distance to get to the source is 0
         while (!queue.isEmpty()) {
@@ -157,7 +158,7 @@ public class GraphQuestions {
             graph.putIfAbsent(dislike[1], new ArrayList<>());
             graph.get(dislike[1]).add(dislike[0]);
         }
-        LinkedList<Integer> queue = new LinkedList<>();
+        Queue<Integer> queue = new LinkedList<>();
         HashSet<Integer> visited = new HashSet<>();
         boolean[] color = new boolean[N + 1];
         for (int i = 1; i <= N; i++) {
@@ -187,7 +188,11 @@ public class GraphQuestions {
 
     /**
      * There are N network nodes, labelled 1 to N. Given a list of travel times as directed edges times[i] = (u, v, w), where u is the source node, v is the target node, and w is the time it takes for a signal to travel from source to target. We send a signal from a certain node source. How long will it take for all nodes to receive the signal? If it is impossible, return -1.
-     * times = [[1,2,1],[2,3,2],[1,3,4]]
+     * times = [
+     *          [1,2,1],
+     *          [2,3,2],
+     *          [1,3,4]
+     *         ]
      * N = 3
      * source = 1
      * output: 3.
@@ -233,7 +238,11 @@ public class GraphQuestions {
     /**
      * There are N cities connected by M flights. Each flight starts from city u and arrives at v with a price w.
      * Given all the cities and flights, together with starting city source and the destination dest, your task is to find the cheapest price from source to dest with up to k stops. If there is no such route, return -1.
-     * N = 3, flights = [[0,1,100],[1,2,100],[0,2,500]]
+     * N = 3, flights = [
+     *                   [0,1,100],
+     *                   [1,2,100],
+     *                   [0,2,500]
+     *                  ]
      * source = 0, dest = 2, K = 0
      * Output: 500
      * @param N
@@ -273,7 +282,13 @@ public class GraphQuestions {
 
     /**
      * Given a list of airline tickets represented by pairs of departure and arrival airports [from, to], reconstruct the itinerary in order. All of the tickets belong to a man who departs from JFK. Thus, the itinerary must begin with JFK.
-     * Input: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+     * Input: [
+     *         ["JFK","SFO"],
+     *         ["JFK","ATL"],
+     *         ["SFO","ATL"],
+     *         ["ATL","JFK"],
+     *         ["ATL","SFO"]
+     *        ]
      * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
      * @param tickets
      * @return
@@ -297,5 +312,120 @@ public class GraphQuestions {
             }
         }
         orderedItenerary.addFirst(flight);
+    }
+
+
+    /**
+     * An image is represented by a 2-D array of integers, each integer representing the pixel value of the image (from 0 to 65535).
+     * Given a coordinate (sr, sc) representing the starting pixel (row and column) of the flood fill, and a pixel value newColor, "flood fill" the image.
+     * To perform a "flood fill", consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color as the starting pixel), and so on. Replace the color of all of the aforementioned pixels with the newColor. At the end, return the modified image.
+     * Input: [
+     * [1,1,1],
+     * [1,1,0],
+     * [1,0,1]
+     * ]
+     * sr = 1, sc = 1, newColor = 2
+     * Output: [
+     * [2,2,2],
+     * [2,2,0],
+     * [2,0,1]
+     * ]
+     *
+     * @param image
+     * @param sr
+     * @param sc
+     * @param newColor
+     * @return
+     */
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        LinkedList<int[]> queue = new LinkedList<>();
+        int rows = image.length, cols = image[0].length;
+        int color = image[sr][sc];
+        queue.add(new int[]{sr, sc});
+        image[sr][sc] = newColor;
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        while (!queue.isEmpty()) {
+            int[] cellPosition = queue.remove();
+            for (int[] dir : directions) {
+                int r = cellPosition[0] + dir[0];
+                int c = cellPosition[1] + dir[1];
+                int[] newCellPosition = new int[]{r, c};
+                if (r < 0 || r >= rows || c < 0 || c >= cols || image[r][c] == newColor || image[r][c] != color)
+                    continue;
+                image[r][c] = newColor;
+                queue.add(newCellPosition);
+            }
+        }
+        return image;
+    }
+
+    /**
+     * In a given grid, each cell can have one of three values:
+     *
+     * the value 0 representing an empty cell;
+     * the value 1 representing a fresh orange;
+     * the value 2 representing a rotten orange.
+     * Every minute, any fresh orange that is adjacent (4-directionally) to a rotten orange becomes rotten.
+     *
+     * Return the minimum number of minutes that must elapse until no cell has a fresh orange.  If this is impossible, return -1 instead.
+     *
+     * Input: [
+     *         [2,1,1],
+     *         [1,1,0],
+     *         [0,1,1]
+     *        ]
+     * Output: 4
+     * @param grid
+     * @return
+     */
+    public int orangesRotting(int[][] grid) {
+        LinkedList<int[]> queue = new LinkedList<>();
+//        int minutes = 0;  //Keeping minutes 0, isUpdated boolean and having an if condition at the end of for loop didn't work.
+//        boolean isUpdated = false;
+        int freshOranges = 0;
+        int rows = grid.length, cols = grid[0].length;
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 2) {
+                    queue.add(new int[]{r, c});
+                }
+                else if (grid[r][c] == 1) {
+                    freshOranges += 1;
+                }
+            }
+        }
+
+        if (freshOranges == 0)
+            return 0;  //Required for a test case.
+
+        int minutes = -1;
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        while (!queue.isEmpty()) {
+             minutes += 1;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cellPosition = queue.remove();
+
+                for (int[] dir : directions) {
+                    int r = cellPosition[0] + dir[0];
+                    int c = cellPosition[1] + dir[1];
+                    int[] newCellPosition = new int[]{r, c};
+
+                    if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 2 || grid[r][c] == 0)
+                        continue;
+
+                    grid[r][c] = 2;
+                    freshOranges -= 1;
+//                    isUpdated = true;  //nope
+                    queue.add(newCellPosition);
+                }
+//                if (isUpdated) {  //didn't work. Fails at test case [[1,2,1,1,2,1,1]] outputting 3 while the expected output is 2.
+//                    minutes += 1;
+//                    isUpdated = false;
+//                }
+            }
+        }
+        return freshOranges > 0 ? -1 : minutes;
     }
 }
