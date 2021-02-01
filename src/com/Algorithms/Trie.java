@@ -1,6 +1,9 @@
 package com.Algorithms;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 class TrieNode {
     HashMap<Character, TrieNode> children;
@@ -28,6 +31,7 @@ public class Trie {
      * If the current node has the current character (through one of the elements in the “children” field), move on.
      * Otherwise, create a new node for this character.
      * Repeat the entire word is traversed.
+     *
      * @param word
      */
     public void insert(String word) {
@@ -46,6 +50,7 @@ public class Trie {
      * Otherwise, return false.
      * Repeat the entire word is traversed.
      * In the end, return the current node's isWord boolean.
+     *
      * @param word
      * @return whether the trie contains this word.
      */
@@ -62,6 +67,7 @@ public class Trie {
 
     /**
      * Recursively delete each character in the word from the trie.
+     *
      * @param word
      */
     public void delete(String word) {
@@ -103,6 +109,28 @@ public class Trie {
         return startsWith(child, prefix, i + 1);
     }
 
+    public void allWordsStartingWith(String prefix) {
+        TrieNode current = root;
+        for (char ch : prefix.toCharArray()) {
+            if (current.children.containsKey(ch))
+                current = current.children.get(ch);
+        }
+        List<String> resultList = new LinkedList<>();
+        allWordsStartingWith(resultList, current, prefix);
+        System.out.println(Arrays.toString(resultList.toArray()));
+
+    }
+
+    private void allWordsStartingWith(List<String> resultList, TrieNode current, String word) {
+        if (current.isWord) {
+            resultList.add(word);
+        }
+        for (char ch : current.children.keySet()) {
+            TrieNode child = current.children.get(ch);
+            allWordsStartingWith(resultList, child, word + ch);
+        }
+    }
+
     public int findWordCountForAPrefix(String prefix) {
         return findCount(root, prefix, 0, 0);
     }
@@ -120,12 +148,13 @@ public class Trie {
     public static void main(String[] args) {
         Trie trie = new Trie();
         trie.insert("apple");
-        System.out.println(trie.contains("apple"));   // returns true
-        System.out.println(trie.contains("app"));     // returns false
-        System.out.println(trie.startsWith("app")); // returns true
-        trie.insert("app");
-        System.out.println(trie.contains("app"));     // returns true
-        trie.insert("apex");
-        System.out.println(trie.findWordCountForAPrefix("ap"));  //returns 2
+//        System.out.println(trie.contains("apple"));   // returns true
+//        System.out.println(trie.contains("app"));     // returns false
+//        System.out.println(trie.startsWith("app")); // returns true
+//        trie.insert("app");
+        trie.insert("append");
+        trie.insert("appreciate");
+//        System.out.println(trie.contains("app"));     // returns true
+        trie.allWordsStartingWith("app");
     }
 }
