@@ -859,4 +859,49 @@ public class BinaryTree {
         }
         return maxWidth;
     }
+
+    /**
+     * Given a BST with duplicates, find all the mode(s) (the most frequently occurred element).
+     * @param root
+     * @return
+     */
+    int modeCount;
+    int maxCount = 0;
+    TreeNode prevNode = null;
+    List<Integer> result = new LinkedList<>();
+
+    public int[] findMode(TreeNode root) {
+        traverseInOrder(root);
+        int[] array = new int[result.size()];
+        for(int i = 0; i < result.size(); i++) array[i] = result.get(i);
+        return array;
+    }
+
+    private void traverseInOrder(TreeNode node) {
+        if (node == null)
+            return;
+
+        traverseInOrder(node.left);
+
+
+        if (prevNode != null && prevNode.data == node.data) {
+            modeCount += 1;
+        }
+        else {
+            modeCount = 1;
+        }
+
+        if (modeCount > maxCount) {
+            maxCount = modeCount;
+            result.clear();
+            result.add(node.data);
+        }
+        else if (modeCount == maxCount) {
+            result.add(node.data);
+        }
+
+        prev = node;
+
+        traverseInOrder(node.right);
+    }
 }
