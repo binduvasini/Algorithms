@@ -614,4 +614,38 @@ public class StringQuestions {
         return longestLength;
     }
 
+    /**
+     * Given two strings a and b of the same length, choose an index and split both strings at the same index, splitting a into two strings: a = aprefix + asuffix, and splitting b into two strings: b = bprefix + bsuffix. Check if aprefix + bsuffix or bprefix + asuffix forms a palindrome.
+     * @param a
+     * @param b
+     * @return
+     */
+    public boolean checkPalindromeFormation(String a, String b) {
+        return check(a, b) || check(b, a);
+    }
+
+    private boolean check(String s1, String s2) {
+        int start = 0, end = s2.length() - 1;
+
+        while (start < end && s1.charAt(start) == s2.charAt(end)) {
+            System.out.println("over here ");
+            start += 1;
+            end -= 1;
+        }
+
+        //This is what I initially tried. But this is not required. Checking the middle part of either of the strings would do.
+        /*String s1s2 = s1.substring(0, start) + s2.substring(start);
+        String s2s1 = s2.substring(0, start) + s1.substring(start);
+        return isPalindrome(s1s2) || isPalindrome(s2s1);*/
+
+        String s1Middle = s1.substring(start, end + 1);
+        String s2Middle = s2.substring(start, end + 1);
+        return isPalindrome(s1Middle) || isPalindrome(s2Middle);
+    }
+
+    private boolean isPalindrome(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        return (sb.reverse().toString().equals(s));
+    }
+
 }
