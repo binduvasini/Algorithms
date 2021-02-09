@@ -6,6 +6,27 @@ import java.util.regex.Pattern;
 public class Playground {
 
     public static void main(String[] args) {
+        LinkedList<Integer> queue = new LinkedList<>();
+        queue.add(3);
+        queue.add(7);
+        queue.add(11);
+        queue.add(14);
+        queue.add(16);
+
+        queue.removeFirst();
+
+        /*for (Integer integer : queue) {
+            System.out.println(integer);
+        }*/
+
+        System.out.println(queue.getFirst());
+
+        queue.removeFirst();
+
+        System.out.println(queue.getFirst());
+
+        System.out.println(queue.isEmpty());
+
     }
 
     static void find3Numbers(int[] A,
