@@ -5,7 +5,7 @@ public class BinarySearch {
         int lo = 0;
         int hi = nums.length - 1;
         while (lo <= hi) {  //Because we go from lo till hi (lo <= hi), we do mid - 1 and mid + 1.
-            int mid = lo + (hi - lo) / 2; //To avoid integer overflow. sometimes low+high will be greater than 2147483647
+            int mid = lo + (hi - lo) / 2;  //To avoid integer overflow. Sometimes low+high will be > 2147483647
             if (target < nums[mid])
                 hi = mid - 1;
             else if (target > nums[mid])
@@ -17,7 +17,8 @@ public class BinarySearch {
     }
 
     /**
-     * Find the value at pivot index in a rotated sorted array. In other words, find the minimum element in a rotated sorted array.
+     * Find the value at pivot index in a rotated sorted array.
+     * In other words, find the minimum element in a rotated sorted array.
      * nums = [12, 14, 1, 5, 8, 9]
      * Output: 1
      * @param nums
@@ -38,7 +39,8 @@ public class BinarySearch {
                 hi = mid - 1;
             }
             else {  //The minimum is in the right half.
-                if (mid < nums.length - 1 && nums[mid] > nums[mid + 1])  //If mid+1 element is the minimum. Have a boundary check.
+                if (mid < nums.length - 1 && nums[mid] > nums[mid + 1])  //If mid+1 element is the minimum.
+                    // Have a boundary check.
                     return nums[mid + 1];
                 lo = mid + 1;
             }
@@ -47,7 +49,8 @@ public class BinarySearch {
     }
 
     /**
-     * Find the value at pivot index in a rotated sorted array. In other words, find the minimum element in a rotated sorted array.
+     * Find the value at pivot index in a rotated sorted array.
+     * In other words, find the minimum element in a rotated sorted array.
      * nums = [3,3,1,3]
      * Output: 1
      * @param nums
@@ -72,7 +75,8 @@ public class BinarySearch {
                     return nums[mid + 1];
                 lo = mid + 1;
             }
-            else  //if (nums[mid] == nums[hi]) is true, either all elements between mid and hi are same or the minimum lies here.
+            else  //if (nums[mid] == nums[hi]) is true,
+                // either all elements between mid and hi are same or the minimum lies here.
                 hi -= 1;  //We need to consider every element one by one.
         }
         return nums[lo];
@@ -91,7 +95,8 @@ public class BinarySearch {
             if (target == nums[mid])
                 return mid;
             else if (nums[mid] < nums[hi]) { //the right side is sorted for sure.
-                if (target > nums[mid] && target <= nums[hi]) //we need these two conditions to determine whether the target lies in nums[mid...hi]
+                if (target > nums[mid] && target <= nums[hi])
+                    //we need these two conditions to determine whether the target lies in nums[mid...hi]
                     lo = mid + 1;
                 else
                     hi = mid - 1;
@@ -120,7 +125,8 @@ public class BinarySearch {
             if (target == nums[mid])
                 return mid;
             else if (nums[mid] < nums[hi]) { //the right side is sorted for sure.
-                if (target > nums[mid] && target <= nums[hi]) //we need these two conditions to determine whether the target lies in nums[mid...hi]
+                if (target > nums[mid] && target <= nums[hi])
+                    //we need these two conditions to determine whether the target lies in nums[mid...hi]
                     lo = mid + 1;
                 else
                     hi = mid - 1;
@@ -131,7 +137,8 @@ public class BinarySearch {
                 else
                     lo = mid + 1;
             }
-            else //if (nums[mid] == nums[hi]) is true, either all elements between mid and hi are same or the target lies here.
+            else //if (nums[mid] == nums[hi]) is true,
+                // either all elements between mid and hi are same or the target lies here.
                 hi -= 1;  //We need to consider every element one by one.
         }
         return -1;
@@ -196,7 +203,8 @@ public class BinarySearch {
     }
 
     /**
-     * Given a sorted array where every element appears exactly twice, except for one element which appears exactly once. Find this single element that appears only once.
+     * Given a sorted array where every element appears exactly twice,
+     * except for one element which appears exactly once. Find this single element that appears only once.
      * Input: [1,1,2,3,3,4,4,8,8]
      * Output: 2
      *
