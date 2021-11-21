@@ -315,25 +315,25 @@ public class GraphQuestions {
      * @param tickets
      * @return
      */
-    private HashMap<String, PriorityQueue<String>> iteneraryGraph = new HashMap<>();
-    private LinkedList<String> orderedItenerary = new LinkedList<>();
+    private HashMap<String, PriorityQueue<String>> itineraryGraph = new HashMap<>();
+    private LinkedList<String> orderedItinerary = new LinkedList<>();
     public List<String> orderItinerary(List<List<String>> tickets) {
         for (List<String> ticket : tickets) {
-            iteneraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
-            iteneraryGraph.get(ticket.get(0)).add(ticket.get(1));
+            itineraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
+            itineraryGraph.get(ticket.get(0)).add(ticket.get(1));
         }
         dfsUtil("JFK");
-        return orderedItenerary;
+        return orderedItinerary;
     }
 
     private void dfsUtil(String flight) {
-        if (iteneraryGraph.containsKey(flight)) {
-            PriorityQueue<String> connectingFlights = iteneraryGraph.get(flight);
+        if (itineraryGraph.containsKey(flight)) {
+            PriorityQueue<String> connectingFlights = itineraryGraph.get(flight);
             while (!connectingFlights.isEmpty()) {
                 dfsUtil(connectingFlights.remove());
             }
         }
-        orderedItenerary.addFirst(flight);
+        orderedItinerary.addFirst(flight);
     }
 
 
