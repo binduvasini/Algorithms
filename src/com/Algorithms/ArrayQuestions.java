@@ -734,16 +734,16 @@ public class ArrayQuestions {
      * @param nums
      * @return
      */
-    public List<List<Integer>> tripletSum(int[] nums) {
+    public List<List<Integer>> tripletSum(int[] nums, int target) {
         HashSet<List<Integer>> set = new HashSet<>();
         for (int i = 0; i < nums.length - 2; i++) {
             HashSet<Integer> h = new HashSet<>();
             for (int j = i + 1; j < nums.length; j++) {
                 List<Integer> l = new ArrayList<>();
-                if (h.contains(0 - (nums[i] + nums[j]))) {
+                if (h.contains(target - (nums[i] + nums[j]))) {
                     l.add(nums[i]);
                     l.add(nums[j]);
-                    l.add(0 - (nums[i] + nums[j]));
+                    l.add(target - (nums[i] + nums[j]));
                 } else {
                     h.add(nums[j]);
                 }
