@@ -474,8 +474,8 @@ public class ArrayQuestions {
      * Define a pair (u,v) which consists of one element from the first array and one element from the second array.
      * Find the k pairs (u1,v1),(u2,v2) ...(uk,vk) with the smallest sums.
      * Input: nums1 = [1,7,11],
-     *        nums2 = [2,4,6],
-     *        k = 3
+     * nums2 = [2,4,6],
+     * k = 3
      * Output: [[1,2],[1,4],[1,6]]
      * The first 3 pairs are returned from the sequence:
      * [1,2],[1,4],[1,6],[7,2],[7,4],[11,2],[7,6],[11,4],[11,6]
@@ -567,6 +567,7 @@ public class ArrayQuestions {
      * In other words, find the product of all other elements in the array.
      * Input : [1, 2, 3, 4]
      * Output : [24, 12, 8, 6]
+     *
      * @param nums
      * @return
      */
@@ -576,16 +577,16 @@ public class ArrayQuestions {
         int[] output = new int[nums.length];
 
         left[0] = 1;
-        for(int i=1; i<nums.length; i++){
-            left[i] = nums[i-1] * left[i-1];
+        for (int i = 1; i < nums.length; i++) {
+            left[i] = nums[i - 1] * left[i - 1];
         }
 
-        right[nums.length-1] = 1;
-        for(int i=nums.length-2; i>=0; i--){
-            right[i] = nums[i+1] * right[i+1];
+        right[nums.length - 1] = 1;
+        for (int i = nums.length - 2; i >= 0; i--) {
+            right[i] = nums[i + 1] * right[i + 1];
         }
 
-        for(int i=0; i<nums.length; i++){
+        for (int i = 0; i < nums.length; i++) {
             output[i] = left[i] * right[i];
         }
         return output;
@@ -601,9 +602,10 @@ public class ArrayQuestions {
      * else cells[i] == 0.
      * Given the initial state of the prison,
      * return the state of the prison after N days (and N such changes described above.)
-     *
+     * <p>
      * Input: cells = [1,0,0,1,0,0,1,0], N = 1000000000
      * Output: [0,0,1,1,1,1,1,0]
+     *
      * @param cells
      * @param N
      * @return
@@ -615,7 +617,7 @@ public class ArrayQuestions {
         int cycle = 0;
         for (int i = 1; i <= N; i++) {
             for (int c = 1; c < cells.length - 1; c++) {
-                nextDay[c] = (cells[c - 1] == cells[c + 1])? 1 : 0;  //Calculate the nextDay and store it in cells.
+                nextDay[c] = (cells[c - 1] == cells[c + 1]) ? 1 : 0;  //Calculate the nextDay and store it in cells.
             }
             String cellString = Arrays.toString(nextDay);
             if (set.contains(cellString)) {
@@ -630,7 +632,7 @@ public class ArrayQuestions {
             N = N % cycle;
             for (int i = 1; i <= N; i++) {
                 for (int c = 1; c < cells.length - 1; c++) {
-                    nextDay[c] = (cells[c - 1] == cells[c + 1])? 1 : 0;
+                    nextDay[c] = (cells[c - 1] == cells[c + 1]) ? 1 : 0;
                 }
                 cells = nextDay.clone();
             }
@@ -640,14 +642,15 @@ public class ArrayQuestions {
 
     /**
      * Write a program to find the n-th ugly number.
-     *
+     * <p>
      * Ugly numbers are positive numbers whose prime factors only include 2, 3, 5.
-     *
+     * <p>
      * Example:
-     *
+     * <p>
      * Input: n = 10
      * Output: 12
      * Explanation: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 is the sequence of the first 10 ugly numbers.
+     *
      * @param n
      * @return
      */
@@ -656,9 +659,9 @@ public class ArrayQuestions {
         set.add(1L);
         for (int i = 1; i < n; i++) {
             long first = set.pollFirst();
-            set.add(first*2);
-            set.add(first*3);
-            set.add(first*5);
+            set.add(first * 2);
+            set.add(first * 3);
+            set.add(first * 5);
         }
 
         return set.pollFirst().intValue();
@@ -666,11 +669,12 @@ public class ArrayQuestions {
 
     /**
      * Best day to buy stock and the best day to sell it. Find the maximum profit given you buy and sell a stock once.
+     *
      * @param prices
      * @return
      */
     public int maxProfitSellOnce(int[] prices) {
-        if(prices.length == 0)
+        if (prices.length == 0)
             return 0;
         int maxDiff = Integer.MIN_VALUE;
         int minimum = Integer.MAX_VALUE;
@@ -684,13 +688,14 @@ public class ArrayQuestions {
     /**
      * Best day to buy stock and the best day to sell it. You can only hold at most one share of the stock at any time.
      * However, you can buy it then immediately sell it on the same day.
+     *
      * @param prices
      * @return
      */
     public int maxProfitSellMultipleTimes(int[] prices) {
         int profit = 0;
-        for(int i = 1; i < prices.length; i++) {
-            if(prices[i] > prices[i - 1]){
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) {
                 profit += prices[i] - prices[i - 1];
             }
         }
@@ -699,6 +704,7 @@ public class ArrayQuestions {
 
     /**
      * Find a contiguous subarray that has the largest product.
+     *
      * @param nums
      * @return
      */
@@ -707,18 +713,47 @@ public class ArrayQuestions {
         int minProd_currIndex = 0;
         int maxProd = 0;
 
-        if(nums.length == 1)
+        if (nums.length == 1)
             return nums[0];
 
-        for(int i : nums){
+        for (int i : nums) {
             int tmp = maxProd_currIndex;
 
-            maxProd_currIndex = Math.max(i, Math.max(i*tmp, i*minProd_currIndex));
-            minProd_currIndex = Math.min(i, Math.min(i*tmp, i*minProd_currIndex));
+            maxProd_currIndex = Math.max(i, Math.max(i * tmp, i * minProd_currIndex));
+            minProd_currIndex = Math.min(i, Math.min(i * tmp, i * minProd_currIndex));
 
             maxProd = Math.max(maxProd, maxProd_currIndex);
         }
 
         return maxProd;
+    }
+
+    /**
+     * Given an integer array nums, return all the triplets that sum up to 0.
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> tripletSum(int[] nums) {
+        HashSet<List<Integer>> set = new HashSet<>();
+        for (int i = 0; i < nums.length - 2; i++) {
+            HashSet<Integer> h = new HashSet<>();
+            for (int j = i + 1; j < nums.length; j++) {
+                List<Integer> l = new ArrayList<>();
+                if (h.contains(0 - (nums[i] + nums[j]))) {
+                    l.add(nums[i]);
+                    l.add(nums[j]);
+                    l.add(0 - (nums[i] + nums[j]));
+                } else {
+                    h.add(nums[j]);
+                }
+                if (l.size() > 0) {
+                    Collections.sort(l);
+                    set.add(l);
+                }
+            }
+        }
+
+        return new ArrayList<>(set);
     }
 }
