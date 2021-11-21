@@ -94,7 +94,7 @@ public class Linkedlist {
     }
 
     public Node getIntersectionNode(Node headA, Node headB) {
-        //Two pointers to traverse list A and list B respectively and swap when one of them reaches the end of its list.
+        //Two pointers to traverse list A and list B respectively. Swap when one of them reaches the end of its list.
         Node pointerA = headA;
         Node pointerB = headB;
 
@@ -201,7 +201,8 @@ public class Linkedlist {
     }
 
     /**
-     * Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node position and not the value in the nodes.
+     * Given a singly linked list, group all odd nodes together followed by the even nodes.
+     * Please note here we are talking about the node position and not the value in the nodes.
      * Input: 2->1->3->5->6->4->7->NULL
      * Output: 2->3->6->7->1->5->4->NULL
      *
@@ -250,9 +251,12 @@ public class Linkedlist {
     }
 
     /**
-     * You are given a doubly linked list which in addition to the next and previous pointers, it could have a child pointer, which may or may not point to a separate doubly linked list. These child lists may have one or more children of their own, and so on, to produce a multilevel data structure, as shown in the example below.
+     * You are given a doubly linked list which in addition to the next and previous pointers,
+     * it could have a child pointer, which may or may not point to a separate doubly linked list.
+     * These child lists may have one or more children of their own, and so on, to produce a multilevel data structure.
      *
-     * Flatten the list so that all the nodes appear in a single-level, doubly linked list. You are given the head of the first level of the list.
+     * Flatten the list so that all the nodes appear in a single-level, doubly linked list.
+     * You are given the head of the first level of the list.
      * @param head
      * @return
      */

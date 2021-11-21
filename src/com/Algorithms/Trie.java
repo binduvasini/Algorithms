@@ -46,7 +46,8 @@ public class Trie {
     /**
      * Start from the root. It is the current node.
      * Iterate through each character of the word.
-     * If the current node has the current character (through one of the elements in the “children” field), move on to its sub-trie.
+     * If the current node has the current character (through one of the elements in the “children” field),
+     * move on to its sub-trie.
      * Otherwise, return false.
      * Repeat the entire word is traversed.
      * In the end, return the current node's isWord boolean.

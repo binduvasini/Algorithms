@@ -113,7 +113,10 @@ public class Graph {
         GraphNode node = getNode(nodeData);
         if (node == null)
             return new Integer[0];
-        ArrayDeque<Integer> order = new ArrayDeque<>();  //To store the sorted elements. We use a stack because we will push the nodes in the order of highest in-degrees. So when we pop them out, the nodes with 0 in-degree will come out first.
+        ArrayDeque<Integer> order = new ArrayDeque<>();
+        //To store the sorted elements.
+        // We use a stack because we will push the nodes in the order of highest in-degrees.
+        // So when we pop them out, the nodes with 0 in-degree will come out first.
         for (GraphNode graphNode : nodes) {
             if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, new HashSet<>()))
                 return new Integer[0];

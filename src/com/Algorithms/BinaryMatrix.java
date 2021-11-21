@@ -77,7 +77,8 @@ public class BinaryMatrix {
 
     /**
      * Given a grid, each cell is either empty (0) or blocked (1). Adjacent cells are connected 8-directionally.
-     * Return the length of the shortest clear path from top-left to bottom-right. If such a path does not exist, return -1.
+     * Return the length of the shortest clear path from top-left to bottom-right.
+     * If such a path does not exist, return -1.
      * Input: [
      * [0,0,0],
      * [1,1,0],
@@ -158,7 +159,8 @@ public class BinaryMatrix {
     }
 
     /**
-     * Given a binary matrix, each cell has an initial state live (1) or dead (0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
+     * Given a binary matrix, each cell has an initial state live (1) or dead (0).
+     * Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
      * 1) Any live cell with fewer than two live neighbors dies, as if caused by under-population.
      * 2) Any live cell with two or three live neighbors lives on to the next generation.
      * 3) Any live cell with more than three live neighbors dies, as if by over-population..
@@ -253,7 +255,8 @@ public class BinaryMatrix {
 
     /**
      * Given a 2D board containing 'X' and 'O' (the letter O), flip all 'O's to 'X's on the regions surrounded by 'X'.
-     * You should ignore the boundaries (any 'O' on the border of the board must not be flipped to 'X'). Any 'O' that is connected to an 'O' on the border must not be flipped to 'X'.
+     * You should ignore the boundaries (any 'O' on the border of the board must not be flipped to 'X').
+     * Any 'O' that is connected to an 'O' on the border must not be flipped to 'X'.
      *
      * @param board
      */
@@ -301,7 +304,11 @@ public class BinaryMatrix {
         for (int[] dir : dirs) {
             int neiR = r + dir[0];
             int neiC = c + dir[1];
-            if (neiR >= 0 && neiR < board.length && neiC >= 0 && neiC < board[neiR].length && board[neiR][neiC] == 'O') {
+            if (
+                    neiR >= 0 && neiR < board.length && neiC >= 0
+                    &&
+                    neiC < board[neiR].length && board[neiR][neiC] == 'O'
+            ) {
                 dfsUtil(board, neiR, neiC);
             }
         }
@@ -318,8 +325,8 @@ public class BinaryMatrix {
 
         int m = matrix.length;
         int n = matrix[0].length;
-        boolean[][] visited = new boolean[m][n]; //We can’t use a HashSet<int[]> because the equality of new int[]{i,j} will differ.
-
+        boolean[][] visited = new boolean[m][n];
+        //We can’t use a HashSet<int[]> because the equality of new int[]{i,j} will differ.
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -344,7 +351,8 @@ public class BinaryMatrix {
                 if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c])
                     continue;
 
-                matrix[r][c] = matrix[cellPosition[0]][cellPosition[1]] + 1; //From the old cell to the new cell position, add up the distance.
+                //From the old cell to the new cell position, add up the distance.
+                matrix[r][c] = matrix[cellPosition[0]][cellPosition[1]] + 1;
                 visited[r][c] = true;
                 queue.add(newCellPosition);
             }
@@ -417,7 +425,8 @@ public class BinaryMatrix {
     }
 
     /**
-     * Given a binary array that has exactly one island (i.e., one or more connected land cells). One cell is a square with side length 1. Determine the perimeter of the island.
+     * Given a binary array that has exactly one island (i.e., one or more connected land cells).
+     * One cell is a square with side length 1. Determine the perimeter of the island.
      * Input:
      * [[0,1,0,0],
      *  [1,1,1,0],
@@ -440,7 +449,6 @@ public class BinaryMatrix {
 
                         if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
                             perimeter += 1;
-                            continue;
                         }
                     }
                 }

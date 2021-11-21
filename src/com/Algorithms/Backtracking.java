@@ -6,7 +6,8 @@ import java.util.List;
 
 public class Backtracking {
     /**
-     * Given a set of distinct integers, nums, return all possible subsets (the power set). The solution set must not contain duplicate subsets.
+     * Given a set of distinct integers, nums, return all possible subsets (the power set).
+     * The solution set must not contain duplicate subsets.
      * Input: nums = [1,2,3]
      * Output:
      * [
@@ -103,7 +104,8 @@ public class Backtracking {
             builder.append(sChar[i]);
             if (isPalindrome(builder.toString(), 0, builder.length() - 1)) {
                 tmp.add(builder.toString());
-                partitionWithoutDup(resultList, tmp, sChar, i + 1);  //At some point i + 1 will be the length of sChar.
+                //At some point i + 1 will be the length of sChar.
+                partitionWithoutDup(resultList, tmp, sChar, i + 1);
                 tmp.remove(tmp.size() - 1);
             }
         }
@@ -118,7 +120,9 @@ public class Backtracking {
     }
 
     /**
-     * Given a string S, we can transform every letter individually to be lowercase or uppercase to create another string.  Return a list of all possible strings we could create.
+     * Given a string S,
+     * we can transform every letter individually to be lowercase or uppercase to create another string.
+     * Return a list of all possible strings we could create.
      *
      * Examples:
      * Input: S = "a1b2"
@@ -153,7 +157,8 @@ public class Backtracking {
     }
 
     /**
-     * Given a set of candidate numbers (candidates) (without duplicates) and a target number (target), find all unique combinations in candidates where the candidate numbers sums to target.
+     * Given a set of candidate numbers (candidates) (without duplicates) and a target number (target),
+     * find all unique combinations in candidates where the candidate numbers sums to target.
      * The same repeated number may be chosen from candidates unlimited number of times.
      * Input: candidates = [2,3,5], target = 8,
      * A solution set is:
@@ -189,7 +194,8 @@ public class Backtracking {
     }
 
     /**
-     * Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sums to target.
+     * Given a collection of candidate numbers (candidates) and a target number (target),
+     * find all unique combinations in candidates where the candidate numbers sums to target.
      * Each number in candidates may only be used once in the combination.
      * Input: candidates = [10,1,2,7,6,1,5], target = 8,
      * A solution set is:
@@ -228,7 +234,8 @@ public class Backtracking {
     }
 
     /**
-     * Given a non-empty array containing only positive integers, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+     * Given a non-empty array containing only positive integers,
+     * find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
      * Input: [1, 5, 11, 5]
      * Output: true
      * The array can be partitioned as [1, 5, 5] and [11].

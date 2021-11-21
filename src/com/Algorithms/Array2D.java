@@ -23,7 +23,8 @@ public class Array2D {
         List<int[]> list = new LinkedList<>();
 
         while (a < A.length && b < B.length) {
-            //The maximum start point from any two intervals and the minimum end point from any two intervals must intersect.
+            //The maximum start point from any two intervals and
+            // the minimum end point from any two intervals must intersect.
             int maxStartpoint = Math.max(A[a][0], B[b][0]);
             int minEndpoint = Math.min(A[a][1], B[b][1]);
 
@@ -41,7 +42,8 @@ public class Array2D {
     }
 
     /**
-     * Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.
+     * Given a n x n matrix where each of the rows and columns are sorted in ascending order,
+     * find the kth smallest element in the matrix.
      * matrix = [
      * [ 1,  5,  9],
      * [10, 11, 14],
@@ -67,7 +69,9 @@ public class Array2D {
     }
 
     /**
-     * There are 2N people a company is planning to interview. The cost of flying the i-th person to city A is costs[i][0], and the cost of flying the i-th person to city B is costs[i][1].
+     * There are 2N people a company is planning to interview.
+     * The cost of flying the i-th person to city A is costs[i][0],
+     * and the cost of flying the i-th person to city B is costs[i][1].
      * Return the minimum cost to fly every person to a city such that exactly N people arrive in each city.
      * Input: [[10,20],[30,200],[400,50],[30,20]]
      * Output: 110
@@ -83,7 +87,8 @@ public class Array2D {
     public int twoCityScheduling(int[][] costs) {
         int N = costs.length / 2, total = 0;
         int A = 0, B = 0;
-        //We need to sort the array in decreasing order because we need the minimum cost. So rule out the maximum costs first.
+        //We need to sort the array in decreasing order because we need the minimum cost.
+        // So rule out the maximum costs first.
         //If we sort it in increasing order instead, we will get the maximum cost.
         Arrays.sort(costs, (c1, c2) -> Math.abs(c2[0] - c2[1]) - Math.abs(c1[0] - c1[1]));
 

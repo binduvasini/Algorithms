@@ -137,7 +137,9 @@ public class StringQuestions {
             int count = map.getOrDefault(c, 0) + 1;
             map.put(c, count);
             if (count > (S.length() + 1) / 2)
-                return "";  //If the given string contains a character that occurs more than half of its length, we cannot rearrange it.
+                //If the given string contains a character that occurs more than half of its length,
+                // we cannot rearrange it.
+                return "";
         }
 
         maxHeap.addAll(map.keySet());
@@ -269,10 +271,12 @@ public class StringQuestions {
             tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
             end += 1;  //Move the end pointer until you find all the characters of t.
 
-            while (tCount == 0) {  //Found all the characters of t, now move the start pointer until we find the required shortest size.
+            while (tCount == 0) {
+                //Found all the characters of t, now move the start pointer until we find the required the shortest size.
                 char sCharStart = s.charAt(start);
                 tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
-                if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)  //At this point, the value of character at sCharStart will be negative if it doesn't appear in t.
+                if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)
+                    //At this point, the value of character at sCharStart will be negative if it doesn't appear in t.
                     tCount += 1;
 
                 if (minWindLen > end - start) {  //Update the minWindLen and the starting position of the substring.
@@ -327,7 +331,8 @@ public class StringQuestions {
     }
 
     /**
-     * Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
+     * Given a non-negative integer num represented as a string,
+     * remove k digits from the number so that the new number is the smallest possible.
      * Input: num = "1432219", k = 3
      * Output: "1219"
      *
@@ -390,7 +395,8 @@ public class StringQuestions {
 
     /**
      * Two lists A and B are written on two separate horizontal lines.
-     * If we draw a connecting line from A to B, the two numbers must be equal A[i] == B[j]. The connecting lines must not intersect.
+     * If we draw a connecting line from A to B, the two numbers must be equal A[i] == B[j].
+     * The connecting lines must not intersect.
      * Return the maximum number of connecting lines we can draw this way.
      * A = [2,5,1,2,5]
      * B = [10,5,2,1,5,2]
@@ -453,8 +459,12 @@ public class StringQuestions {
     }
 
     /**
-     * Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks. Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
-     * However, there is a cooling interval n between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
+     * Given a char array representing tasks CPU needs to do.
+     * It contains capital letters A to Z where different letters represent different tasks.
+     * Tasks could be done without original order. Each task could be done in one interval.
+     * For each interval, CPU could finish one task or just be idle.
+     * However, there is a cooling interval n between two same tasks,
+     * there must be at least n intervals that CPU are doing different tasks or just be idle.
      * Return the intervals and task count by which the CPU will take to finish all the given tasks.
      * Input: tasks = ["A","A","A","B","B","B"], n = 2
      * Output: 8
@@ -475,26 +485,31 @@ public class StringQuestions {
         maxHeap.addAll(map.keySet());
         int count = 0;
         while (!maxHeap.isEmpty()) {
-            List<Character> list = new ArrayList<>();  //Store the removed characters and add it back after the completion of the task interval.
+            //Store the removed characters and add it back after the completion of the task interval.
+            List<Character> list = new ArrayList<>();
             for (int i = 0; i <= k; i++) {
                 if (!maxHeap.isEmpty()) {
                     char mostOccurChar = maxHeap.poll();
                     map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
                     if (map.get(mostOccurChar) >= 1)
-                        list.add(mostOccurChar);  //Add to the list only when this character's occurrence is at least 1.
+                        list.add(mostOccurChar); //Add to the list only when this character's occurrence is at least 1.
                 }
                 count += 1;
                 if (maxHeap.isEmpty() && list.isEmpty())
                     break;
             }
-            maxHeap.addAll(list);  //Add the removed characters back. We checked for the occurrences already inside the for loop.
+            //Add the removed characters back. We checked for the occurrences already inside the for loop.
+            maxHeap.addAll(list);
         }
         return count;
     }
 
     /**
      * Given strings s and t, check if t is a subsequence of s.
-     * A subsequence of a string is a new string which is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (ie, "ace" is a subsequence of "abcde" while "aec" is not).
+     * A subsequence of a string is a new string
+     * which is formed from the original string by deleting some (can be none) of the characters
+     * without disturbing the relative positions of the remaining characters.
+     * (ie, "ace" is a subsequence of "abcde" while "aec" is not).
      * s = "ahbgdc"
      * t = "acb"
      * return false.
@@ -522,11 +537,14 @@ public class StringQuestions {
 
     /**
      *
-     * Given a string s that consists of only uppercase English letters, you can perform at most k operations on that string.
+     * Given a string s that consists of only uppercase English letters,
+     * you can perform at most k operations on that string.
      *
-     * In one operation, you can choose any character of the string and change it to any other uppercase English character.
+     * In one operation, you can choose any character of the string and
+     * change it to any other uppercase English character.
      *
-     * Find the length of the longest sub-string containing all repeating letters you can get after performing the above operations.
+     * Find the length of the longest sub-string containing all repeating letters you can get
+     * after performing the above operations.
      * Input:
      * s = "AABABBA", k = 1
      *
@@ -601,7 +619,8 @@ public class StringQuestions {
             if (uniqueCharSet.size() > k) {
                 int cStart = s.charAt(start) - 'A';
                 int charToRemove = cStart;
-                while (cStart == charToRemove && charFreq[cStart] > 0) {  //While loop because we need to decrement the char count that we are getting rid of.
+                while (cStart == charToRemove && charFreq[cStart] > 0) {
+                    //While loop because we need to decrement the char count that we are getting rid of.
                     cStart = s.charAt(start) - 'A';
                     charFreq[cStart] -= 1;
                     start += 1;
@@ -615,7 +634,9 @@ public class StringQuestions {
     }
 
     /**
-     * Given two strings a and b of the same length, choose an index and split both strings at the same index, splitting a into two strings: a = aprefix + asuffix, and splitting b into two strings: b = bprefix + bsuffix. Check if aprefix + bsuffix or bprefix + asuffix forms a palindrome.
+     * Given two strings a and b of the same length, choose an index and split both strings at the same index,
+     * splitting a into two strings: a = aprefix + asuffix, and splitting b into two strings: b = bprefix + bsuffix.
+     * Check if aprefix + bsuffix or bprefix + asuffix forms a palindrome.
      * @param a
      * @param b
      * @return
@@ -633,7 +654,8 @@ public class StringQuestions {
             end -= 1;
         }
 
-        //This is what I initially tried. But this is not required. Checking the middle part of either of the strings would do.
+        //This is what I initially tried. But this is not required.
+        // Checking the middle part of either of the strings would do.
         /*String s1s2 = s1.substring(0, start) + s2.substring(start);
         String s2s1 = s2.substring(0, start) + s1.substring(start);
         return isPalindrome(s1s2) || isPalindrome(s2s1);*/

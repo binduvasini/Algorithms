@@ -59,11 +59,14 @@ public class StackApproaches {
     }
 
     /**
-     * Given a string containing only three types of characters: '(', ')' and '*', write a function to check whether this string is valid. We define the validity of a string by these rules:
+     * Given a string containing only three types of characters: '(', ')'
+     * and '*', write a function to check whether this string is valid.
+     * We define the validity of a string by these rules:
      * 1. Any left parenthesis '(' must have a corresponding right parenthesis ')'.
      * 2. Any right parenthesis ')' must have a corresponding left parenthesis '('.
      * 3. Left parenthesis '(' must go before the corresponding right parenthesis ')'.
-     * 4. '*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string.
+     * 4. '*' could be treated as a single right parenthesis ')' 
+     * or a single left parenthesis '(' or an empty string.
      * 5. An empty string is also valid.
      */
     public boolean checkValidString(String s) {
@@ -92,7 +95,10 @@ public class StackApproaches {
     }
 
     /**
-     * Given a list of daily temperatures T, return a list such that, for each day in the input, tells you how many days you would have to wait until a warmer temperature. If there is no future day for which this is possible, put 0.
+     * Given a list of daily temperatures T,
+     * return a list such that,
+     * for each day in the input, tells you how many days you would have to wait until a warmer temperature.
+     * If there is no future day for which this is possible, put 0.
      * Input: T = [73, 74, 75, 71, 69, 72, 76, 73]
      * Output: [1, 1, 4, 2, 1, 1, 0, 0].
      *
@@ -118,9 +124,12 @@ public class StackApproaches {
     }
 
     /**
-     * StockSpanner collects the daily price quotes for a stock and returns the span of that stock's price for the current day.
-     * The span of the stock's price today is defined as the maximum number of previous days for which the price of the stock was less than or equal to today's price.
-     * For example, if the price of a stock over the next 7 days were [100, 80, 60, 70, 58, 75, 85], then the stock spans would be [1, 1, 1, 2, 1, 4, 6].
+     * StockSpanner collects the daily price quotes for a stock and
+     * returns the span of that stock's price for the current day.
+     * The span of the stock's price today is defined as the maximum number of previous days
+     * for which the price of the stock was less than or equal to today's price.
+     * For example, if the price of a stock over the next 7 days were [100, 80, 60, 70, 58, 75, 85],
+     * then the stock spans would be [1, 1, 1, 2, 1, 4, 6].
      *
      * @param price
      * @return

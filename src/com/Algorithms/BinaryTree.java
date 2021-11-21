@@ -386,7 +386,8 @@ public class BinaryTree {
         return node;
     }
 
-    private Node middleElem(Node head, Node tail) {  //We need an argument for tail because we will pass the middle element to this method.
+    private Node middleElem(Node head, Node tail) {
+        //We need an argument for tail because we will pass the middle element to this method.
         Node fast = head, slow = head;
         while (fast != tail && fast.next != tail) {
             slow = slow.next;
@@ -503,10 +504,16 @@ public class BinaryTree {
                 successor = node.data;
             }
         } else if (data < root.data) {  //The value is in the LST.
-            successor = root.data;  //During the recursion, the value will match the root and it might not have a RST, so the successor might not be set. So, here we are setting it and calling the recursion.
+            //During the recursion, the value will match the root,
+            // and it might not have a RST, so the successor might not be set.
+            // So, here we are setting it and calling the recursion.
+            successor = root.data;
             predSuc(root.left, data);
         } else {
-            predecessor = root.data;  //During the recursion, the value will match the root and it might not have a LST, so the predecessor might not be set. So, here we are setting it and calling the recursion.
+            //During the recursion, the value will match the root,
+            // and it might not have a LST, so the predecessor might not be set.
+            // So, here we are setting it and calling the recursion.
+            predecessor = root.data;
             predSuc(root.right, data);
         }
     }
@@ -535,8 +542,10 @@ public class BinaryTree {
             else if (root.right == null)
                 return root.left;
             else {  //Node with two children
-                root.data = findSuccessor(root);  //Copy the data from successor to this node.
-                root.right = deleteNodeFromBST(root.right, root.data); //pass the RST of this node to recursion to delete the successor node.
+                //Copy the data from successor to this node.
+                root.data = findSuccessor(root);
+                //pass the RST of this node to recursion to delete the successor node.
+                root.right = deleteNodeFromBST(root.right, root.data);
             }
         }
         return root;
@@ -634,7 +643,9 @@ public class BinaryTree {
                     xExists = true;
                 if (treeNode.data == y)
                     yExists = true;
-                if (treeNode.left != null && treeNode.right != null) { //Rather than checking if the children belong to a same parent, check if the parent's children are x & y.
+                if (treeNode.left != null && treeNode.right != null) {
+                    //Rather than checking if the children belong to a same parent,
+                    // check if the parent's children are x & y.
                     if ((treeNode.left.data == x && treeNode.right.data == y)
                             ||
                             (treeNode.right.data == x && treeNode.left.data == y))
@@ -655,7 +666,8 @@ public class BinaryTree {
     }
 
     /**
-     * Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.
+     * Given a binary tree and a sum, determine if the tree has a root-to-leaf path
+     * such that adding up all the values along the path equals the given sum.
      *
      * @param root
      * @param sum
@@ -707,7 +719,9 @@ public class BinaryTree {
     }
 
     /**
-     * Given a binary tree and a sum, find the number of paths that sum to the given sum. The path does not need to start or end at the root or a leaf, but it must go downwards (traveling only from parent nodes to child nodes).
+     * Given a binary tree and a sum, find the number of paths that sum to the given sum.
+     * The path does not need to start or end at the root or a leaf,
+     * but it must go downwards (traveling only from parent nodes to child nodes).
      *
      * @param root
      * @param sum
@@ -735,7 +749,9 @@ public class BinaryTree {
     }
 
     /**
-     * Given a binary tree, find the maximum path sum. A path is defined as any sequence of nodes from any starting node to any node in the tree along the parent-child connections. The path must contain at least one node and does not need to go through the root.
+     * Given a binary tree, find the maximum path sum.
+     * A path is defined as sequence of nodes from any node to any node in the tree along the parent-child connections.
+     * The path must contain at least one node and does not need to go through the root.
      *
      * @param root
      * @return
@@ -815,13 +831,20 @@ public class BinaryTree {
         currentSum = currentSum * 10 + root.data;
         if (isLeaf(root))
             return currentSum;
-        int leftSum = sumRootToLeafNumbers(root.left, currentSum);  //Here is where the new sum is calculated at every subtree.
-        int rightSum = sumRootToLeafNumbers(root.right, currentSum);  //Here is where the new sum is calculated at every subtree.
+        //Here is where the new sum is calculated at every subtree.
+        int leftSum = sumRootToLeafNumbers(root.left, currentSum);
+        //Here is where the new sum is calculated at every subtree.
+        int rightSum = sumRootToLeafNumbers(root.right, currentSum);
         return leftSum + rightSum;
     }
 
     /**
-     * Given a binary tree, write a function to get the maximum width of the given tree. The width of a tree is the maximum width among all levels. The binary tree has the same structure as a full binary tree, but some nodes are null. The width of one level is defined as the length between the end-nodes (the leftmost and right most non-null nodes in the level, where the null nodes between the end-nodes are also counted into the length calculation.
+     * Given a binary tree, write a function to get the maximum width of the given tree.
+     * The width of a tree is the maximum width among all levels.
+     * The binary tree has the same structure as a full binary tree, but some nodes are null.
+     * The width of one level is defined as the length between the end-nodes
+     * (the leftmost and right most non-null nodes in the level),
+     * where the null nodes between the end-nodes are also counted into the length calculation.
      * Input: [1,1,1,1,null,null,1,1,null,null,1]
      * Output: 8
      * @param root

@@ -24,7 +24,9 @@ public class Matrix {
     }
 
     /**
-     * You are given an array coordinates, coordinates[i] = [x, y], where [x, y] represents the coordinate of a point. Check if these points make a straight line in the XY plane.
+     * You are given an array coordinates,
+     * coordinates[i] = [x, y], where [x, y] represents the coordinate of a point.
+     * Check if these points make a straight line in the XY plane.
      *
      * @param coordinates
      * @return
@@ -63,7 +65,9 @@ public class Matrix {
 
     /**
      * Return the count of all possible paths from the first cell to the last cell in a matrix.
-     * A robot is located at the top-left corner of a m x n grid. The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid.
+     * A robot is located at the top-left corner of a m x n grid.
+     * The robot can only move either down or right at any point in time.
+     * The robot is trying to reach the bottom-right corner of the grid.
      * How many possible unique paths are there?
      *
      * @param rows
@@ -123,9 +127,15 @@ public class Matrix {
     }
 
     /**
-     * The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of M x N rooms laid out in a 2D grid. Our valiant knight (K) was initially positioned in the top-left room and must fight his way through the dungeon to rescue the princess.
-     * The knight has an initial health point represented by a positive integer. If at any point his health point drops to 0, he can't proceed.
-     * Some of the rooms are guarded by demons, so the knight loses health (negative integers) upon entering these rooms; other rooms are either empty (0's) or contain magic orbs that increase the knight's health (positive integers). The knight moves only rightward or downward in each step.
+     * The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon.
+     * The dungeon consists of M x N rooms laid out in a 2D grid.
+     * Our valiant knight (K) was initially positioned in the top-left room and
+     * must fight his way through the dungeon to rescue the princess.
+     * The knight has an initial health point represented by a positive integer.
+     * If at any point his health point drops to 0, he can't proceed.
+     * Some rooms are guarded by demons, so the knight loses health (negative integers) upon entering these rooms;
+     * other rooms are either empty (0's) or contain magic orbs that increase the knight's health (positive integers).
+     * The knight moves only rightward or downward in each step.
      * Determine the knight's minimum initial health so that he is able to rescue the princess.
      * Input: [
      * [-2 (K),	-3,	3],
