@@ -34,10 +34,12 @@ public class ArrayQuestions {
             int[] currInterval = intervals[i];
             int[] prevInterval = queue.getLast();
 
-            if (currInterval[0] > prevInterval[1]) { //if the current interval end point is already greater than the prev, we need it in the queue.
+            if (currInterval[0] > prevInterval[1]) {
+                //if the current interval end point is already greater than the prev, we need it in the queue.
                 queue.addLast(currInterval);
             }
-            queue.getLast()[1] = Math.max(prevInterval[1], currInterval[1]); //update the interval in the queue rather the current one.
+            queue.getLast()[1] = Math.max(prevInterval[1], currInterval[1]);
+            //update the interval in the queue rather the current one.
         }
 
         for (int[] inters : queue) {
@@ -46,7 +48,8 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given an array of integers nums and a positive integer k, find whether it's possible to divide this array into sets of k consecutive numbers.
+     * Given an array of integers nums and a positive integer k,
+     * find whether it's possible to divide this array into sets of k consecutive numbers.
      * Input: nums = [3,3,2,2,1,1], k = 3
      * Output: true
      *
@@ -114,7 +117,8 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given a collection of stones weighing a non-negative number, each turn, we choose the two heaviest stones and smash them together.
+     * Given a collection of stones weighing a non-negative number,
+     * each turn, we choose the two heaviest stones and smash them together.
      * Suppose the stones have weights x and y, the result of this smash is
      * If x == y, both stones are totally destroyed.
      * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
@@ -146,7 +150,8 @@ public class ArrayQuestions {
     }
 
     /**
-     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]. The subarray with maximum sum is 6: [4, -1, 2, 1].
+     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
+     * The subarray with maximum sum is 6: [4, -1, 2, 1].
      *
      * @param nums
      * @return
@@ -157,12 +162,16 @@ public class ArrayQuestions {
     }
 
     private int subArrayMaxSum(int[] nums) {
-        int subarrayMax = nums[0], endOfCurrMax = nums[0];  //Initializing with nums[0] rather than Integer.MIN_VALUE because the array may have all negative integers.
+        int subarrayMax = nums[0], endOfCurrMax = nums[0];
+        //Initializing with nums[0] rather than Integer.MIN_VALUE because the array may have all negative integers.
         for (int i = 1; i < nums.length; i++) {
-            endOfCurrMax = Math.max(endOfCurrMax + nums[i], nums[i]);  //When nums[i] is greater than endOfCurrMax + nums[i], a new subarray starts.
-            subarrayMax = Math.max(subarrayMax, endOfCurrMax);  //When endOfCurrMax is greater than subarrayMax, the current max subarray ends.
+            //When nums[i] is greater than endOfCurrMax + nums[i], a new subarray starts.
+            endOfCurrMax = Math.max(endOfCurrMax + nums[i], nums[i]);
+            //When endOfCurrMax is greater than subarrayMax, the current max subarray ends.
+            subarrayMax = Math.max(subarrayMax, endOfCurrMax);
 
-            //Use markers to mark the starting and ending positions of the subarray. Use the below conditions rather than Math.max
+            //Use markers to mark the starting and ending positions of the subarray.
+            //Use the below conditions rather than Math.max
             /*if (nums[i] > endOfCurrMax + nums[i]) {
                 endOfCurrMax = nums[i];
                 startInd = i;
@@ -203,7 +212,8 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given a circular array, find the subarray with maximum sum. A circular array means the end of the array connects to the beginning of the array.
+     * Given a circular array, find the subarray with maximum sum.
+     * A circular array means the end of the array connects to the beginning of the array.
      * Input: [5,-3,5]
      * Output: 10
      *
@@ -280,7 +290,8 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given an integer array, find one continuous subarray that if you only sort this subarray in ascending order, the whole array will be sorted.
+     * Given an integer array, find one continuous subarray that if you only sort this subarray in ascending order,
+     * the whole array will be sorted.
      * Input: [2, 6, 4, 8, 10, 9, 15]
      * Output: 5
      *
@@ -360,7 +371,9 @@ public class ArrayQuestions {
      * @param k
      */
     public void rotate(int[] nums, int k) {
-        k %= nums.length;  //If k is greater than nums.length, rotating the array (k % nums.length) times gives the same result as it is for k times.
+        //If k is greater than nums.length,
+        // rotating the array (k % nums.length) times gives the same result as it is for k times.
+        k %= nums.length;
         reverse(nums, 0, nums.length - 1);
         reverse(nums, 0, k - 1);
         reverse(nums, k, nums.length - 1);
@@ -387,7 +400,9 @@ public class ArrayQuestions {
             return 1;
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
-                swap(nums, nums[i] - 1, i);  //Swap the numbers to keep in their positions. The non-positive numbers will end up in the positions of positive missing numbers.
+                //Swap the numbers to keep in their positions.
+                // The non-positive numbers will end up in the positions of positive missing numbers.
+                swap(nums, nums[i] - 1, i);
             }
         }
 
@@ -473,12 +488,14 @@ public class ArrayQuestions {
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
         if (nums1.length == 0 || nums2.length == 0)
             return new LinkedList<>();
-        // The below declaration is equivalent to new PriorityQueue<>((o1, o2) -> (o1.get(0)+o1.get(1)) - (o2.get(0)+o2.get(1)));
+        // The below declaration is equivalent to
+        // new PriorityQueue<>((o1, o2) -> (o1.get(0)+o1.get(1)) - (o2.get(0)+o2.get(1)));
         PriorityQueue<List<Integer>> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> (o.get(0) + o.get(1))));
         for (int num1 : nums1) {
             for (int num2 : nums2) {
                 minHeap.add(List.of(num1, num2));
-                //We need to throw all the elements into minHeap. So we aren't checking if the size > k and removing elements.
+                //We need to throw all the elements into minHeap.
+                // So we aren't checking if the size > k and removing elements.
             }
         }
         List<List<Integer>> list = new LinkedList<>();
@@ -545,7 +562,9 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given an array nums of n integers where n > 1,  return an array output such that output[i] is equal to the product of all the elements of nums except nums[i]. In other words, find the product of all other elements in the array.
+     * Given an array nums of n integers where n > 1,
+     * return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].
+     * In other words, find the product of all other elements in the array.
      * Input : [1, 2, 3, 4]
      * Output : [24, 12, 8, 6]
      * @param nums
@@ -574,16 +593,14 @@ public class ArrayQuestions {
 
     /**
      * There are 8 prison cells in a row, and each cell is either occupied or vacant.
-     *
-     *     Each day, whether the cell is occupied or vacant changes according to the following rules:
-     *
-     *     If a cell has two adjacent neighbors that are both occupied or both vacant, then the cell becomes occupied.
-     *     Otherwise, it becomes vacant.
-     *             (Note that because the prison is a row, the first and the last cells in the row can't have two adjacent neighbors.)
-     *
-     *     We describe the current state of the prison in the following way: cells[i] == 1 if the i-th cell is occupied, else cells[i] == 0.
-     *
-     *     Given the initial state of the prison, return the state of the prison after N days (and N such changes described above.)
+     * Each day, whether the cell is occupied or vacant changes according to the following rules:
+     * If a cell has two adjacent neighbors that are both occupied or both vacant, then the cell becomes occupied.
+     * Otherwise, it becomes vacant.
+     * (Note that because the prison is a row, first and the last cells in the row can't have two adjacent neighbors.)
+     * We describe the current state of the prison in the following way: cells[i] == 1 if the i-th cell is occupied,
+     * else cells[i] == 0.
+     * Given the initial state of the prison,
+     * return the state of the prison after N days (and N such changes described above.)
      *
      * Input: cells = [1,0,0,1,0,0,1,0], N = 1000000000
      * Output: [0,0,1,1,1,1,1,0]
@@ -645,5 +662,63 @@ public class ArrayQuestions {
         }
 
         return set.pollFirst().intValue();
+    }
+
+    /**
+     * Best day to buy stock and the best day to sell it. Find the maximum profit given you buy and sell a stock once.
+     * @param prices
+     * @return
+     */
+    public int maxProfitSellOnce(int[] prices) {
+        if(prices.length == 0)
+            return 0;
+        int maxDiff = Integer.MIN_VALUE;
+        int minimum = Integer.MAX_VALUE;
+        for (int price : prices) {
+            minimum = Math.min(minimum, price);
+            maxDiff = Math.max(maxDiff, price - minimum);
+        }
+        return maxDiff;
+    }
+
+    /**
+     * Best day to buy stock and the best day to sell it. You can only hold at most one share of the stock at any time.
+     * However, you can buy it then immediately sell it on the same day.
+     * @param prices
+     * @return
+     */
+    public int maxProfitSellMultipleTimes(int[] prices) {
+        int profit = 0;
+        for(int i = 1; i < prices.length; i++) {
+            if(prices[i] > prices[i - 1]){
+                profit += prices[i] - prices[i - 1];
+            }
+        }
+        return profit;
+    }
+
+    /**
+     * Find a contiguous subarray that has the largest product.
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int maxProd_currIndex = 0;
+        int minProd_currIndex = 0;
+        int maxProd = 0;
+
+        if(nums.length == 1)
+            return nums[0];
+
+        for(int i : nums){
+            int tmp = maxProd_currIndex;
+
+            maxProd_currIndex = Math.max(i, Math.max(i*tmp, i*minProd_currIndex));
+            minProd_currIndex = Math.min(i, Math.min(i*tmp, i*minProd_currIndex));
+
+            maxProd = Math.max(maxProd, maxProd_currIndex);
+        }
+
+        return maxProd;
     }
 }
