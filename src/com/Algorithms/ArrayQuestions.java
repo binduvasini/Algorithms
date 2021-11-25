@@ -240,22 +240,22 @@ public class ArrayQuestions {
      * Find the maximum length subarray for a given sum.
      *
      * nums = { 10, 5, 2, 7, 1, 9 },
-     * targetSum = 15
+     * target = 15
      *
      * Output: 4
      *
      * @param nums
-     * @param targetSum
+     * @param target
      * @return
      */
-    public int maxLengthSubarray(int[] nums, int targetSum) {
+    public int maxLengthSubarray(int[] nums, int target) {
         int prefixSum = 0;
         int longestSubarrayLen = 0;
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             prefixSum += nums[i];
-            if (map.containsKey(prefixSum - targetSum)) {
-                int prefixIndex = map.get(prefixSum - targetSum);
+            if (map.containsKey(prefixSum - target)) {
+                int prefixIndex = map.get(prefixSum - target);
                 longestSubarrayLen = Math.max(longestSubarrayLen, i - prefixIndex);
             } else {
                 map.put(prefixSum, i);
@@ -801,5 +801,56 @@ public class ArrayQuestions {
             else j -= 1;
         }
         return maxarea;
+    }
+
+    /**
+     * Find minimum length subarray whose sum is greater than or equal to the target.
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int minSubArrayLen(int[] nums, int target) {
+        int start = 0, end = 0;
+        int sum = 0; //The sum at every window.
+        int shortestSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
+
+        while (end < nums.length) {  //We move the end pointer until we find the required sum.
+            sum += nums[end];
+
+            while (sum >= target) {  //We found the sum greater or equal to target.
+                // Now we move the start pointer until we find the required the shortest size.
+                shortestSubarrayLen = Math.min(shortestSubarrayLen, end - start + 1);
+                sum -= nums[start];
+                start += 1;
+            }
+            end += 1;
+        }
+        return shortestSubarrayLen == Integer.MAX_VALUE ? 0: shortestSubarrayLen;
+    }
+
+    /**
+     * Find minimum length subarray whose sum is equal to the target.
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int minSubarrayLen(int[] nums, int target) {
+        int start = 0, end = 0;
+        int sum = 0; //The sum at every window.
+        int shortestSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
+
+        while (end < nums.length) {  //We move the end pointer until we find the required sum.
+            sum += nums[end];
+
+            while (sum > target) {  //We found the sum greater than target.
+                // Now we move the start pointer until we find the required the shortest size.
+                sum -= nums[start];
+                start += 1;  //Shrink the window until the sum is equal to target.
+                if (sum == target)  //Update the length only when the window sum is equal to target.
+                    shortestSubarrayLen = Math.min(shortestSubarrayLen, end - start + 1);
+            }
+            end += 1;
+        }
+        return shortestSubarrayLen == Integer.MAX_VALUE ? 0: shortestSubarrayLen;
     }
 }
