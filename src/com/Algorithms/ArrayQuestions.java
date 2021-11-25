@@ -237,30 +237,56 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+     * Find the maximum length subarray for a given sum.
+     *
+     * Input: arr = {-2, -3, 4, -1, -2, 1, 5, -3}
+     * Output: 7
+     *
+     * @param nums
+     * @param targetSum
+     * @return
+     */
+    public int maxLengthSubarray(int[] nums, int targetSum) {
+        int prefixSum = 0;
+        int longestSubarrayLen = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            prefixSum += nums[i];
+            if (map.containsKey(prefixSum - targetSum)) {
+                int prefixIndex = map.get(prefixSum - targetSum);
+                longestSubarrayLen = Math.max(longestSubarrayLen, i - prefixIndex);
+            } else {
+                map.put(prefixSum, i);
+            }
+        }
+        return longestSubarrayLen;
+    }
+
+    /**
+     * Given a binary array, find the maximum length of a contiguous subarray with an equal number of 0 and 1.
      *
      * @param nums
      * @return
      */
     public int findMaxLength(int[] nums) {
-        int sumSofar = 0;
-        int longestSubarray = 0;
+        int prefixSum = 0;
+        int longestSubarrayLen = 0;
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             int n = nums[i];
             if (n == 0) {
                 n = -1;
             }
-            sumSofar += n;
-            if (sumSofar == 0)
-                longestSubarray = i + 1;
-            if (map.containsKey(sumSofar)) {
-                if (longestSubarray < i - map.get(sumSofar))
-                    longestSubarray = i - map.get(sumSofar);
+            prefixSum += n;
+            if (prefixSum == 0)
+                longestSubarrayLen = i + 1;
+            if (map.containsKey(prefixSum)) {
+                int prefixIndex = map.get(prefixSum);
+                longestSubarrayLen = Math.max(longestSubarrayLen, i - prefixIndex);
             } else
-                map.put(sumSofar, i);
+                map.put(prefixSum, i);
         }
-        return longestSubarray;
+        return longestSubarrayLen;
     }
 
     /**
