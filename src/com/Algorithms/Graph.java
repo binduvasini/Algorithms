@@ -84,7 +84,7 @@ public class Graph {
         node.visited = true;
         System.out.println(node.data);
         if (adjListofNodes.containsKey(node)) {
-            adjListofNodes.forEach((graphNode, graphNodes) -> {
+            adjListofNodes.forEach((graphNode, graphNodes) -> {  //For each neighbor,
                 if (!graphNode.visited) {
                     DFS(graphNode.data);
                 }
@@ -92,7 +92,7 @@ public class Graph {
         }
     }
 
-    boolean hasCycle(int nodeData, ArrayDeque<Integer> visiting) {
+    boolean hasCycle(int nodeData, HashSet<Integer> visiting) {
         GraphNode node = getNode(nodeData);
         node.visited = true;
         System.out.println(node.data);
@@ -115,28 +115,27 @@ public class Graph {
             return new Integer[0];
         ArrayDeque<Integer> order = new ArrayDeque<>();
         //To store the sorted elements.
-        // We use a stack because we will push the nodes in the order of highest in-degrees.
-        // So when we pop them out, the nodes with 0 in-degree will come out first.
         for (GraphNode graphNode : nodes) {
             if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, new HashSet<>()))
-                return new Integer[0];
+                return new Integer[0];  //return an empty array because there is a cycle.
         }
         return (Integer[]) order.toArray();
     }
 
-    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> indegreeSet) {
+    //This is detecting a cycle as well as sorting topologically
+    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> visiting) {
         node.visited = true;
-        indegreeSet.add(node.data);  //A set to maintain the in-degree of every node.
+        visiting.add(node.data);  //to detect a cycle
         if (adjListofNodes.containsKey(node)) {
-            for (GraphNode graphNode : adjListofNodes.get(node)) {
-                if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, indegreeSet)) {
+            for (GraphNode graphNode : adjListofNodes.get(node)) {  //For each neighbor
+                if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, visiting)) {
                     return false;
-                } else if (indegreeSet.contains(graphNode.data)) {
+                } else if (visiting.contains(graphNode.data)) {
                     return false;
                 }
             }
         }
-        indegreeSet.remove(node.data);
+        visiting.remove(node.data);
         order.push(node.data);
         return true;
     }

@@ -59,30 +59,30 @@ public class GraphQuestions {
             graph.get(prerequisite[1]).add(prerequisite[0]);
         }
 
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
         HashSet<Integer> visited = new HashSet<>();
         for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq) && !hasNoCycleUtil(prereq, visited, stack)) {
+            if (!visited.contains(prereq) && !hasNoCycleUtil(prereq, visited, new HashSet<>())) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean hasNoCycleUtil(Integer prereq, HashSet<Integer> visited, ArrayDeque<Integer> stack) {
+    //No need to do topological sort for this question. We just need to detect a cycle
+    private boolean hasNoCycleUtil(Integer prereq, HashSet<Integer> visited, HashSet<Integer> visiting) {
         visited.add(prereq);
-        stack.add(prereq);
+        visiting.add(prereq);
         if (graph.containsKey(prereq)) {
             //We need to check this cuz we come back here during recursion with the actual course of prerequisites
             for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, stack)) {
+                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, visiting)) {
                     return false;
-                } else if (stack.contains(course)) {
+                } else if (visiting.contains(course)) {
                     return false;
                 }
             }
         }
-        stack.remove(prereq);
+        visiting.remove(prereq);
         return true;
     }
 
@@ -113,10 +113,12 @@ public class GraphQuestions {
         //Use topological sort.
         ArrayDeque<Integer> courseOrder = new ArrayDeque<>();
         HashSet<Integer> visited = new HashSet<>();
-        HashSet<Integer> beingVisited = new HashSet<>();
         for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq) && !hasNoCycleUtil(prereq, visited, courseOrder, new HashSet<>())) {
-                return new int[0];
+            if (!visited.contains(prereq)
+                    &&
+                    !hasNoCycleUtil(prereq, visited, courseOrder, new HashSet<>())
+            ) {
+                return new int[0];  //return an empty array because there is a cycle.
             }
         }
 
@@ -130,22 +132,22 @@ public class GraphQuestions {
     }
 
     private boolean hasNoCycleUtil(
-            Integer prereq, HashSet<Integer> visited, ArrayDeque<Integer> courseOrder, HashSet<Integer> indegreeSet
+            Integer prereq, HashSet<Integer> visited, ArrayDeque<Integer> courseOrder, HashSet<Integer> visiting
     ) {
         visited.add(prereq);
-        indegreeSet.add(prereq);
+        visiting.add(prereq); //To detect a cycle
         if (graph.containsKey(prereq)) {
             //We need to check this cuz we come back here during recursion with the actual course of prerequisites
             for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, courseOrder, indegreeSet)) {
+                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, courseOrder, visiting)) {
                     return false;
-                } else if (indegreeSet.contains(course)) {
+                } else if (visiting.contains(course)) {
                     return false;
                 }
             }
         }
-        indegreeSet.remove(prereq);
-        courseOrder.push(prereq);
+        visiting.remove(prereq);
+        courseOrder.push(prereq); //Store the sorted elements
         return true;
     }
 
