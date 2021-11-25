@@ -462,4 +462,32 @@ public class GraphQuestions {
         }
         return freshOranges > 0 ? -1 : minutes;
     }
+
+    public void alienDictionary() {
+        String[] dictionary =  {"wrt", "wrf", "er", "ett", "rftt"};
+        Map<Character, List<Character>> graph = new HashMap<>();
+        for (String word : dictionary) {
+            for (char c : word.toCharArray()) {
+                graph.putIfAbsent(c, new ArrayList<>());
+            }
+        }
+
+        for (int i = 1; i < dictionary.length; i++) {
+            String first = dictionary[i - 1];
+            String second = dictionary[i];
+            int length = Math.min(first.length(), second.length());
+
+            for (int j = 0; j < length; j++) {
+                char parent = first.charAt(j);
+                char child = second.charAt(j);
+                if (parent != child) {
+                    if (!graph.get(parent).contains(child)) {
+                        graph.get(parent).add(child);
+                    }
+                    break;
+                }
+            }
+        }
+
+    }
 }
