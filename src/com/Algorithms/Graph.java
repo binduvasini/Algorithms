@@ -140,6 +140,18 @@ public class Graph {
         return true;
     }
 
+    int connectedComponents(int nodeData) {
+        int count = 0;
+        GraphNode node = getNode(nodeData);
+        for (GraphNode graphNode : nodes) {
+            if (!graphNode.visited) {
+                count += 1;
+                DFS(graphNode.data);
+            }
+        }
+        return count;
+    }
+
     void BFS(int nodeData) {
         GraphNode node = getNode(nodeData);
         Queue<GraphNode> queue = new LinkedList<>();
