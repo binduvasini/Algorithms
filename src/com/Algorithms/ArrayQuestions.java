@@ -239,8 +239,10 @@ public class ArrayQuestions {
     /**
      * Find the maximum length subarray for a given sum.
      *
-     * Input: arr = {-2, -3, 4, -1, -2, 1, 5, -3}
-     * Output: 7
+     * nums = { 10, 5, 2, 7, 1, 9 },
+     * targetSum = 15
+     *
+     * Output: 4
      *
      * @param nums
      * @param targetSum
