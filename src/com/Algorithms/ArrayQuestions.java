@@ -237,6 +237,37 @@ public class ArrayQuestions {
     }
 
     /**
+     * Given an array of integers nums and a target,
+     * find the total number of continuous subarray whose sum equals to target.
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int subarraySum(int[] nums, int target) {
+        int count = 0;
+        Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, frequency of this sum>
+
+        map.put(0, 1);
+        //There may be an element in the array which is exactly the target.
+        // For eg, target = 3, nums = [1, 2, 1, 3].
+        // The last element 3 itself is a subarray.
+        // When we are checking prefixSum - target, we should find a value for 0 in the hashmap (3 - 0).
+
+        int prefixSum = 0;
+        for (int num : nums) {
+            prefixSum += num;
+
+            if (map.containsKey(prefixSum - target)) {
+                count += map.get(prefixSum - target);
+            }
+
+            map.put(prefixSum, map.getOrDefault(prefixSum, 0) + 1);
+        }
+        return count;
+    }
+
+    /**
      * Find the maximum length subarray for a given sum.
      *
      * nums = { 10, 5, 2, 7, 1, 9 },
@@ -251,7 +282,7 @@ public class ArrayQuestions {
     public int maxLengthSubarray(int[] nums, int target) {
         int prefixSum = 0;
         int longestSubarrayLen = 0;
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             prefixSum += nums[i];
             if (map.containsKey(prefixSum - target)) {
@@ -273,7 +304,7 @@ public class ArrayQuestions {
     public int findMaxLength(int[] nums) {
         int prefixSum = 0;
         int longestSubarrayLen = 0;
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             int n = nums[i];
             if (n == 0) {
