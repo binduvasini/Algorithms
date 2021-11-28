@@ -27,7 +27,7 @@ public class ArrayQuestions {
     public void mergeIntervals(int[][] intervals) {
         LinkedList<int[]> queue = new LinkedList<>();
         //sort the value in 0th index of each array
-        Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
 
         queue.add(intervals[0]);
         for (int i = 1; i < intervals.length; i++) {
