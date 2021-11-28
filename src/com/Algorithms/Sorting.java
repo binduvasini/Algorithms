@@ -100,12 +100,14 @@ public class Sorting {
         for (int num : array) {
             int doubled = num * 2;
 
-            if (map.get(num) == 0)  //No need to check whether map containsKey.
+            //No need to check whether map containsKey.
+            if (map.get(num) == 0)  //This num may be that double we already found. So will continue.
                 continue;
-            if (map.getOrDefault(doubled, 0) <= 0)  //Instead of containsKey
+            //Instead of containsKey
+            if (map.getOrDefault(doubled, 0) <= 0)  //The double is not found. So we can return here.
                 return false;
 
-            map.put(doubled, map.get(doubled) - 1);
+            map.put(doubled, map.get(doubled) - 1);  //Towards the end, we should have a hashmap with empty values.
             map.put(num, map.get(num) - 1);
 
         }
@@ -139,9 +141,9 @@ public class Sorting {
         for (int num : array) {
             int doubled = num * 2;
 
-            if (map.get(num) == 0)
+            if (map.get(num) == 0)  //This num may be that double we already found. So will continue.
                 continue;
-            if (map.getOrDefault(doubled, 0) <= 0)
+            if (map.getOrDefault(doubled, 0) <= 0)  //The double is not found. So we can return here.
                 return new int[0];  //Negative case
 
             map.put(doubled, map.get(doubled) - 1);
