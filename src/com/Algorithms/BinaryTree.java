@@ -32,7 +32,7 @@ public class BinaryTree {
         addNodeSortedRec(root, newNode);
     }
 
-    private TreeNode addNodeSortedRec(TreeNode current, TreeNode newNode) {
+    private void addNodeSortedRec(TreeNode current, TreeNode newNode) {
         if (newNode.data <= current.data) {
             if (current.left != null)
                 addNodeSortedRec(current.left, newNode);
@@ -44,7 +44,6 @@ public class BinaryTree {
             else
                 current.right = newNode;
         }
-        return current;
     }
 
     boolean contains(int value) {
@@ -56,12 +55,12 @@ public class BinaryTree {
 
     private boolean containsRec(TreeNode current, int value) {  //Use the same method for searching a value in a BST.
         if (current.data == value)
-            return true;  //return current
+            return true;
         if (value < current.data) {
             if (current.left != null)
                 return containsRec(current.left, value);
             else
-                return false;  //return null
+                return false;
         } else {
             if (current.right != null)
                 return containsRec(current.right, value);
@@ -535,8 +534,7 @@ public class BinaryTree {
         else if (key > root.data)  //Do your search in the RST
             root.right = deleteNodeFromBST(root.right, key);
 
-        else {  //Found the node
-            //Node with one child or no children
+        else {  //Found the node with one child or no children
             if (root.left == null)
                 return root.right;
             else if (root.right == null)
