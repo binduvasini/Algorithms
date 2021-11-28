@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class StringQuestions {
 
@@ -519,22 +521,23 @@ public class StringQuestions {
      * s = "ahbgdc"
      * t = "acb"
      * return false.
+     *
      * @param s
      * @param t
      * @return
      */
     public boolean isSubsequence(String s, String t) {
-        if(t.isEmpty())
+        if (t.isEmpty())
             return true;
-        else if(s.isEmpty())
+        else if (s.isEmpty())
             return false;
         int sPointer = 0, tPointer = 0, count = t.length();
-        while(sPointer < s.length()){
-            if(s.charAt(sPointer) == t.charAt(tPointer)){
+        while (sPointer < s.length()) {
+            if (s.charAt(sPointer) == t.charAt(tPointer)) {
                 count -= 1;
                 tPointer += 1;
             }
-            if(count == 0)
+            if (count == 0)
                 return true;
             sPointer += 1;
         }
@@ -542,20 +545,20 @@ public class StringQuestions {
     }
 
     /**
-     *
      * Given a string s that consists of only uppercase English letters,
      * you can perform at most k operations on that string.
-     *
+     * <p>
      * In one operation, you can choose any character of the string and
      * change it to any other uppercase English character.
-     *
+     * <p>
      * Find the length of the longest sub-string containing all repeating letters you can get
      * after performing the above operations.
      * Input:
      * s = "AABABBA", k = 1
-     *
+     * <p>
      * Output:
      * 4
+     *
      * @param s
      * @param k
      * @return
@@ -564,7 +567,7 @@ public class StringQuestions {
         int start = 0, end = 0;
         int[] charFreq = new int[26];
         int maxFreq = 0, longestLength = 0;
-        while(end < s.length()) {
+        while (end < s.length()) {
             int c = s.charAt(end) - 'A';
             charFreq[c] += 1;
             maxFreq = Math.max(maxFreq, charFreq[c]);
@@ -582,8 +585,9 @@ public class StringQuestions {
 
     /**
      * Given an array A of 0s and 1s, we may change up to K values from 0 to 1.
-     *
+     * <p>
      * Return the length of the longest (contiguous) subarray that contains only 1s.
+     *
      * @param A
      * @param k
      * @return
@@ -609,6 +613,7 @@ public class StringQuestions {
      * Longest substring with at most k distinct characters.
      * s = "AABBCC", k = 2.
      * Output: 4. (Either "AABB" or "BBCC")
+     *
      * @param s
      * @param k
      * @return
@@ -618,7 +623,7 @@ public class StringQuestions {
         int[] charFreq = new int[26];
         int longestLength = 0;
         HashSet<Integer> uniqueCharSet = new HashSet<>();
-        while(end < s.length()) {
+        while (end < s.length()) {
             int c = s.charAt(end) - 'A';
             charFreq[c] += 1;
             uniqueCharSet.add(c);
@@ -643,6 +648,7 @@ public class StringQuestions {
      * Given two strings a and b of the same length, choose an index and split both strings at the same index,
      * splitting a into two strings: a = aprefix + asuffix, and splitting b into two strings: b = bprefix + bsuffix.
      * Check if aprefix + bsuffix or bprefix + asuffix forms a palindrome.
+     *
      * @param a
      * @param b
      * @return
@@ -676,4 +682,44 @@ public class StringQuestions {
         return (sb.reverse().toString().equals(s));
     }
 
+}
+
+/**
+ * TimeMap timeMap = new TimeMap();
+ * timeMap.put("foo", "bar", 1);  // store the key "foo" and value "bar" along with timestamp = 1.
+ * timeMap.get("foo", 1);         // return "bar"
+ * timeMap.get("foo", 3);         // return "bar",
+ *                                since there is no value corresponding to foo at timestamp 3 and timestamp 2,
+ *                                then the only value is at timestamp 1 is "bar".
+ * timeMap.put("foo", "bar2", 4); // store the key "foo" and value "bar2" along with timestamp = 4.
+ * timeMap.get("foo", 4);         // return "bar2"
+ * timeMap.get("foo", 5);         // return "bar2"
+ */
+class TimeMap {
+    Map<String, TreeMap<Integer, String>> map;
+    //The question asks to find a previous timestamp for this value.
+    // TreeMap has a function that helps achieve this.
+
+    public TimeMap() {
+        map = new HashMap<>();
+    }
+
+    public void put(String key, String value, int timestamp) {
+        map.putIfAbsent(key, new TreeMap<>());
+        map.get(key).put(timestamp, value);
+    }
+
+    public String get(String key, int timestamp) {
+        TreeMap<Integer, String> treeMap;
+        if (map.containsKey(key)) {
+            treeMap = map.get(key);
+
+            if (treeMap.floorKey(timestamp) != null) {  //Essence of the solution.
+                int tmKey = treeMap.floorKey(timestamp);
+                return treeMap.get(tmKey);
+            }
+        }
+
+        return "";
+    }
 }
