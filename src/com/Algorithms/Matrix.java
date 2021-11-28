@@ -1,7 +1,5 @@
 package com.Algorithms;
 
-import java.util.LinkedList;
-
 public class Matrix {
     void rotate(int[][] matrix) {
         int rows = matrix.length, cols = matrix[0].length;

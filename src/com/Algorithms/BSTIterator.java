@@ -3,7 +3,7 @@ package com.Algorithms;
 import java.util.LinkedList;
 
 public class BSTIterator {
-    LinkedList queue;
+    LinkedList<Integer> queue;
 
     public BSTIterator(TreeNode root) {
         queue = new LinkedList<>();
