@@ -157,10 +157,10 @@ public class Backtracking {
     }
 
     /**
-     * Given a set of candidate numbers (candidates) (without duplicates) and a target number (target),
-     * find all unique combinations in candidates where the candidate numbers sums to target.
-     * The same repeated number may be chosen from candidates unlimited number of times.
-     * Input: candidates = [2,3,5], target = 8,
+     * Given an array nums and a target,
+     * find all unique combinations in nums where the candidate numbers sums to target.
+     * The same repeated number may be chosen unlimited number of times.
+     * nums = [2,3,5], target = 8,
      * A solution set is:
      * [
      * [2,2,2,2],
@@ -168,36 +168,36 @@ public class Backtracking {
      * [3,5]
      * ]
      *
-     * @param candidates
+     * @param nums
      * @param target
      * @return
      */
     List<List<Integer>> resultList = new ArrayList<>();
 
-    public List<List<Integer>> combinationSumRepeatAllowed(int[] candidates, int target) {
+    public List<List<Integer>> combinationSumRepeatAllowed(int[] nums, int target) {
         List<Integer> tmp = new ArrayList<>();
-        Arrays.sort(candidates);
-        combinationSumRepeatAllowed(candidates, target, tmp, 0);
+        Arrays.sort(nums);
+        combinationSumRepeatAllowed(nums, target, tmp, 0);
         return resultList;
     }
 
-    private void combinationSumRepeatAllowed(int[] candidates, int target, List<Integer> tmp, int pointer) {
+    private void combinationSumRepeatAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
         if (target < 0)
             return;
         else if (target == 0)
             resultList.add(new ArrayList<>(tmp));
-        for (int i = pointer; i < candidates.length; i++) {
-            tmp.add(candidates[i]);
-            combinationSumRepeatAllowed(candidates, target - candidates[i], tmp, i);
+        for (int i = pointer; i < nums.length; i++) {
+            tmp.add(nums[i]);
+            combinationSumRepeatAllowed(nums, target - nums[i], tmp, i);
             tmp.remove(tmp.size() - 1);
         }
     }
 
     /**
-     * Given a collection of candidate numbers (candidates) and a target number (target),
-     * find all unique combinations in candidates where the candidate numbers sums to target.
-     * Each number in candidates may only be used once in the combination.
-     * Input: candidates = [10,1,2,7,6,1,5], target = 8,
+     * Given an array nums and a target,
+     * find all unique combinations in nums where the candidate numbers sums to target.
+     * Each number in nums may only be used once in the combination.
+     * nums = [10,1,2,7,6,1,5], target = 8,
      * A solution set is:
      * [
      * [1, 7],
@@ -206,68 +206,77 @@ public class Backtracking {
      * [1, 1, 6]
      * ]
      *
-     * @param candidates
+     * @param nums
      * @param target
      * @return
      */
 //    List<List<Integer>> resultList = new ArrayList<>();
 
-    public List<List<Integer>> combinationSumRepeatNotAllowed(int[] candidates, int target) {
+    public List<List<Integer>> combinationSumRepeatNotAllowed(int[] nums, int target) {
         List<Integer> tmp = new ArrayList<>();
-        Arrays.sort(candidates);
-        combinationSumRepeatNotAllowed(candidates, target, tmp, 0);
+        Arrays.sort(nums);
+        combinationSumRepeatNotAllowed(nums, target, tmp, 0);
         return resultList;
     }
 
-    private void combinationSumRepeatNotAllowed(int[] candidates, int target, List<Integer> tmp, int pointer) {
+    private void combinationSumRepeatNotAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
         if (target < 0)
             return;
         else if (target == 0)
             resultList.add(new ArrayList<>(tmp));
-        for (int i = pointer; i < candidates.length; i++) {
-            if (i > pointer && candidates[i] == candidates[i - 1])
+        for (int i = pointer; i < nums.length; i++) {
+            if (i > pointer && nums[i] == nums[i - 1])
                 continue;
-            tmp.add(candidates[i]);
-            combinationSumRepeatNotAllowed(candidates, target - candidates[i], tmp, i + 1);
+            tmp.add(nums[i]);
+            combinationSumRepeatNotAllowed(nums, target - nums[i], tmp, i + 1);
             tmp.remove(tmp.size() - 1);
         }
     }
 
     /**
-     * Given a non-empty array containing only positive integers,
-     * find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
-     * Input: [1, 5, 11, 5]
+     * Given an integer array nums and an integer k,
+     * return true if it is possible to divide this array into k non-empty subsets whose sums are all equal.
+     * nums = [4,3,2,3,5,2,1], k = 4
      * Output: true
-     * The array can be partitioned as [1, 5, 5] and [11].
      *
      * @param nums
      * @return
      */
-    public boolean canPartition(int[] nums) {
+    public boolean canPartitionKSubsets(int[] nums, int k) {
         int total = 0;
         for (int num : nums) {
             total += num;
         }
-        if (total % 2 == 1)
+
+        if (total % k == 1)  //It's not possible to divide the array into k subsets if the total is not divisible by k.
             return false;
+
         Arrays.sort(nums);
 
-        return subsetSum(nums, 0, total / 2);
+        boolean[] visited = new boolean[nums.length];
+        return subsetSum(nums, 0, total / k, 0, k, visited);
     }
 
-    private boolean subsetSum(int[] nums, int ind, int target) {
-        boolean isValidSubset = false;
-        if (target < 0)
-            return false;
-        else if (target == 0)
+    private boolean subsetSum(int[] nums, int ind, int target, int currSubsetSum, int k, boolean[] visited) {
+        if (k == 0)  //k gets reduced to 0. We have formed k subsets with equal sums.
             return true;
 
-        for (int i = ind; i < nums.length; i++) {
-            if (i > ind && nums[i] == nums[i - 1])
-                continue;
-            isValidSubset = isValidSubset || subsetSum(nums, i + 1, target - nums[i]);
+        //The current subset sum gets increased to target.
+        if (currSubsetSum == target) {  //Don't stop just yet. We still need to build more subsets upto k.
+            return subsetSum(nums, 0, target, 0, k - 1, visited);
         }
-        return isValidSubset;
+
+        for (int i = ind; i < nums.length; i++) {
+            if (visited[i])  //We are not supposed to reuse the elements.
+                continue;
+            visited[i] = true;
+            //We are in the current element which we finished looking. The recursion must start from the next element.
+            if (subsetSum(nums, i + 1, target, currSubsetSum + nums[i], k, visited))
+                return true;
+            visited[i] = false;  //Backtracking logic - reset the visited element.
+        }
+
+        return false;
     }
 
     /**
