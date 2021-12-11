@@ -224,14 +224,14 @@ public class ArrayQuestions {
         int subarrayMax = Integer.MIN_VALUE, endOfCurrMax = 0;
         int subarrayMin = Integer.MAX_VALUE, endOfCurrMin = 0;
         int sum = 0;
-        for (int i = 0; i < nums.length; i++) {
-            endOfCurrMax = Math.max(endOfCurrMax + nums[i], nums[i]);
+        for (int num : nums) {
+            endOfCurrMax = Math.max(endOfCurrMax + num, num);
             subarrayMax = Math.max(subarrayMax, endOfCurrMax);
 
-            endOfCurrMin = Math.min(endOfCurrMin + nums[i], nums[i]);
+            endOfCurrMin = Math.min(endOfCurrMin + num, num);
             subarrayMin = Math.min(subarrayMin, endOfCurrMin);
 
-            sum += nums[i];
+            sum += num;
         }
         return subarrayMax > 0 ? Math.max(subarrayMax, sum - subarrayMin) : subarrayMax;
     }
@@ -797,5 +797,42 @@ public class ArrayQuestions {
             end += 1;
         }
         return shortestSubarrayLen == Integer.MAX_VALUE ? 0: shortestSubarrayLen;
+    }
+
+    /**
+     * There are several cards arranged in a row, and each card has an associated number of points.
+     * The points are given in the integer array cardPoints.
+     * In one step, you can take one card from the beginning or from the end of the array. Take exactly k cards.
+     * Your score is the sum of the points of the cards you have taken.
+     * Given the integer array cardPoints and the integer k, return the maximum score you can obtain.
+     *
+     * cardPoints = [1,2,3,4,5,6,1], k = 3
+     * Output: 12 (last three cards).
+     *
+     * @param cardPoints
+     * @param k
+     * @return
+     */
+    public int maxScore(int[] cardPoints, int k) {
+        //Sliding window technique - need to think differently.
+        //Use a sliding window of size length - k. And calculate the sum that is outside the window.
+        int start = 0, end = cardPoints.length - k, sum = 0;
+
+        for (int i = end; i < cardPoints.length; i++) {
+            sum += cardPoints[i];
+        }
+        int result = sum;
+
+        //Slide the window and check the sum outside the window.
+        while (end < cardPoints.length) {
+            sum = (sum - cardPoints[end]) + cardPoints[start];
+            //Need to include the start element which is at the beginning of the array.
+            // While doing this, remove the end element which is at the end of the array.
+            result = Math.max(result, sum);
+
+            start += 1;
+            end += 1;
+        }
+        return result;
     }
 }
