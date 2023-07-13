@@ -4,7 +4,7 @@ import java.util.*;
 
 public class GraphQuestions {
 
-    HashMap<Integer, List<Integer>> graph = new HashMap<>();
+    Map<Integer, List<Integer>> graph = new HashMap<>();
 
     int BFSshortestpath(Integer source, Integer destination) {
         int[] distance = new int[50];  //We don't need visited array cuz we can track everything in distance array
@@ -49,31 +49,37 @@ public class GraphQuestions {
             graph.get(prerequisite[1]).add(prerequisite[0]);
         }
 
-        HashSet<Integer> visited = new HashSet<>();
+        Set<Integer> visited = new HashSet<>();
+        Set<Integer> visiting = new HashSet<>();
         for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq) && !hasNoCycleUtil(prereq, visited, new HashSet<>())) {
+            if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting)) {
                 return false;
             }
         }
         return true;
     }
 
-    //No need to do topological sort for this question. We just need to detect a cycle
-    private boolean hasNoCycleUtil(Integer prereq, HashSet<Integer> visited, HashSet<Integer> visiting) {
+    //No need to do topological sort (DFS) for this question. We just need to detect a cycle
+
+    // A node has 3 possible states:
+    // visited - node has been added to the output. We never have to visit this node again.
+    // visiting - node has not been added to the output. We are visiting and moving forward to the next node.
+    //              This helps us determine if there is a cycle.
+    // unvisited - node has not been added to the output and we don't know if there is a cycle.
+    private boolean hasCycle(Integer prereq, Set<Integer> visited, Set<Integer> visiting) {
         visited.add(prereq);
         visiting.add(prereq);
         if (graph.containsKey(prereq)) {
-            //We need to check this cuz we come back here during recursion with the actual course of prerequisites
             for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, visiting)) {
-                    return false;
+                if (!visited.contains(course) && hasCycle(course, visited, visiting)) {
+                    return true;
                 } else if (visiting.contains(course)) {
-                    return false;
+                    return true;
                 }
             }
         }
         visiting.remove(prereq);
-        return true;
+        return false;
     }
 
     /**
@@ -101,44 +107,41 @@ public class GraphQuestions {
         }
 
         //Use topological sort.
-        ArrayDeque<Integer> courseOrder = new ArrayDeque<>();
-        HashSet<Integer> visited = new HashSet<>();
+        Deque<Integer> courseOrder = new ArrayDeque<>();
+        Set<Integer> visited = new HashSet<>();
+        Set<Integer> visiting = new HashSet<>();
         for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq)
-                    &&
-                    !hasNoCycleUtil(prereq, visited, courseOrder, new HashSet<>())
-            ) {
+            if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting, courseOrder)) {
                 return new int[0];  //return an empty array because there is a cycle.
             }
         }
 
-        int i = 0;
         int[] order = new int[numCourses];
-        while (!courseOrder.isEmpty()) {
-            order[i++] = courseOrder.pop();
+        for(int i = 0; i < numCourses && !courseOrder.isEmpty(); i++) {
+            order[i] = courseOrder.pop();
         }
 
         return order;
     }
 
-    private boolean hasNoCycleUtil(
-            Integer prereq, HashSet<Integer> visited, ArrayDeque<Integer> courseOrder, HashSet<Integer> visiting
+    private boolean hasCycle(
+            Integer prereq, Set<Integer> visited, Set<Integer> visiting, Deque<Integer> courseOrder
     ) {
         visited.add(prereq);
         visiting.add(prereq); //To detect a cycle
         if (graph.containsKey(prereq)) {
             //We need to check this cuz we come back here during recursion with the actual course of prerequisites
             for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && !hasNoCycleUtil(course, visited, courseOrder, visiting)) {
-                    return false;
+                if (!visited.contains(course) && hasCycle(course, visited, visiting, courseOrder)) {
+                    return true;
                 } else if (visiting.contains(course)) {
-                    return false;
+                    return true;
                 }
             }
         }
         visiting.remove(prereq);
         courseOrder.push(prereq); //Store the sorted elements
-        return true;
+        return false;
     }
 
     /**

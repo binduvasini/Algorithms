@@ -265,27 +265,27 @@ public class StringQuestions {
         if (s == null || t == null || s.length() < t.length())
             return "";
 
-        int start = 0, end = 0, minWindStart = 0, minWindLen = Integer.MAX_VALUE, tCount = t.length();
+        int start = 0, end = 0, minWindStart = 0, minWindLen = Integer.MAX_VALUE, tCout = t.length();
 
-        HashMap<Character, Integer> tMap = new HashMap<>();
-        for (char tc : t.toCharArray()) {
-            tMap.put(tc, tMap.getOrDefault(tc, 0) + 1);
+        Map<Character, Integer> tMap = new HashMap<>();
+        for (char tChar : t.toCharArray()) {
+            tMap.put(tChar, tMap.getOrDefault(tChar, 0) + 1);
         }
 
         while (end < s.length()) {
             char sCharEnd = s.charAt(end);
             if (tMap.containsKey(sCharEnd) && tMap.get(sCharEnd) > 0)
-                tCount -= 1;
+                tCout -= 1;
             tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
             end += 1;  //Move the end pointer until you find all the characters of t.
 
-            while (tCount == 0) {
-                //Found all the characters of t, now move the start pointer until we find the required the shortest size.
+            while (tCout == 0) {
+                //Found all the characters of t, now move the start pointer until we find the required the shortest window.
                 char sCharStart = s.charAt(start);
                 tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
                 if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)
-                    //At this point, the value of character at sCharStart will be negative if it doesn't appear in t.
-                    tCount += 1;
+                    //At this point, the value of sCharStart in the map will be negative if it doesn't appear in t.
+                    tCout += 1;
 
                 if (minWindLen > end - start) {  //Update the minWindLen and the starting position of the substring.
                     minWindLen = end - start;
@@ -298,7 +298,7 @@ public class StringQuestions {
     }
 
     /**
-     * Given a string s and a non-empty string t, find all the start indices of t's anagrams in s.
+     * Given two strings s and t, find all the start indices of t's anagrams in s.
      * s: "abab" t: "ab"
      * Output: [0, 1, 2]
      *
@@ -310,7 +310,7 @@ public class StringQuestions {
         int start = 0, end = 0, tCount = t.length();
         List<Integer> anagramsList = new LinkedList<>();
 
-        HashMap<Character, Integer> tMap = new HashMap<>();
+        Map<Character, Integer> tMap = new HashMap<>();
         for (char tc : t.toCharArray()) {
             tMap.put(tc, tMap.getOrDefault(tc, 0) + 1);
         }

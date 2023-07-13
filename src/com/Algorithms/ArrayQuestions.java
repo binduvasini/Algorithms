@@ -80,7 +80,6 @@ public class ArrayQuestions {
     /**
      * Running median in a data stream.
      * Solve using MinHeap and MaxHeap.
-     * <p>
      * void addNum(int num) - Add a integer number from the data stream to the data structure.
      * double findMedian() - Return the median of all elements so far.
      *
@@ -96,24 +95,24 @@ public class ArrayQuestions {
             minHeap.add(num);
         else
             maxHeap.add(num);
-        rebalanceHeaps();
+        balanceHeaps();
     }
 
-    double findMedian() {
-        if (minHeap.size() == maxHeap.size()) {
-            return (double) (minHeap.peek() + maxHeap.peek()) / 2;
-        } else if (minHeap.size() > maxHeap.size()) {
-            return (double) minHeap.peek();
-        }
-        return (double) maxHeap.peek();
-    }
-
-    private void rebalanceHeaps() {
+    private void balanceHeaps() {
         if (minHeap.size() - maxHeap.size() > 1) {
             maxHeap.add(minHeap.poll());
         } else if (maxHeap.size() - minHeap.size() > 1) {
             minHeap.add(maxHeap.poll());
         }
+    }
+
+    double findMedian() {
+        if (minHeap.size() == maxHeap.size()) {
+            return (double) (minHeap.element() + maxHeap.element()) / 2;
+        } else if (minHeap.size() > maxHeap.size()) {
+            return (double) minHeap.peek();
+        }
+        return (double) maxHeap.peek();
     }
 
     /**
@@ -122,8 +121,9 @@ public class ArrayQuestions {
      * Suppose the stones have weights x and y, the result of this smash is
      * If x == y, both stones are totally destroyed.
      * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
-     * <p>
-     * Solve using max Heap.
+     *
+     * stones = [2,7,4,1,8,1]
+     * output = 1
      *
      * @param stones
      * @return
@@ -133,20 +133,15 @@ public class ArrayQuestions {
         for (int s : stones) {
             maxHeap.add(s);
         }
-        while (!maxHeap.isEmpty() && maxHeap.size() > 1) {
-            int x = maxHeap.remove();
-            int y = maxHeap.remove();
-            int z = 0;
+        while (maxHeap.size() > 1) {
+            int stone1 = maxHeap.remove();
+            int stone2 = maxHeap.remove();
 
-            if (x > y)
-                z = x - y;
-            else if (x < y)
-                z = y - x;
-            if (z == 0)
-                continue;
-            maxHeap.add(z);
+            if(stone1 > stone2) {
+                maxHeap.add(stone1 - stone2);
+            }
         }
-        return (!maxHeap.isEmpty()) ? maxHeap.poll() : 0;
+        return maxHeap.isEmpty() ? 0 : maxHeap.poll();
     }
 
     /**
@@ -254,7 +249,7 @@ public class ArrayQuestions {
             for (int i = start; i <= end; i++) {
                 maxHeap.add(nums[i]);
             }
-            result[ind] = maxHeap.peek();
+            result[ind] = maxHeap.element();
             start += 1;
             end += 1;
             ind += 1;

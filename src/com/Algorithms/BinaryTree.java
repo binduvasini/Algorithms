@@ -78,9 +78,9 @@ public class BinaryTree {
     }
 
     int heightIterative() {
-        int leftHeight = 1, rightHeight = 1;
         if (root == null)
             return -1;
+        int leftHeight = 1, rightHeight = 1;
         TreeNode node = root;
         while (node.left != null) {
             leftHeight += 1;
@@ -94,11 +94,11 @@ public class BinaryTree {
         return Math.max(leftHeight, rightHeight);
     }
 
-    int fulldiameter = 0;
+    int fullDiameter = 0;
 
     int diameterOfBinaryTree(TreeNode root) {
         diameter(root);
-        return fulldiameter;
+        return fullDiameter;
     }
 
     private int diameter(TreeNode root) {
@@ -106,7 +106,7 @@ public class BinaryTree {
             return 0;
         int left = diameter(root.left);
         int right = diameter(root.right);
-        fulldiameter = Math.max(fulldiameter, left + right);
+        fullDiameter = Math.max(fullDiameter, left + right);
         return Math.max(left, right) + 1;
     }
 
@@ -503,14 +503,14 @@ public class BinaryTree {
                 successor = node.data;
             }
         } else if (data < root.data) {  //The value is in the LST.
-            //During the recursion, the value will match the root,
-            // and it might not have a RST, so the successor might not be set.
-            // So, here we are setting it and calling the recursion.
+            //During the recursion, the value will match the root, so the predecessor will be set.
+            // this node might not have RST, so the successor might not be set.
+            // So, here we are setting it first and then calling the recursion.
             successor = root.data;
             predSuc(root.left, data);
         } else {
             //During the recursion, the value will match the root,
-            // and it might not have a LST, so the predecessor might not be set.
+            // and it might not have LST, so the predecessor might not be set.
             // So, here we are setting it and calling the recursion.
             predecessor = root.data;
             predSuc(root.right, data);
@@ -707,7 +707,7 @@ public class BinaryTree {
         currentPath.add(node.data);
         sum -= node.data;
         if (sum == 0 && isLeaf(node)) {  //If the sum becomes 0, and if it is a leaf node, then return true
-            pathlist.add(new LinkedList(currentPath));
+            pathlist.add(new LinkedList<>(currentPath));
             currentPath.remove(currentPath.size() - 1);
             return;
         }

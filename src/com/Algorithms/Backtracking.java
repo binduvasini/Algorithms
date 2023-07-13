@@ -11,14 +11,15 @@ public class Backtracking {
      * Input: nums = [1,2,3]
      * Output:
      * [
-     * [3],
+     * [],
      * [1],
      * [2],
-     * [1,2,3],
-     * [1,3],
-     * [2,3],
-     * [1,2],
-     * []
+     * [1, 2],
+     * [1, 2, 3],
+     * [1, 3],
+     * [2],
+     * [2, 3],
+     * [3]
      * ]
      *
      * @param nums
@@ -35,9 +36,9 @@ public class Backtracking {
     private void subsetsWithoutDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int pointer) {
         resultList.add(new ArrayList<>(tmp));
         for (int i = pointer; i < nums.length; i++) {
-            tmp.add(nums[i]);
-            subsetsWithoutDup(resultList, tmp, nums, i + 1);
-            tmp.remove(tmp.size() - 1);
+            tmp.add(nums[i]); //include the current element
+            subsetsWithoutDup(resultList, tmp, nums, i + 1);  //the pointer increases to the size of the input array and then comes down to 0.
+            tmp.remove(tmp.size() - 1); //when recursion comes back (pointer decrementing one by one), we are backtracking. don't include the current element.
         }
     }
 
@@ -46,12 +47,12 @@ public class Backtracking {
      * Input: [1,2,2]
      * Output:
      * [
-     * [2],
+     * [],
      * [1],
-     * [1,2,2],
-     * [2,2],
-     * [1,2],
-     * []
+     * [1, 2],
+     * [1, 2, 2],
+     * [2],
+     * [2, 2]
      * ]
      *
      * @param nums

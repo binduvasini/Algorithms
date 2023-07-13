@@ -10,6 +10,27 @@ import java.util.Queue;
 public class Playground {
 
     public static void main(String[] args) {
+        int[] nums = {1,2,2};
+        System.out.println(subsetsWithDup(nums));
+    }
+
+    static List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<Integer> tmp = new ArrayList<>();
+        List<List<Integer>> resultList = new ArrayList<>();
+        Arrays.sort(nums);
+        subsetsWithDup(resultList, tmp, nums, 0);
+        return resultList;
+    }
+
+    static void subsetsWithDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int pointer) {
+        resultList.add(new ArrayList<>(tmp));
+        for (int i = pointer; i < nums.length; i++) {
+            if (i > pointer && nums[i] == nums[i - 1])
+                continue;
+            tmp.add(nums[i]);
+            subsetsWithDup(resultList, tmp, nums, i + 1);
+            tmp.remove(tmp.size() - 1);
+        }
     }
 
     static void find3Numbers(int[] A,

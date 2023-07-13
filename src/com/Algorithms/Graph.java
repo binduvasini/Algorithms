@@ -1,6 +1,7 @@
 package com.Algorithms;
 
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -116,28 +117,28 @@ public class Graph {
         ArrayDeque<Integer> order = new ArrayDeque<>();
         //To store the sorted elements.
         for (GraphNode graphNode : nodes) {
-            if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, new HashSet<>()))
+            if (!graphNode.visited && hasCycle(graphNode, order, new HashSet<>()))
                 return new Integer[0];  //return an empty array because there is a cycle.
         }
         return (Integer[]) order.toArray();
     }
 
     //This is detecting a cycle as well as sorting topologically
-    private boolean hasNoCycleUtil(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> visiting) {
+    private boolean hasCycle(GraphNode node, ArrayDeque<Integer> order, HashSet<Integer> visiting) {
         node.visited = true;
         visiting.add(node.data);  //to detect a cycle
         if (adjListofNodes.containsKey(node)) {
             for (GraphNode graphNode : adjListofNodes.get(node)) {  //For each neighbor
-                if (!graphNode.visited && !hasNoCycleUtil(graphNode, order, visiting)) {
-                    return false;
+                if (!graphNode.visited && hasCycle(graphNode, order, visiting)) {
+                    return true;
                 } else if (visiting.contains(graphNode.data)) {
-                    return false;
+                    return true;
                 }
             }
         }
         visiting.remove(node.data);
         order.push(node.data);
-        return true;
+        return false;
     }
 
     int connectedComponents() {
