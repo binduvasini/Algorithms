@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class StringQuestions {
@@ -219,6 +220,30 @@ public class StringQuestions {
             }
         }
         return strBuild.toString();
+    }
+
+    /**
+     * Given a string s, find the length of the longest substring without repeating characters.
+     * Input: “abbcdb”. Output: 3. “bcd” is the longest substring without repeating characters.
+     *
+     * @param s
+     * @return
+     */
+    public int longestSubstringWithoutRepeatingChars(String s) {
+        int start = 0, end = 0, longest = 0;
+        Set<Character> set = new HashSet<>();
+        while(end < s.length()){
+            if(!set.contains(s.charAt(end))){
+                set.add(s.charAt(end));
+                end += 1;
+            }
+            else{
+                set.remove(s.charAt(start));
+                start += 1;
+            }
+            longest = Math.max(longest, (end - start));
+        }
+        return longest;
     }
 
     /**

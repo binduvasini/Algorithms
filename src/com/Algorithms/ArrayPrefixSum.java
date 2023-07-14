@@ -13,7 +13,6 @@ public class ArrayPrefixSum {
      * @return
      */
     public int subarraySum(int[] nums, int target) {
-        int count = 0;
         Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, frequency of this sum>
 
         map.put(0, 1);
@@ -23,6 +22,7 @@ public class ArrayPrefixSum {
         // When we are checking prefixSum - target, we should find a value for 0 in the hashmap (3 - 0).
 
         int prefixSum = 0;
+        int count = 0;
         for (int num : nums) {
             prefixSum += num;
 
@@ -127,26 +127,42 @@ public class ArrayPrefixSum {
      * @param nums
      * @return
      */
-    public int findMaxLength(int[] nums) {
+    public int findMaxLength0And1(int[] nums) {
         int prefixSum = 0;
-        int longestSubarrayLen = 0;
+        int maxLen = 0;
         Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+
         for (int i = 0; i < nums.length; i++) {
-            int n = nums[i];
-            if (n == 0) {
-                n = -1;
-            }
+            int n = nums[i] == 0 ? -1 : 1;
             prefixSum += n;
-            if (prefixSum == 0)
-                longestSubarrayLen = i + 1;
             if (map.containsKey(prefixSum)) {
-                int prefixIndex = map.get(prefixSum);
-                longestSubarrayLen = Math.max(longestSubarrayLen, i - prefixIndex);
-            } else
+                maxLen = Math.max(maxLen, i - map.get(prefixSum));
+            } else {
                 map.put(prefixSum, i);
+            }
         }
-        return longestSubarrayLen;
+        return maxLen;
     }
 
+    /**
+     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
+     * The subarray with maximum sum is 6: [4, -1, 2, 1].
+     *
+     * @param nums
+     * @return
+     */
+    public int subarrayWithMaxSum(int[] nums) {
+        int max = Integer.MIN_VALUE, prefixSum = 0;
+        for(int num : nums) {
+            prefixSum += num;
+            max = Math.max(max, prefixSum);
 
+            if(prefixSum < 0) {
+                prefixSum = 0;
+            }
+        }
+
+        return max;
+    }
 }
