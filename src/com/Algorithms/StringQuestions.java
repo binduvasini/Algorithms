@@ -291,27 +291,33 @@ public class StringQuestions {
         if (s == null || t == null || s.length() < t.length())
             return "";
 
-        int start = 0, end = 0, minWindStart = 0, minWindLen = Integer.MAX_VALUE, tCout = t.length();
+        int start = 0, end = 0;
+        int minWindStart = 0, minWindLen = Integer.MAX_VALUE;
+        int tCount = 0;  //window size
 
         Map<Character, Integer> tMap = new HashMap<>();
-        for (char tChar : t.toCharArray()) {
+        for (char tChar : t.toCharArray()) {  //Count the characters of t and store it in the map
             tMap.put(tChar, tMap.getOrDefault(tChar, 0) + 1);
         }
 
         while (end < s.length()) {
-            char sCharEnd = s.charAt(end);
-            if (tMap.containsKey(sCharEnd) && tMap.get(sCharEnd) > 0)
-                tCout -= 1;
-            tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
+            char endChar = s.charAt(end);
+            if (tMap.containsKey(endChar)) {
+                if (tMap.get(endChar) > 0) {  //Is this character present in t? Increment the window counter.
+                    tCount += 1;
+                }
+                tMap.put(endChar, tMap.get(endChar) - 1);  //We finished visiting this character. Reduce the count in the map.
+            }
             end += 1;  //Move the end pointer until you find all the characters of t.
 
-            while (tCout == 0) {
-                //Found all the characters of t, now move the start pointer until we find the required the shortest window.
-                char sCharStart = s.charAt(start);
-                tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
-                if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)
-                    //At this point, the value of sCharStart in the map will be negative if it doesn't appear in t.
-                    tCout += 1;
+            while (tCount == t.length()) {  //We formed the window.
+                char startChar = s.charAt(start);
+                if (tMap.containsKey(startChar)) {
+                    tMap.put(startChar, tMap.get(startChar) + 1);  //Now we are visiting this character. Increase the count.
+                    if (tMap.get(startChar) > 0) {
+                        tCount -= 1;  //make this substring window invalid
+                    }
+                }
 
                 if (minWindLen > end - start) {  //Update the minWindLen and the starting position of the substring.
                     minWindLen = end - start;
@@ -319,6 +325,7 @@ public class StringQuestions {
                 }
                 start += 1;
             }
+
         }
         return minWindLen == Integer.MAX_VALUE ? "" : s.substring(minWindStart, minWindStart + minWindLen);
     }
@@ -592,17 +599,20 @@ public class StringQuestions {
         int start = 0, end = 0;
         int[] charFreq = new int[26];
         int maxFreq = 0, longestLength = 0;
+
         while (end < s.length()) {
-            int c = s.charAt(end) - 'A';
-            charFreq[c] += 1;
-            maxFreq = Math.max(maxFreq, charFreq[c]);
-            int otherCharsCount = end - start + 1 - maxFreq;
-            if (otherCharsCount > k) {
-                int cStart = s.charAt(start) - 'A';
-                charFreq[cStart] -= 1;
+            int endChar = s.charAt(end) - 'A';
+            charFreq[endChar] += 1;
+            maxFreq = Math.max(maxFreq, charFreq[endChar]);
+            end += 1;
+
+            int windowSize = end - start - maxFreq;
+            if (windowSize > k) {
+                int startChar = s.charAt(start) - 'A';
+                charFreq[startChar] -= 1;
                 start += 1;
             }
-            end += 1;
+
             longestLength = Math.max(longestLength, end - start);
         }
         return longestLength;
