@@ -830,4 +830,33 @@ public class ArrayQuestions {
         }
         return result;
     }
+
+    /**
+     * Given an array of 0s and 1s, we may change up to K values from 0 to 1.
+     * Return the length of the longest (contiguous) subarray that contains only 1s.
+     *
+     * @param arr
+     * @param k
+     * @return
+     */
+    public int longestOnesReplacingAtMostKZeros(int[] arr, int k) {
+        int start = 0, end = 0;
+        int zeroCount = 0, longestOnesLength = 0;
+
+        while (end < arr.length) {
+            if (arr[end] == 0)
+                zeroCount += 1;
+
+            if (zeroCount > k) {
+                if (arr[start] == 0)
+                    zeroCount -= 1;
+                start += 1;
+            }
+
+            end += 1;
+            longestOnesLength = Math.max(longestOnesLength, end - start);
+        }
+        return longestOnesLength;
+    }
+
 }

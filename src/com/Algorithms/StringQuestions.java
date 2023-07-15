@@ -232,12 +232,13 @@ public class StringQuestions {
     public int longestSubstringWithoutRepeatingChars(String s) {
         int start = 0, end = 0, longest = 0;
         Set<Character> set = new HashSet<>();
-        while(end < s.length()){
-            if(!set.contains(s.charAt(end))){
-                set.add(s.charAt(end));
+        while (end < s.length()) {
+            if (!set.contains(s.charAt(end))) {
+                set.add(s.charAt(end));  //If we add to the set without checking, it will replace the character \
+                // as set contains only unique characters.
                 end += 1;
             }
-            else{
+            else {
                 set.remove(s.charAt(start));
                 start += 1;
             }
@@ -572,15 +573,14 @@ public class StringQuestions {
     /**
      * Given a string s that consists of only uppercase English letters,
      * you can perform at most k operations on that string.
-     * <p>
+
      * In one operation, you can choose any character of the string and
      * change it to any other uppercase English character.
-     * <p>
+
      * Find the length of the longest sub-string containing all repeating letters you can get
      * after performing the above operations.
      * Input:
      * s = "AABABBA", k = 1
-     * <p>
      * Output:
      * 4
      *
@@ -588,7 +588,7 @@ public class StringQuestions {
      * @param k
      * @return
      */
-    public int LongestSubstringReplacingAtmostKChars(String s, int k) {
+    public int LongestSubstringLengthReplacingAtMostKChars(String s, int k) {
         int start = 0, end = 0;
         int[] charFreq = new int[26];
         int maxFreq = 0, longestLength = 0;
@@ -602,36 +602,10 @@ public class StringQuestions {
                 charFreq[cStart] -= 1;
                 start += 1;
             }
-            longestLength = Math.max(longestLength, end - start + 1);
             end += 1;
+            longestLength = Math.max(longestLength, end - start);
         }
         return longestLength;
-    }
-
-    /**
-     * Given an array A of 0s and 1s, we may change up to K values from 0 to 1.
-     * <p>
-     * Return the length of the longest (contiguous) subarray that contains only 1s.
-     *
-     * @param A
-     * @param k
-     * @return
-     */
-    public int longestOnesReplacingAtMostKZeros(int[] A, int k) {
-        int start = 0, end = 0;
-        int zeroCount = 0, longestOnesLength = 0;
-        while (end < A.length) {
-            if (A[end] == 0)
-                zeroCount += 1;
-            if (zeroCount > k) {
-                if (A[start] == 0)
-                    zeroCount -= 1;
-                start += 1;
-            }
-            longestOnesLength = Math.max(longestOnesLength, end - start + 1);
-            end += 1;
-        }
-        return longestOnesLength;
     }
 
     /**
@@ -643,7 +617,7 @@ public class StringQuestions {
      * @param k
      * @return
      */
-    public int longestSubstringWithAtmostKDistinctChars(String s, int k) {
+    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
         int start = 0, end = 0;
         int[] charFreq = new int[26];
         int longestLength = 0;
