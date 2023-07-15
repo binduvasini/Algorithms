@@ -153,4 +153,23 @@ public class Sorting {
 
         return list.stream().mapToInt(i -> i).toArray();
     }
+
+    /**
+     * Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String str : strs) {
+            char[] strChar = str.toCharArray();
+            Arrays.sort(strChar);
+
+            String anagram = String.valueOf(strChar);
+
+            map.putIfAbsent(anagram, new ArrayList<>());
+            map.get(anagram).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
 }

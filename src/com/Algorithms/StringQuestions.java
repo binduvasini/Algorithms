@@ -340,7 +340,7 @@ public class StringQuestions {
      * @return
      */
     public List<Integer> findAnagrams(String s, String t) {
-        int start = 0, end = 0, tCount = t.length();
+        int start = 0, end = 0, tCount = 0;
         List<Integer> anagramsList = new LinkedList<>();
 
         Map<Character, Integer> tMap = new HashMap<>();
@@ -349,20 +349,25 @@ public class StringQuestions {
         }
 
         while (end < s.length()) {
-            char sCharEnd = s.charAt(end);
-            if (tMap.containsKey(sCharEnd) && tMap.get(sCharEnd) > 0) {
-                tCount -= 1;
+            char endChar = s.charAt(end);
+            if (tMap.containsKey(endChar)) {
+                if (tMap.get(endChar) > 0) {  //Is this character present in t? Increment the window counter.
+                    tCount += 1;
+                }
+                tMap.put(endChar, tMap.get(endChar) - 1);  //We finished visiting this character. Reduce the count in the map.
             }
-            tMap.put(sCharEnd, tMap.getOrDefault(sCharEnd, 0) - 1);
             end += 1;
 
-            while (tCount == 0) {
-                char sCharStart = s.charAt(start);
-                tMap.put(sCharStart, tMap.getOrDefault(sCharStart, 0) + 1);
-                if (tMap.containsKey(sCharStart) && tMap.get(sCharStart) > 0)
-                    tCount += 1;
+            while (tCount == t.length()) {
+                char startChar = s.charAt(start);
+                if (tMap.containsKey(startChar)) {
+                    tMap.put(startChar, tMap.get(startChar) + 1);  //Now we are visiting this character. Increase the count.
+                    if (tMap.get(startChar) > 0) {
+                        tCount -= 1;  //make this substring window invalid
+                    }
+                }
 
-                if (t.length() == end - start) {
+                if (end - start == t.length()) {
                     anagramsList.add(start);
                 }
                 start += 1;
