@@ -174,6 +174,43 @@ public class Heap {
     }
 
     /**
+     * Given a string S, rearrange it such that the characters adjacent to each other are not the same.
+     *
+     * @param S
+     * @return
+     */
+    String reorganizeString(String S) {
+        StringBuilder sb = new StringBuilder();
+        Map<Character, Integer> map = new HashMap<>();
+        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+
+        char[] sChar = S.toCharArray();
+        for (char c : sChar) {
+            int count = map.getOrDefault(c, 0) + 1;
+            map.put(c, count);
+            if (count > (S.length() + 1) / 2)
+                //If the given string contains a character that occurs more than half of its length,
+                // we cannot rearrange it.
+                return "";
+        }
+
+        maxHeap.addAll(map.keySet());
+
+        char prev = '#';
+        while (!maxHeap.isEmpty()) {
+            char mostOccurChar = maxHeap.poll();
+            sb.append(mostOccurChar);
+            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+
+            if (map.containsKey(prev) && map.get(prev) >= 1)
+                maxHeap.add(prev);
+            prev = mostOccurChar;
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * Given a char array representing tasks CPU needs to do.
      * It contains capital letters A to Z where different letters represent different tasks.
      * Tasks could be done without original order. Each task could be done in one interval.
@@ -220,39 +257,28 @@ public class Heap {
     }
 
     /**
-     * Given a string S, rearrange it such that the characters adjacent to each other are not the same.
+     * Given a string, sort it in decreasing order based on the frequency of characters.
      *
-     * @param S
+     * @param s
      * @return
      */
-    String reorganizeString(String S) {
-        StringBuilder sb = new StringBuilder();
+    public String frequencySort(String s) {
+        StringBuilder builder = new StringBuilder();
         Map<Character, Integer> map = new HashMap<>();
         Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
 
-        char[] sChar = S.toCharArray();
+        char[] sChar = s.toCharArray();
         for (char c : sChar) {
-            int count = map.getOrDefault(c, 0) + 1;
-            map.put(c, count);
-            if (count > (S.length() + 1) / 2)
-                //If the given string contains a character that occurs more than half of its length,
-                // we cannot rearrange it.
-                return "";
+            map.put(c, map.getOrDefault(c, 0) + 1);
         }
-
         maxHeap.addAll(map.keySet());
-
-        char prev = '#';
         while (!maxHeap.isEmpty()) {
             char mostOccurChar = maxHeap.poll();
-            sb.append(mostOccurChar);
-            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-
-            if (map.containsKey(prev) && map.get(prev) >= 1)
-                maxHeap.add(prev);
-            prev = mostOccurChar;
+            while (map.get(mostOccurChar) > 0) {
+                builder.append(mostOccurChar);
+                map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+            }
         }
-
-        return sb.toString();
+        return builder.toString();
     }
 }

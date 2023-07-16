@@ -696,30 +696,4 @@ public class ArrayQuestions {
         }
         return longestOnesLength;
     }
-
-    /**
-     * Given a string, sort it in decreasing order based on the frequency of characters.
-     *
-     * @param s
-     * @return
-     */
-    public String frequencySort(String s) {
-        StringBuilder builder = new StringBuilder();
-        Map<Character, Integer> map = new HashMap<>();
-        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
-
-        char[] sChar = s.toCharArray();
-        for (char c : sChar) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
-        }
-        maxHeap.addAll(map.keySet());
-        while (!maxHeap.isEmpty()) {
-            char mostOccurChar = maxHeap.poll();
-            while (map.get(mostOccurChar) > 0) {
-                builder.append(mostOccurChar);
-                map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-            }
-        }
-        return builder.toString();
-    }
 }
