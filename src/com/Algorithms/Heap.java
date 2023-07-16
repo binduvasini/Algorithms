@@ -155,7 +155,7 @@ public class Heap {
      */
     public int[][] kClosestPoints(int[][] points, int k) {
         //Remember the comparator needs to return an int 0 or 1 or -1.
-        //Directly subtracting two doubles and returning as it is will throw compile time error.
+        //Directly subtracting two doubles and returning as it is, will throw compile time error.
         Queue<int[]> maxHeap = new PriorityQueue<>((o1, o2) -> {
             double o1Distance = Math.sqrt(o1[0] * o1[0] + o1[1] * o1[1]);
             double o2Distance = Math.sqrt(o2[0] * o2[0] + o2[1] * o2[1]);
