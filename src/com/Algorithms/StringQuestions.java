@@ -1,13 +1,11 @@
 package com.Algorithms;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -128,69 +126,6 @@ public class StringQuestions {
             }
         }
         return true;
-    }
-
-    /**
-     * Given a string S, rearrange it such that the characters adjacent to each other are not the same.
-     *
-     * @param S
-     * @return
-     */
-    String reorganizeString(String S) {
-        StringBuilder sb = new StringBuilder();
-        HashMap<Character, Integer> map = new HashMap<>();
-        PriorityQueue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
-
-        char[] sChar = S.toCharArray();
-        for (char c : sChar) {
-            int count = map.getOrDefault(c, 0) + 1;
-            map.put(c, count);
-            if (count > (S.length() + 1) / 2)
-                //If the given string contains a character that occurs more than half of its length,
-                // we cannot rearrange it.
-                return "";
-        }
-
-        maxHeap.addAll(map.keySet());
-
-        char prev = '#';
-        while (!maxHeap.isEmpty()) {
-            char mostOccurChar = maxHeap.poll();
-            sb.append(mostOccurChar);
-            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-
-            if (map.containsKey(prev) && map.get(prev) >= 1)
-                maxHeap.add(prev);
-            prev = mostOccurChar;
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Given a string, sort it in decreasing order based on the frequency of characters.
-     *
-     * @param s
-     * @return
-     */
-    public String frequencySort(String s) {
-        StringBuilder builder = new StringBuilder();
-        HashMap<Character, Integer> map = new HashMap<>();
-        PriorityQueue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
-
-        char[] sChar = s.toCharArray();
-        for (char c : sChar) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
-        }
-        maxHeap.addAll(map.keySet());
-        while (!maxHeap.isEmpty()) {
-            char mostOccurChar = maxHeap.poll();
-            while (map.get(mostOccurChar) > 0) {
-                builder.append(mostOccurChar);
-                map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-            }
-        }
-        return builder.toString();
     }
 
     /**
@@ -502,52 +437,6 @@ public class StringQuestions {
             }
         }
         return dp[word1.length()][word2.length()];
-    }
-
-    /**
-     * Given a char array representing tasks CPU needs to do.
-     * It contains capital letters A to Z where different letters represent different tasks.
-     * Tasks could be done without original order. Each task could be done in one interval.
-     * For each interval, CPU could finish one task or just be idle.
-     * However, there is a cooling interval n between two same tasks,
-     * there must be at least n intervals that CPU are doing different tasks or just be idle.
-     * Return the intervals and task count by which the CPU will take to finish all the given tasks.
-     * Input: tasks = ["A","A","A","B","B","B"], n = 2
-     * Output: 8
-     * A -> B -> idle -> A -> B -> idle -> A -> B.
-     *
-     * @param tasks
-     * @param k
-     * @return
-     */
-    public int cpuTasks(char[] tasks, int k) {
-        HashMap<Character, Integer> map = new HashMap<>();
-        PriorityQueue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
-
-        for (char task : tasks) {
-            map.put(task, map.getOrDefault(task, 0) + 1);
-        }
-
-        maxHeap.addAll(map.keySet());
-        int count = 0;
-        while (!maxHeap.isEmpty()) {
-            //Store the removed characters and add it back after the completion of the task interval.
-            List<Character> list = new ArrayList<>();
-            for (int i = 0; i <= k; i++) {
-                if (!maxHeap.isEmpty()) {
-                    char mostOccurChar = maxHeap.poll();
-                    map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-                    if (map.get(mostOccurChar) >= 1)
-                        list.add(mostOccurChar); //Add to the list only when this character's occurrence is at least 1.
-                }
-                count += 1;
-                if (maxHeap.isEmpty() && list.isEmpty())
-                    break;
-            }
-            //Add the removed characters back. We checked for the occurrences already inside the for loop.
-            maxHeap.addAll(list);
-        }
-        return count;
     }
 
     /**
