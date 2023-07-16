@@ -260,7 +260,7 @@ public class BinarySearch {
      * @param nums
      * @return
      */
-    public int findPeakElement(int[] nums) {
+    public int findPeakElementIndex(int[] nums) {
         int lo = 0, hi = nums.length - 1;
 
         while(lo <= hi){
