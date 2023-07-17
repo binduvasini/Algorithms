@@ -81,14 +81,14 @@ public class Linkedlist {
         if (head == null || head.next == null)
             return false;
 
-        Node slowPointer = head;
-        Node fastPointer = head.next;
+        Node slow = head;
+        Node fast = head.next;
 
-        while (slowPointer != fastPointer) {
-            if (fastPointer == null || fastPointer.next == null)
+        while (slow != fast) {
+            if (fast == null || fast.next == null)
                 return false;
-            slowPointer = slowPointer.next;
-            fastPointer = fastPointer.next.next;
+            slow = slow.next;
+            fast = fast.next.next;
         }
         return true;
     }
@@ -311,22 +311,22 @@ public class Linkedlist {
      * @return
      */
     public Node removeNthFromEnd(Node head, int n) {
-        Node dummy = new Node(0);
-        dummy.next = head;
-        Node first = dummy;
-        Node second = dummy;
+        Node head1 = new Node(0);
+        head1.next = head;
+        Node fast = head1;
+        Node slow = head1;
 
-        for (int i = 1; i <= n + 1; i++) {
-            first = first.next;
+        for (int i = 0; i <= n; i++) {
+            fast = fast.next;
         }
 
-        while (first != null) {
-            first = first.next;
-            second = second.next;
+        while (fast != null) {
+            fast = fast.next;
+            slow = slow.next;
         }
 
-        second.next = second.next.next;
-        return dummy.next;
+        slow.next = slow.next.next;
+        return head1.next;
     }
 }
 
