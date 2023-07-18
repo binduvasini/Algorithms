@@ -1,7 +1,16 @@
 package com.Algorithms;
 
 public class Matrix {
-    void rotate(int[][] matrix) {
+
+    /**
+     * You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
+     * You have to rotate the image in-place.
+     * Input: [[1,2,3],[4,5,6],[7,8,9]]
+     * Output: [[7,4,1],[8,5,2],[9,6,3]]
+     *
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
         int rows = matrix.length, cols = matrix[0].length;
         //Transpose the matrix. Rows become columns and columns become rows.
         for (int r = 0; r < rows; r++) {
@@ -38,6 +47,7 @@ public class Matrix {
         int denom = x2 - x1;
         int gcdY2Y1 = gcd(num, denom);
         String slope = num / gcdY2Y1 + ":" + denom / gcdY2Y1;
+
         for (int i = 2; i < coordinates.length; i++) {
             int y3 = coordinates[i][1];
             int x3 = coordinates[i][0];
@@ -63,7 +73,7 @@ public class Matrix {
 
     /**
      * Return the count of all possible paths from the first cell to the last cell in a matrix.
-     * A robot is located at the top-left corner of a m x n grid.
+     * A robot is located on the top-left corner of a m x n grid.
      * The robot can only move either down or right at any point in time.
      * The robot is trying to reach the bottom-right corner of the grid.
      * How many possible unique paths are there?
