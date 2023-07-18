@@ -6,7 +6,7 @@ public class GraphQuestions {
 
     Map<Integer, List<Integer>> graph = new HashMap<>();
 
-    int BFSshortestpath(Integer source, Integer destination) {
+    int bfsShortestPath(Integer source, Integer destination) {
         int[] distance = new int[50];  //We don't need visited array cuz we can track everything in distance array
         Arrays.fill(distance, -1);  //When we don't find a node, return -1
         Queue<Integer> queue = new LinkedList<>();
@@ -310,7 +310,7 @@ public class GraphQuestions {
      * @param tickets
      * @return
      */
-    private HashMap<String, PriorityQueue<String>> itineraryGraph = new HashMap<>();
+    private Map<String, PriorityQueue<String>> itineraryGraph = new HashMap<>();
     private LinkedList<String> orderedItinerary = new LinkedList<>();
     public List<String> orderItinerary(List<List<String>> tickets) {
         for (List<String> ticket : tickets) {

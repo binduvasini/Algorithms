@@ -136,6 +136,51 @@ public class Matrix {
         return maxHeap.remove();
     }
 
+    /**
+     * Given an m x n grid of characters board and a string word, return true if the word exists in the grid.
+     * The word can be constructed from letters of sequentially adjacent cells,
+     * where adjacent cells are horizontally or vertically neighboring.
+     * The same letter cell may not be used more than once.
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean wordSearch(char[][] board, String word) {
+        char[] wordArr = word.toCharArray();
+        for(int r = 0; r < board.length; r++){
+            for(int c = 0; c < board[r].length; c++){
+                if(board[r][c] == wordArr[0] && dfsUtil(board, wordArr, r, c, 0)){
+                    //Just having an additional check here.
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean dfsUtil(char[][] board, char[] wordArr, int r, int c, int wordIndex){
+        if (wordIndex == wordArr.length) //Base case.
+            return true;
+
+        if (r < 0 || c < 0 || r >= board.length || c >= board[r].length || board[r][c] != wordArr[wordIndex]) {
+            //border conditions
+            return false;
+        }
+
+        char tmp = board[r][c];
+        board[r][c] = '#'; //Marking the visited character.
+        boolean exists = (dfsUtil(board, wordArr, r, c+1, wordIndex+1)
+                || dfsUtil(board, wordArr, r, c-1, wordIndex+1)
+                || dfsUtil(board, wordArr, r+1, c, wordIndex+1)
+                || dfsUtil(board, wordArr, r-1, c, wordIndex+1));
+
+        board[r][c] = tmp; //Setting the char back to original because
+        // we might visit this char again in other cases (that are invoked from the for loop above)
+        return exists;
+    }
+
+
     /* Dynamic Programming */
 
     /**
