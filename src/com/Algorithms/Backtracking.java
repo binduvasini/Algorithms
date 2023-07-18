@@ -37,8 +37,10 @@ public class Backtracking {
         resultList.add(new ArrayList<>(tmp));
         for (int i = pointer; i < nums.length; i++) {
             tmp.add(nums[i]); //include the current element
-            subsetsWithoutDup(resultList, tmp, nums, i + 1);  //the pointer increases to the size of the input array and then comes down to 0.
-            tmp.remove(tmp.size() - 1); //when recursion comes back (pointer decrementing one by one), we are backtracking. don't include the current element.
+            subsetsWithoutDup(resultList, tmp, nums, i + 1);  //the pointer increases to the size of
+            // the input array and then comes down to 0.
+            tmp.remove(tmp.size() - 1); //when recursion comes back (pointer decrementing one by one),
+            // we are backtracking. don't include the current element.
         }
     }
 

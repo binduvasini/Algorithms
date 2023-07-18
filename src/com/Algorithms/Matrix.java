@@ -1,5 +1,10 @@
 package com.Algorithms;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 public class Matrix {
 
     /**
@@ -41,6 +46,7 @@ public class Matrix {
     public boolean checkStraightLine(int[][] coordinates) {
         if (coordinates.length <= 2)
             return true;
+
         int y1 = coordinates[0][1], y2 = coordinates[1][1];
         int num = y2 - y1;
         int x1 = coordinates[0][0], x2 = coordinates[1][0];
@@ -68,6 +74,67 @@ public class Matrix {
         return a;
     }
 
+
+    /**
+     * Given two lists of closed intervals, each list of intervals is pairwise disjoint and in sorted order.
+     * Return the intersection of these two interval lists.
+     * A = [[0,2],[5,10],[13,23],[24,25]]
+     * B = [[1,5],[8,12],[15,24],[25,26]]
+     * Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]
+     *
+     * @param A
+     * @param B
+     * @return
+     */
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        int a = 0, b = 0;
+        List<int[]> list = new LinkedList<>();
+
+        while (a < A.length && b < B.length) {
+            //The maximum start point from any two intervals and
+            // the minimum end point from any two intervals must intersect.
+            int maxStartpoint = Math.max(A[a][0], B[b][0]);
+            int minEndpoint = Math.min(A[a][1], B[b][1]);
+
+            if (minEndpoint >= maxStartpoint) {
+                list.add(new int[]{maxStartpoint, minEndpoint});
+            }
+
+            if (minEndpoint == A[a][1])  //increment based on the minimum end point.
+                a += 1;
+            else
+                b += 1;
+        }
+
+        return list.toArray(new int[list.size()][]);
+    }
+
+    /**
+     * Given an n x n matrix where each of the rows and columns are sorted in ascending order,
+     * find the kth smallest element in the matrix.
+     * matrix = [
+     * [ 1,  5,  9],
+     * [10, 11, 14],
+     * [12, 14, 15]
+     * ],
+     * k = 8,
+     * return 14.
+     *
+     * @param matrix
+     * @param k
+     * @return
+     */
+    public int kthSmallestElementInMatrix(int[][] matrix, int k) {
+        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for (int[] rows : matrix) {
+            for (int value : rows) {
+                maxHeap.add(value);
+                if (maxHeap.size() > k)
+                    maxHeap.remove();
+            }
+        }
+        return maxHeap.remove();
+    }
 
     /* Dynamic Programming */
 

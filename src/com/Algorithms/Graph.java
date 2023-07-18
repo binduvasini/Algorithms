@@ -68,13 +68,13 @@ public class Graph {
         GraphNode destNode = getNode(destination);
         Edge newEdge = new Edge(sourceNode, destNode, weight);
         edges.add(newEdge);
-        List<Edge> l;
-        if (adjListofEdges.get(source) != null)
-            l = adjListofEdges.get(source);
+        List<Edge> edgeList;
+        if (adjListofEdges.get(sourceNode) != null)
+            edgeList = adjListofEdges.get(sourceNode);
         else
-            l = new LinkedList<>();
-        l.add(newEdge);
-        adjListofEdges.put(sourceNode, l);
+            edgeList = new LinkedList<>();
+        edgeList.add(newEdge);
+        adjListofEdges.put(sourceNode, edgeList);
         adjListofNodes.computeIfAbsent(sourceNode, k -> new LinkedList<>()).add(destNode);
     }
 
@@ -206,10 +206,13 @@ public class Graph {
         }
     }
 
-    double dfsUtilToEvaluateEquation(String source, String dest,
-                                     HashMap<String, Map<String, Double>> graph,
-                                     HashSet<String> set,
-                                     double val) {
+    double dfsUtilToEvaluateEquation(
+            String source,
+            String dest,
+            HashMap<String, Map<String, Double>> graph,
+            HashSet<String> set,
+            double val
+    ) {
 
         if (set.contains(source) || !graph.containsKey(source))
             return -1.0;
