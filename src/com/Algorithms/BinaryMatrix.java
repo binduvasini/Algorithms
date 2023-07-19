@@ -52,27 +52,27 @@ public class BinaryMatrix {
     }
 
     public static void main(String[] args) {
-        int[][] mat = {{1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
-                {1, 0, 1, 0, 1, 1, 1, 0, 1, 1},
-                {1, 1, 1, 0, 1, 1, 0, 1, 0, 1},
-                {0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-                {1, 1, 1, 0, 1, 1, 1, 0, 1, 0},
-                {1, 0, 1, 1, 1, 1, 0, 1, 0, 0},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
-                {1, 1, 0, 0, 0, 0, 1, 0, 0, 1}};
+//        int[][] mat = {{1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+//                {1, 0, 1, 0, 1, 1, 1, 0, 1, 1},
+//                {1, 1, 1, 0, 1, 1, 0, 1, 0, 1},
+//                {0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+//                {1, 1, 1, 0, 1, 1, 1, 0, 1, 0},
+//                {1, 0, 1, 1, 1, 1, 0, 1, 0, 0},
+//                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//                {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+//                {1, 1, 0, 0, 0, 0, 1, 0, 0, 1}};
 
 //        System.out.println(shortestPathInABinaryMatrixUsingNodeClass(mat, new int[]{0, 0}, new int[]{3, 4}));
 
-        int[][] island = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
-                {0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0},
-                {0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0}};
-        System.out.println(maxSizeOfIsland(island));
+//        int[][] island = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+//                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
+//                {0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+//                {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0},
+//                {0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0},
+//                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+//                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
+//                {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0}};
+//        System.out.println(maxSizeOfIsland(island));
     }
 
     /**
@@ -132,13 +132,13 @@ public class BinaryMatrix {
      * @param grid
      * @return
      */
-    static int maxSizeOfIsland(int[][] grid) {
+    public int maxSizeOfIsland(int[][] grid) {
         int maxsize = 0;
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] == 1) {
                     int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-                    int size = DFSUtil(grid, row, col, directions);
+                    int size = dfsUtil(grid, row, col, directions);
                     maxsize = Math.max(size, maxsize);
                 }
             }
@@ -146,16 +146,48 @@ public class BinaryMatrix {
         return maxsize;
     }
 
-    private static int DFSUtil(int[][] grid, int row, int col, int[][] directions) {
+    private static int dfsUtil(int[][] grid, int row, int col, int[][] directions) {
         grid[row][col] = 0;  //Mark this cell as visited
         int size = 1;
         for (int[] dir : directions) {
             int r = row + dir[0];
             int c = col + dir[1];
             if (r >= 0 && c >= 0 && r < grid.length && c < grid[r].length && grid[r][c] == 1)
-                size += DFSUtil(grid, r, c, directions);
+                size += dfsUtil(grid, r, c, directions);
         }
         return size;
+    }
+
+    /**
+     * Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water),
+     * return the number of islands.
+     * @param grid
+     * @return
+     */
+    public int numberOfIslands(char[][] grid) {
+        int countIsland = 0;
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                if (grid[row][col] == '1') {
+                    dfsutil(grid, row, col);
+                    countIsland += 1;
+                }
+            }
+        }
+        return countIsland;
+    }
+
+    private static void dfsutil(char[][] matrix, int row, int col) {
+        if (row < 0 || col < 0 || row >= matrix.length || col >= matrix[row].length)
+            return;
+        if (matrix[row][col] == '0')
+            return;
+        matrix[row][col] = '0';
+        dfsutil(matrix, row-1, col);
+        dfsutil(matrix, row, col-1);
+        dfsutil(matrix, row+1, col);
+        dfsutil(matrix, row, col+1);
+
     }
 
     /**

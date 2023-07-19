@@ -12,7 +12,7 @@ public class ArrayPrefixSum {
      * @param target
      * @return
      */
-    public int subarraySum(int[] nums, int target) {
+    public int totalNumberOfSubarraySumEqualsTarget(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, frequency of this sum>
 
         map.put(0, 1);

@@ -590,20 +590,20 @@ public class ArrayQuestions {
     public int minSubArrayLen(int[] nums, int target) {
         int start = 0, end = 0;
         int sum = 0; //The sum at every window.
-        int shortestSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
+        int minSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
 
         while (end < nums.length) {  //We move the end pointer until we find the required sum.
             sum += nums[end];
+            end += 1;
 
             while (sum >= target) {  //We found the sum greater or equal to target.
                 // Now we move the start pointer until we find the required the shortest size.
-                shortestSubarrayLen = Math.min(shortestSubarrayLen, end - start + 1);
+                minSubarrayLen = Math.min(minSubarrayLen, end - start);
                 sum -= nums[start];
                 start += 1;
             }
-            end += 1;
         }
-        return shortestSubarrayLen == Integer.MAX_VALUE ? 0: shortestSubarrayLen;
+        return minSubarrayLen == Integer.MAX_VALUE ? 0: minSubarrayLen;
     }
 
     /**
@@ -615,21 +615,21 @@ public class ArrayQuestions {
     public int minSubarrayLen(int[] nums, int target) {
         int start = 0, end = 0;
         int sum = 0; //The sum at every window.
-        int shortestSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
+        int minSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
 
         while (end < nums.length) {  //We move the end pointer until we find the required sum.
             sum += nums[end];
+            end += 1;
 
             while (sum > target) {  //We found the sum greater than target.
                 // Now we move the start pointer until we find the required the shortest size.
                 sum -= nums[start];
                 start += 1;  //Shrink the window until the sum is equal to target.
                 if (sum == target)  //Update the length only when the window sum is equal to target.
-                    shortestSubarrayLen = Math.min(shortestSubarrayLen, end - start + 1);
+                    minSubarrayLen = Math.min(minSubarrayLen, end - start);
             }
-            end += 1;
         }
-        return shortestSubarrayLen == Integer.MAX_VALUE ? 0: shortestSubarrayLen;
+        return minSubarrayLen == Integer.MAX_VALUE ? 0: minSubarrayLen;
     }
 
     /**
