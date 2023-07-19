@@ -96,11 +96,37 @@ public class Heap {
             for (int i = start; i <= end; i++) {
                 maxHeap.add(nums[i]);
             }
-            result[ind] = maxHeap.element();
+            result[ind] = maxHeap.element();  //instead of poll()
             start += 1;
             end += 1;
             ind += 1;
         }
+        return result;
+    }
+
+    /**
+     * Given an integer array nums and an integer k, return the k most frequent elements.
+     * You may return the answer in any order.
+     * nums = [1,1,1,2,2,3], k = 2
+     * Output: [1,2]
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] result = new int[k];
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+
+        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+        maxHeap.addAll(map.keySet());
+
+        for (int i = 0; i < k; i++) {
+            result[i] = maxHeap.element();
+        }
+
         return result;
     }
 
