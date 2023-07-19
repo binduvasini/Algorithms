@@ -168,7 +168,7 @@ public class BinaryMatrix {
      * @param grid
      * @return
      */
-    public int maxAreaOfIsland(int[][] grid) {
+    public int maxSizeOfIsland1(int[][] grid) {
         int maxSize = Integer.MIN_VALUE;
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
@@ -201,7 +201,7 @@ public class BinaryMatrix {
      * @param grid
      * @return
      */
-    public int maxSizeOfIsland(int[][] grid) {
+    public int maxSizeOfIsland2(int[][] grid) {
         int maxsize = 0;
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
