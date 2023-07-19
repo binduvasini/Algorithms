@@ -127,8 +127,77 @@ public class BinaryMatrix {
     }
 
     /**
+     * Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water),
+     * return the number of islands.
+     * @param grid
+     * @return
+     */
+    public int numberOfIslands(char[][] grid) {
+        int countIsland = 0;
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                if (grid[row][col] == '1') {
+                    dfs(grid, row, col);
+                    countIsland += 1;
+                }
+            }
+        }
+        return countIsland;
+    }
+
+    private void dfs(char[][] grid, int row, int col) {
+        if (row < 0 || col < 0 || row >= grid.length || col >= grid[row].length) {
+            return;
+        }
+        if (grid[row][col] == '0') {
+            return;
+        }
+
+        grid[row][col] = '0';
+
+        dfs(grid, row-1, col);
+        dfs(grid, row, col-1);
+        dfs(grid, row+1, col);
+        dfs(grid, row, col+1);
+
+    }
+
+    /**
      * Find the largest region of connected 1s in a given binary matrix.
-     *
+     * (Without direction array).
+     * @param grid
+     * @return
+     */
+    public int maxAreaOfIsland(int[][] grid) {
+        int maxSize = Integer.MIN_VALUE;
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                int size = dfs(grid, row, col);
+                maxSize = Math.max(maxSize, size);
+            }
+        }
+        return maxSize;
+    }
+
+    private int dfs(int[][] grid, int row, int col) {
+        if (row < 0 || col < 0 || row >= grid.length || col >= grid[0].length) {
+            return 0;
+        }
+        if (grid[row][col] == 0) {
+            return 0;
+        }
+
+        grid[row][col] = 0;
+
+        return 1 + dfs(grid, row + 1, col) +
+                dfs(grid, row, col + 1) +
+                dfs(grid, row - 1, col) +
+                dfs(grid, row, col - 1);
+    }
+
+    /**
+     * Find the largest region of connected 1s in a given binary matrix.
+     * (Use directions array).
      * @param grid
      * @return
      */
@@ -156,38 +225,6 @@ public class BinaryMatrix {
                 size += dfsUtil(grid, r, c, directions);
         }
         return size;
-    }
-
-    /**
-     * Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water),
-     * return the number of islands.
-     * @param grid
-     * @return
-     */
-    public int numberOfIslands(char[][] grid) {
-        int countIsland = 0;
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[row].length; col++) {
-                if (grid[row][col] == '1') {
-                    dfsutil(grid, row, col);
-                    countIsland += 1;
-                }
-            }
-        }
-        return countIsland;
-    }
-
-    private static void dfsutil(char[][] matrix, int row, int col) {
-        if (row < 0 || col < 0 || row >= matrix.length || col >= matrix[row].length)
-            return;
-        if (matrix[row][col] == '0')
-            return;
-        matrix[row][col] = '0';
-        dfsutil(matrix, row-1, col);
-        dfsutil(matrix, row, col-1);
-        dfsutil(matrix, row+1, col);
-        dfsutil(matrix, row, col+1);
-
     }
 
     /**
