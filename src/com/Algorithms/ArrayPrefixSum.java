@@ -47,7 +47,7 @@ public class ArrayPrefixSum {
      */
     public boolean isSubarrayDivisibleByK(int[] nums, int k) {
         int prefixSum = 0;
-        HashMap<Integer, Integer> map = new HashMap<>();  //map<prefixSum, index>
+        Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, index>
         map.put(0, -1);  //To handle the remainder 0
         for (int i = 0; i < nums.length; i++) {
             prefixSum += nums[i];
@@ -55,7 +55,7 @@ public class ArrayPrefixSum {
 
             if (map.containsKey(remainder)) {
                 int prefixIndex = map.get(remainder);
-                if (i - prefixIndex > 1)  //As the question suggests, check if the subarray size is at least 2.
+                if (i - prefixIndex >= 2)  //As the question suggests, check if the subarray size is at least 2.
                     return true;
             } else {
                 map.put(remainder, i);
@@ -73,10 +73,10 @@ public class ArrayPrefixSum {
      * @param k
      * @return
      */
-    public int subarrayDivisibleByK(int[] nums, int k) {
+    public int subarrayCountDivisibleByK(int[] nums, int k) {
         int prefixSum = 0;
         int count = 0;
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         map.put(0, 1);  //To handle the remainder 0
         for (int num : nums) {
             prefixSum += num;
