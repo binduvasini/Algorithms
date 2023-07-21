@@ -575,9 +575,10 @@ public class StringQuestions {
 
         //This is what I initially tried. But this is not required.
         // Checking the middle part of either of the strings would do.
-        /*String s1s2 = s1.substring(0, start) + s2.substring(start);
-        String s2s1 = s2.substring(0, start) + s1.substring(start);
-        return isPalindrome(s1s2) || isPalindrome(s2s1);*/
+
+//        String s1s2 = s1.substring(0, start) + s2.substring(start);
+//        String s2s1 = s2.substring(0, start) + s1.substring(start);
+//        return isPalindrome(s1s2) || isPalindrome(s2s1);
 
         String s1Middle = s1.substring(start, end + 1);
         String s2Middle = s2.substring(start, end + 1);
@@ -628,5 +629,37 @@ class TimeMap {
         }
 
         return "";
+    }
+
+    int count = 0;
+
+    /**
+     * Given a string s, return the number of palindromic substrings in it.
+     * A string is a palindrome when it reads the same backward as forward.
+     * A substring is a contiguous sequence of characters within the string.
+     * Input: "racecar"
+     * Output: 9  [r, a, c, e, c, a, cec, aceca, racecar]
+     *
+     * @param s
+     * @return
+     */
+    public int findAllPalindromeSubstrings(String s) {
+        for(int i = 0; i < s.length() - 1; i++) {
+            findPalindromesInSubString(s, i, i);     //Odd length palindromic sub-string.
+            // Imagine having both pointers pointing at the same character.
+            // Expanding one character at a time on each direction will be a string with odd length.
+            findPalindromesInSubString(s, i, i + 1);   //Even length palindromic sub-string
+        }
+
+        return count;
+    }
+
+    private void findPalindromesInSubString(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            System.out.println(s.substring(left, right + 1));
+            count += 1;    //palindromic substring is found
+            left -= 1;    //Expand to the left
+            right +=1;    //Expand to the right
+        }
     }
 }

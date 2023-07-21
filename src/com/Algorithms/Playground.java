@@ -9,9 +9,34 @@ import java.util.Queue;
 
 public class Playground {
 
+//    public static void main(String[] args) {
+//        int[] nums = {1,2,2};
+//        System.out.println(subsetsWithDup(nums));
+//    }
+static int count = 0;
+
+    public static void findPalindromesInSubString(String s, int i, int j) {
+        while(i>=0 && j<s.length() && s.charAt(i)==s.charAt(j)){    //Check for the palindrome string
+            System.out.println(s.substring(i, j+1));
+            count++;    //Increment the count if palindromic substring found
+            i--;    //To trace string in left direction
+            j++;    //To trace string in right direction
+        }
+    }
+
+    public static int findAllPalindromeSubstrings(String s) {
+        for(int i=0; i<s.length()-1; i++){
+            findPalindromesInSubString(s,i,i);     //To check the palindrome of odd length palindromic sub-string
+            findPalindromesInSubString(s,i,i+1);   //To check the palindrome of even length palindromic sub-string
+        }
+
+        return count;
+    }
+
     public static void main(String[] args) {
-        int[] nums = {1,2,2};
-        System.out.println(subsetsWithDup(nums));
+        String str = "racecar";
+        int count = findAllPalindromeSubstrings(str);
+        System.out.println("Total palindrome substrings: " + count);
     }
 
     static List<List<Integer>> subsetsWithDup(int[] nums) {
