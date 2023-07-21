@@ -615,9 +615,9 @@ public class StringQuestions {
     private void findPalindromesInSubString(String s, int left, int right) {
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
             System.out.println(s.substring(left, right + 1));
-            count += 1;    //palindromic substring is found
-            left -= 1;    //Expand to the left
-            right +=1;    //Expand to the right
+            count += 1;  //palindromic substring is found
+            left -= 1;   //Expand to the left
+            right +=1;   //Expand to the right
         }
     }
 }
