@@ -631,8 +631,6 @@ class TimeMap {
         return "";
     }
 
-    int count = 0;
-
     /**
      * Given a string s, return the number of palindromic substrings in it.
      * A string is a palindrome when it reads the same backward as forward.
@@ -643,6 +641,7 @@ class TimeMap {
      * @param s
      * @return
      */
+    int count = 0;
     public int findAllPalindromeSubstrings(String s) {
         for(int i = 0; i < s.length() - 1; i++) {
             findPalindromesInSubString(s, i, i);     //Odd length palindromic sub-string.
