@@ -636,7 +636,7 @@ public class BinaryTree {
             int size = queue.size();
             boolean xExists = false, yExists = false;
             for (int i = 0; i < size; i++) {
-                TreeNode treeNode = queue.poll();
+                TreeNode treeNode = queue.element();
                 if (treeNode.data == x)
                     xExists = true;
                 if (treeNode.data == y)
