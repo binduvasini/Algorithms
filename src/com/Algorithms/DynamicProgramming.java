@@ -1,6 +1,7 @@
 package com.Algorithms;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class DynamicProgramming {
     /**
@@ -87,6 +88,28 @@ public class DynamicProgramming {
         return dp[A.length][B.length];
     }
 
+    /**
+     * Given an integer n, return the number of structurally unique BSTs
+     * which has exactly n nodes of unique values from 1 to n.
+     * Input: n = 3
+     * Output: 5
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        if (n == 0 || n == 1)
+            return 1;
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {  // At the position i, we need to try out every element from 1 to i keeping it as root
+            for (int root = 1; root <= i; root++) { //When root is 1, the elements 0 to 1 becomes LST. The difference between i and root becomes the RST
+                dp[i] += dp[root - 1] * dp[i - root];
+            }
+        }
+        return dp[n];
+    }
+
     public String longestPalindromicSubstring(String s) {
         int n = s.length();
         boolean[][] dp = new boolean[n][n];
@@ -128,7 +151,20 @@ public class DynamicProgramming {
         return longestPalSubstring;
     }
 
-    boolean isWildcardMatching(String s, String p) {
+    public int LCSLength(String x, String y) {
+        int[][] dp = new int[x.length() + 1][y.length() + 1];
+        for (int i = 1; i <= x.length(); i++) {
+            for (int j = 1; j <= y.length(); j++) {
+                if (x.charAt(i - 1) == y.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[x.length()][y.length()];
+    }
+
+    public boolean isWildcardMatching(String s, String p) {
         int n = s.length(), m = p.length();
 
         //the first row and column will be dedicated to empty string and pattern respectively.
@@ -146,6 +182,9 @@ public class DynamicProgramming {
 
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
+                //The following are the two main cases we need to work on.
+                // If we remove ith character and jth character from s and p,
+                // we check if the other characters are a match or not, comes from the prev row and col.
                 if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else if (p.charAt(j - 1) == '*') {
@@ -158,8 +197,10 @@ public class DynamicProgramming {
         return dp[n][m];
     }
 
-    boolean isRegexMatching(String s, String p) {
+    public boolean isRegexMatching(String s, String p) {
         int n = s.length(), m = p.length();
+
+        //the first row and column will be dedicated to empty string and pattern respectively.
         boolean[][] dp = new boolean[n + 1][m + 1];
 
         //both the pattern and string are empty
@@ -227,5 +268,120 @@ public class DynamicProgramming {
             }
         }
         return dp[word1.length()][word2.length()];
+    }
+
+    /**
+     * Given a string s and a dictionary of strings wordDict,
+     * return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+     * Input: s = "applepenapple", wordDict = ["apple","pen"]
+     * Output: true
+     * Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+     * Note that you are allowed to reuse a dictionary word.
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+    /**
+     * You are given an integer array nums.
+     * You are initially positioned at the array's first index, and
+     * each element in the array represents your maximum jump length at that position.
+     * Return true if you can reach the last index, or false otherwise.
+     * Input: nums = [2,3,1,1,4]
+     * Output: true
+     * Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        boolean[] dp = new boolean[nums.length];
+
+        dp[0] = true;
+
+        for(int i = 1; i < nums.length; i++) {
+            for(int j = 0; j < i; j++){
+                if (i <= j + nums[j] && dp[j]) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[nums.length-1];
+    }
+
+    /**
+     * Input: nums = [2,3,1,1,4]
+     * Output: 2
+     * Explanation: The minimum number of jumps to reach the last index is 2.
+     * Jump 1 step from index 0 to 1, then 3 steps to the last index.
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        int[] dp = new int[nums.length];
+        dp[0] = 0;
+        for (int end = 1; end < nums.length; end++) {
+            dp[end] = Integer.MAX_VALUE;
+            for (int start = 0; start < end; start++) {
+                if (nums[start] >= end - start) {
+                    dp[end] = Math.min(dp[end], dp[start]+1);
+                }
+            }
+        }
+        return dp[nums.length-1];
+    }
+
+    /**
+     * Given an integer n, return the least number of perfect square numbers that sum to n.
+     * A perfect square is an integer that is the square of an integer;
+     * it is the product of some integer with itself.
+     * For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
+     * Input: n = 12
+     * Output: 3
+     * Explanation: 12 = 4 + 4 + 4.
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        if(n == 0)
+            return dp[0];
+
+        dp[1] = 1;
+        if(n == 1)
+            return dp[1];
+
+        dp[2] = 2;
+        if(n == 2)
+            return dp[2];
+
+        dp[3] = 3;
+        if(n == 3)
+            return dp[3];
+
+        for (int i = 4; i <= n; i++) {
+            dp[i] = i;
+            for (int j = 1; j <= i; j++) {
+                if ((j * j) > i)
+                    break;
+                else
+                    dp[i] = Math.min(dp[i], 1 + dp[i - (j * j)]);
+            }
+        }
+        return dp[n];
     }
 }
