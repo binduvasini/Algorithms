@@ -241,7 +241,7 @@ public class BinaryTree {
      */
     int predecessor, successor;
 
-    void predSuc(TreeNode root, int data) {
+    public void predSuc(TreeNode root, int data) {
         if (root == null)
             return;
 
@@ -283,21 +283,17 @@ public class BinaryTree {
      * @param q
      * @return
      */
-    public boolean isSame(TreeNode p, TreeNode q) {
-        List<Integer> pList = preorder(p, new LinkedList<>());
-        List<Integer> qList = preorder(q, new LinkedList<>());
-        return pList.equals(qList);
-    }
-
-    private List<Integer> preorder(TreeNode node, LinkedList<Integer> list){
-        if (node == null)
-            list.add(-1);
-        if (node != null) {
-            list.add(node.data);
-            preorder(node.left, list);
-            preorder(node.right, list);
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
         }
-        return list;
+        if (p == null || q == null) {
+            return false;
+        }
+        if (p.data == q.data) {
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+        return false;
     }
 
     /**
@@ -319,12 +315,12 @@ public class BinaryTree {
      * @param root
      * @return
      */
-    TreeNode invertTree(TreeNode root) {
+    public TreeNode invertTree(TreeNode root) {
         preorderUtil(root);
         return root;
     }
 
-    void preorderUtil(TreeNode root) {
+    private void preorderUtil(TreeNode root) {
         if (root == null)
             return;
         TreeNode temp = root.left;
@@ -345,7 +341,7 @@ public class BinaryTree {
         return buildTreePreOrder(nums, 0, nums.length - 1);
     }
 
-    TreeNode buildTreePreOrder(int[] nums, int start, int end) {
+    private TreeNode buildTreePreOrder(int[] nums, int start, int end) {
         if (start > end)
             return null;
 
@@ -635,7 +631,7 @@ public class BinaryTree {
      * @param key
      * @return
      */
-    TreeNode deleteNodeFromBST(TreeNode root, int key) {
+    public TreeNode deleteNodeFromBST(TreeNode root, int key) {
         if (root == null)
             return null;
 
@@ -660,7 +656,7 @@ public class BinaryTree {
         return root;
     }
 
-    int findSuccessor(TreeNode root) {
+    private int findSuccessor(TreeNode root) {
         if (root.right != null) {
             TreeNode node = root.right;
             while (node.left != null) {
@@ -769,7 +765,7 @@ public class BinaryTree {
         return left || right;  //Either of the subtrees has found the sum
     }
 
-    boolean isLeaf(TreeNode root) {
+    private boolean isLeaf(TreeNode root) {
         return (root.left == null) && (root.right == null);
     }
 
@@ -997,7 +993,7 @@ public class BinaryTree {
         }
     }
 
-    void inOrderUtil(TreeNode root) {
+    private void inOrderUtil(TreeNode root) {
         if (root == null)
             return;
 

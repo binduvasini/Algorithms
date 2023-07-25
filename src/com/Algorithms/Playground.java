@@ -127,7 +127,7 @@ static int count = 0;
     public boolean canPartition(int[] nums) {
         if (nums == null || nums.length == 0) return false;
         int total = 0;
-        for (int i = 0; i < nums.length; i++) total += nums[i];
+        for (int num : nums) total += num;
         if (total % 2 != 0) return false;
         List<Integer> list = new ArrayList<Integer>();
         Arrays.sort(nums);

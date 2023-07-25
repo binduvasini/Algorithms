@@ -112,14 +112,16 @@ public class StringQuestions {
     }
 
     boolean isIsomorphic(String s, String t) {
-        HashMap<Character, Character> hm = new HashMap<>();
+        Map<Character, Character> hm = new HashMap<>();
         char[] sChar = s.toCharArray();
         char[] tChar = t.toCharArray();
         for (int i = 0; i < sChar.length; i++) {
-            if (hm.containsKey(sChar[i])) {
+            if (hm.containsKey(sChar[i])) {  //If the HashMap contains a character in s as key,
+                // the value should be the character in t.
                 if (hm.get(sChar[i]) != tChar[i])
                     return false;
-            } else {
+            } else {  //If the HashMap contains a character in t as value already,
+                // the key is not the character in s, so it is false.
                 if (hm.containsValue(tChar[i]))
                     return false;
                 hm.put(sChar[i], tChar[i]);
