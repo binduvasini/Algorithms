@@ -59,4 +59,173 @@ public class DynamicProgramming {
         }
         return dp[amount];
     }
+
+
+    /**
+     * Two lists A and B are written on two separate horizontal lines.
+     * If we draw a connecting line from A to B, the two numbers must be equal A[i] == B[j].
+     * The connecting lines must not intersect.
+     * Return the maximum number of connecting lines we can draw this way.
+     * A = [2,5,1,2,5]
+     * B = [10,5,2,1,5,2]
+     * Output: 3
+     *
+     * @param A
+     * @param B
+     * @return
+     */
+    public int maxUncrossedLines(int[] A, int[] B) {
+        int[][] dp = new int[A.length + 1][B.length + 1];
+        for (int i = 1; i <= A.length; i++) {
+            for (int j = 1; j <= B.length; j++) {
+                if (A[i - 1] == B[j - 1])
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[A.length][B.length];
+    }
+
+    public String longestPalindromicSubstring(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+
+        String longestPalSubstring = "";
+        int longestPalLength = 0;
+
+        //The diagonal top to bottom cells are true because the length of the palindrome is 1.
+        // The starting and ending characters are the same.
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = true;
+            longestPalLength = 1;
+            longestPalSubstring = s.substring(i, i + 1);
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            if (s.charAt(i) == s.charAt(i + 1)) {
+                dp[i][i + 1] = true;
+                longestPalLength = 2; //length of palindrome is 2.
+                longestPalSubstring = s.substring(i, i + 2);
+            }
+        }
+
+        int j;
+        for (int k = 2; k < n; k++) {
+            //This is the window. j must always be greater than i. Having a for loop after i with j=i+2 does not work.
+            for (int i = 0; i < n; i++) {
+                j = i + k;
+                if (j < n && s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1]) {
+                    dp[i][j] = true;
+
+                    if (j - i + 1 > longestPalLength) {
+                        longestPalLength = j - i + 1;
+                        longestPalSubstring = s.substring(i, j + 1);
+                    }
+                }
+            }
+        }
+        return longestPalSubstring;
+    }
+
+    boolean isWildcardMatching(String s, String p) {
+        int n = s.length(), m = p.length();
+
+        //the first row and column will be dedicated to empty string and pattern respectively.
+        boolean[][] dp = new boolean[n + 1][m + 1];
+
+        //both the pattern and string are empty
+        dp[0][0] = true;
+
+        //string is empty. the pattern is * so we look at the prev column value.
+        for (int j = 1; j <= m; j++) {
+            if (p.charAt(j - 1) == '*') {
+                dp[0][j] = dp[0][j - 1];
+            }
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                } else {
+                    dp[i][j] = false;
+                }
+            }
+        }
+        return dp[n][m];
+    }
+
+    boolean isRegexMatching(String s, String p) {
+        int n = s.length(), m = p.length();
+        boolean[][] dp = new boolean[n + 1][m + 1];
+
+        //both the pattern and string are empty
+        dp[0][0] = true;
+
+        //string is empty. the pattern is * so we look at the prev column value.
+        for (int j = 1; j <= m; j++) {
+            if (p.charAt(j - 1) == '*') {
+                dp[0][j] = dp[0][j - 2];
+            }
+        }
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (p.charAt(j - 1) == '.' || s.charAt(i - 1) == p.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else if (p.charAt(j - 1) == '*') {
+                    if (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') {
+                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
+                    } else {
+                        dp[i][j] = dp[i][j - 2];
+                    }
+                } else {
+                    dp[i][j] = false;
+                }
+            }
+        }
+        return dp[n][m];
+    }
+
+    /**
+     * Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
+     * You have the following 3 operations permitted on a word:
+     * 1) Insert a character
+     * 2) Delete a character
+     * 3) Replace a character
+     * Input: word1 = "intention", word2 = "execution"
+     * Output: 5
+     * intention -> inention (remove 't')
+     * inention -> enention (replace 'i' with 'e')
+     * enention -> exention (replace 'n' with 'x')
+     * exention -> exection (replace 'n' with 'c')
+     * exection -> execution (insert 'u')
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int editMinDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        for (int i = 0; i <= word1.length(); i++) {  //Initialize the first column
+            dp[i][0] = i;
+        }
+
+        for (int j = 0; j <= word2.length(); j++) {  //Initialize the first row
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1];
+                else
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1])) + 1;
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
 }

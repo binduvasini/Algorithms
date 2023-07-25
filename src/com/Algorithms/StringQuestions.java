@@ -11,120 +11,31 @@ import java.util.TreeMap;
 
 public class StringQuestions {
 
-    public String longestPalindromeSubstring(String s) {
-        int n = s.length();
-        boolean[][] dp = new boolean[n][n];
-
-        String longestPalSubstring = "";
-        int longestPalLength = 0;
-
-        for (int i = 0; i < n; i++) {
-            dp[i][i] = true;
-            longestPalLength = 1;
-            longestPalSubstring = s.substring(i, i + 1);
-        }
-
-        for (int i = 0; i < n - 1; i++) {
-            if (s.charAt(i) == s.charAt(i + 1)) {
-                dp[i][i + 1] = true;
-                longestPalLength = 2;
-                longestPalSubstring = s.substring(i, i + 2);
-            }
-        }
-
-        int j;
-        for (int k = 2; k < n; k++) {
-            for (int i = 0; i < n; i++) {
-                j = i + k;
-                if (j < n && s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1]) {
-                    dp[i][j] = true;
-
-                    if (j - i + 1 > longestPalLength) {
-                        longestPalLength = j - i + 1;
-                        longestPalSubstring = s.substring(i, j + 1);
-                    }
-                }
-            }
-        }
-        return longestPalSubstring;
-    }
-
-    boolean isWildcardMatching(String s, String p) {
-        int n = s.length(), m = p.length();
-
-        //the first row and column will be dedicated to empty string and pattern respectively.
-        boolean[][] dp = new boolean[n + 1][m + 1];
-
-        //both the pattern and string are empty
-        dp[0][0] = true;
-
-        //string is empty. the pattern is * so we look at the prev column value.
-        for (int j = 1; j <= m; j++) {
-            if (p.charAt(j - 1) == '*') {
-                dp[0][j] = dp[0][j - 1];
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-                } else {
-                    dp[i][j] = false;
-                }
-            }
-        }
-        return dp[n][m];
-    }
-
-    boolean isRegexMatching(String s, String p) {
-        int n = s.length(), m = p.length();
-        boolean[][] dp = new boolean[n + 1][m + 1];
-
-        //both the pattern and string are empty
-        dp[0][0] = true;
-
-        //string is empty. the pattern is * so we look at the prev column value.
-        for (int j = 1; j <= m; j++) {
-            if (p.charAt(j - 1) == '*') {
-                dp[0][j] = dp[0][j - 2];
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (p.charAt(j - 1) == '.' || s.charAt(i - 1) == p.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else if (p.charAt(j - 1) == '*') {
-                    if (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') {
-                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
-                    } else {
-                        dp[i][j] = dp[i][j - 2];
-                    }
-                } else {
-                    dp[i][j] = false;
-                }
-            }
-        }
-        return dp[n][m];
-    }
-
-    boolean isIsomorphic(String s, String t) {
-        Map<Character, Character> hm = new HashMap<>();
+    /**
+     * Given two strings s and t, determine if they are isomorphic.
+     * Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+     * All occurrences of a character must be replaced with another character while preserving the order of characters.
+     * No two characters may map to the same character, but a character may map to itself.
+     * Input: s = "foo", t = "bar"
+     * Output: false
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        Map<Character, Character> map = new HashMap<>();
         char[] sChar = s.toCharArray();
         char[] tChar = t.toCharArray();
         for (int i = 0; i < sChar.length; i++) {
-            if (hm.containsKey(sChar[i])) {  //If the HashMap contains a character in s as key,
+            if (map.containsKey(sChar[i])) {  //If the HashMap contains a character in s as key,
                 // the value should be the character in t.
-                if (hm.get(sChar[i]) != tChar[i])
+                if (map.get(sChar[i]) != tChar[i])
                     return false;
             } else {  //If the HashMap contains a character in t as value already,
                 // the key is not the character in s, so it is false.
-                if (hm.containsValue(tChar[i]))
+                if (map.containsValue(tChar[i]))
                     return false;
-                hm.put(sChar[i], tChar[i]);
+                map.put(sChar[i], tChar[i]);
             }
         }
         return true;
@@ -182,37 +93,6 @@ public class StringQuestions {
             longest = Math.max(longest, (end - start));
         }
         return longest;
-    }
-
-    /**
-     * Longest substring with at Least k repeating Characters
-     * Input: s = "ababbc", k = 2
-     * Output: 5
-     * The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-    public int longestSubstring(String s, int k) {
-        return longest(s.toCharArray(), 0, s.length() - 1, k);
-    }
-
-    private int longest(char[] sChar, int start, int end, int k) {
-        int[] count = new int[26];
-        for (int i = start; i <= end; i++) {
-            char c = sChar[i];
-            count[c - 'a'] += 1;
-        }
-
-        for (int i = start; i <= end; i++) {
-            char c = sChar[i];
-            if (count[c - 'a'] > 0 && count[c - 'a'] < k) {  //Splitting criteria
-                return Math.max(longest(sChar, start, i - 1, k),
-                        longest(sChar, i + 1, end, k));
-            }
-        }
-        return end - start + 1;
     }
 
     /**
@@ -381,71 +261,6 @@ public class StringQuestions {
     }
 
     /**
-     * Two lists A and B are written on two separate horizontal lines.
-     * If we draw a connecting line from A to B, the two numbers must be equal A[i] == B[j].
-     * The connecting lines must not intersect.
-     * Return the maximum number of connecting lines we can draw this way.
-     * A = [2,5,1,2,5]
-     * B = [10,5,2,1,5,2]
-     * Output: 3
-     *
-     * @param A
-     * @param B
-     * @return
-     */
-    public int maxUncrossedLines(int[] A, int[] B) {
-        int[][] dp = new int[A.length + 1][B.length + 1];
-        for (int i = 1; i <= A.length; i++) {
-            for (int j = 1; j <= B.length; j++) {
-                if (A[i - 1] == B[j - 1])
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                else
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-        return dp[A.length][B.length];
-    }
-
-    /**
-     * Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
-     * You have the following 3 operations permitted on a word:
-     * 1) Insert a character
-     * 2) Delete a character
-     * 3) Replace a character
-     * Input: word1 = "intention", word2 = "execution"
-     * Output: 5
-     * intention -> inention (remove 't')
-     * inention -> enention (replace 'i' with 'e')
-     * enention -> exention (replace 'n' with 'x')
-     * exention -> exection (replace 'n' with 'c')
-     * exection -> execution (insert 'u')
-     *
-     * @param word1
-     * @param word2
-     * @return
-     */
-    public int editMinDistance(String word1, String word2) {
-        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
-        for (int i = 0; i <= word1.length(); i++) {  //Initialize the first column
-            dp[i][0] = i;
-        }
-
-        for (int j = 0; j <= word2.length(); j++) {  //Initialize the first row
-            dp[0][j] = j;
-        }
-
-        for (int i = 1; i <= word1.length(); i++) {
-            for (int j = 1; j <= word2.length(); j++) {
-                if (word1.charAt(i - 1) == word2.charAt(j - 1))
-                    dp[i][j] = dp[i - 1][j - 1];
-                else
-                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1])) + 1;
-            }
-        }
-        return dp[word1.length()][word2.length()];
-    }
-
-    /**
      * Given strings s and t, check if t is a subsequence of s.
      * A subsequence of a string is a new string
      * which is formed from the original string by deleting some (can be none) of the characters
@@ -554,6 +369,28 @@ public class StringQuestions {
     }
 
     /**
+     * Determine if the string is a palindrome
+     * @param str
+     * @return
+     */
+    public boolean isPalindrome(String str) {
+        str = str.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+        if (str.trim().equals(""))
+            return true;
+
+        return isPalindrome(str, 0, str.length() - 1);
+    }
+
+    private boolean isPalindrome(String str, int start, int end) {
+        if (start >= end)
+            return true;
+        if (str.charAt(start) != str.charAt(end))
+            return false;
+        return isPalindrome(str, start + 1, end - 1);
+    }
+
+    /**
      * Given two strings a and b of the same length, choose an index and split both strings at the same index,
      * splitting a into two strings: a = aprefix + asuffix, and splitting b into two strings: b = bprefix + bsuffix.
      * Check if aprefix + bsuffix or bprefix + asuffix forms a palindrome.
@@ -570,7 +407,6 @@ public class StringQuestions {
         int start = 0, end = s2.length() - 1;
 
         while (start < end && s1.charAt(start) == s2.charAt(end)) {
-            System.out.println("over here ");
             start += 1;
             end -= 1;
         }
@@ -587,10 +423,10 @@ public class StringQuestions {
         return isPalindrome(s1Middle) || isPalindrome(s2Middle);
     }
 
-    private boolean isPalindrome(String s) {
-        StringBuilder sb = new StringBuilder(s);
-        return (sb.reverse().toString().equals(s));
-    }
+//    private boolean isPalindrome(String s) {
+//        StringBuilder sb = new StringBuilder(s);
+//        return (sb.reverse().toString().equals(s));
+//    }
 
     /**
      * Given a string s, return the number of palindromic substrings in it.
@@ -605,22 +441,79 @@ public class StringQuestions {
     int count = 0;
     public int findAllPalindromeSubstrings(String s) {
         for(int i = 0; i < s.length() - 1; i++) {
-            findPalindromesInSubString(s, i, i);     //Odd length palindromic sub-string.
+            palindromicSubstrings(s, i, i);     //Odd length palindromic sub-string.
             // Imagine having both pointers pointing at the same character.
             // Expanding one character at a time on each direction will be a string with odd length.
-            findPalindromesInSubString(s, i, i + 1);   //Even length palindromic sub-string
+            palindromicSubstrings(s, i, i + 1);   //Even length palindromic sub-string
         }
 
         return count;
     }
 
-    private void findPalindromesInSubString(String s, int left, int right) {
+    private void palindromicSubstrings(String s, int left, int right) {
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
             System.out.println(s.substring(left, right + 1));
             count += 1;  //palindromic substring is found
             left -= 1;   //Expand to the left
             right +=1;   //Expand to the right
         }
+    }
+
+    /**
+     * Find the longest palindromic substring in s.
+     * @param s
+     * @return
+     */
+    int longestLen = Integer.MIN_VALUE, start = 0;
+    public String longestPalindromicSubstring(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            palindromicSubstringsUpdatingLength(s, i, i);
+            palindromicSubstringsUpdatingLength(s, i, i + 1);
+        }
+        return s.substring(start, start + longestLen);
+    }
+
+    private void palindromicSubstringsUpdatingLength(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left -= 1;
+            right += 1;
+        }
+        if (right - left - 1 > longestLen) {  //This condition must be outside the while loop.
+            longestLen = right - left - 1;  //The reason for doing - 1 is that when the while loop exits,
+            // the pointers would have already crossed the boundary.
+            start = left + 1;  //Same reason as above.
+        }
+    }
+
+    /**
+     * Longest substring with at Least k repeating Characters
+     * Input: s = "ababbc", k = 2
+     * Output: 5
+     * The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstring(String s, int k) {
+        return longest(s.toCharArray(), 0, s.length() - 1, k);
+    }
+
+    private int longest(char[] sChar, int start, int end, int k) {
+        int[] count = new int[26];
+        for (int i = start; i <= end; i++) {
+            char c = sChar[i];
+            count[c - 'a'] += 1;
+        }
+
+        for (int i = start; i <= end; i++) {
+            char c = sChar[i];
+            if (count[c - 'a'] > 0 && count[c - 'a'] < k) {  //Splitting criteria
+                return Math.max(longest(sChar, start, i - 1, k),
+                        longest(sChar, i + 1, end, k));
+            }
+        }
+        return end - start + 1;
     }
 }
 
