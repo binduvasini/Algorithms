@@ -12,6 +12,69 @@ import java.util.TreeMap;
 public class StringQuestions {
 
     /**
+     * Given a string s, find the length of the longest substring without repeating characters.
+     * Input: “abbcdb”. Output: 3. “bcd” is the longest substring without repeating characters.
+     *
+     * @param s
+     * @return
+     */
+    public int longestSubstringWithoutRepeatingChars(String s) {
+        int start = 0, end = 0, longest = 0;
+        Set<Character> set = new HashSet<>();
+        while (end < s.length()) {
+            if (!set.contains(s.charAt(end))) {
+                set.add(s.charAt(end));  //If we add to the set without checking, it will replace the character \
+                // as set contains only unique characters.
+                end += 1;
+            }
+            else {
+                set.remove(s.charAt(start));
+                start += 1;
+            }
+            longest = Math.max(longest, (end - start));
+        }
+        return longest;
+    }
+
+    /**
+     * Longest substring with at most k distinct characters.
+     * s = "AABBCC", k = 2.
+     * Output: 4. (Either "AABB" or "BBCC")
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
+        int start = 0, end = 0;
+        int[] charFreq = new int[26];
+        int longestLength = 0;
+        Set<Integer> uniqueCharSet = new HashSet<>();
+
+        while (end < s.length()) {
+            int endChar = s.charAt(end) - 'A';
+            charFreq[endChar] += 1;
+            uniqueCharSet.add(endChar);
+
+            if (uniqueCharSet.size() > k) {
+                int startChar = s.charAt(start) - 'A';
+                int charToRemove = startChar;
+                while (startChar == charToRemove && charFreq[startChar] > 0) {
+                    //While loop because we need to decrement the char count that we are getting rid of.
+                    startChar = s.charAt(start) - 'A';
+                    charFreq[startChar] -= 1;
+                    start += 1;
+                }
+                uniqueCharSet.remove(charToRemove);
+            }
+            end += 1;
+            longestLength = Math.max(longestLength, end - start);
+        }
+
+        return longestLength;
+    }
+
+    /**
      * Given two strings s and t, determine if they are isomorphic.
      * Two strings s and t are isomorphic if the characters in s can be replaced to get t.
      * All occurrences of a character must be replaced with another character while preserving the order of characters.
@@ -39,60 +102,6 @@ public class StringQuestions {
             }
         }
         return true;
-    }
-
-    /**
-     * Given two strings S and T, return if they are equal when both are typed into empty text editors.
-     * # means a backspace character.
-     * S = "ab#c", T = "ad#c" : true
-     *
-     * @param S
-     * @param T
-     * @return
-     */
-    public boolean backspaceCompare(String S, String T) {
-        return getActualString(S).equals(getActualString(T));
-    }
-
-    private String getActualString(String str) {
-        StringBuilder strBuild = new StringBuilder();
-        int hashCount = 0;
-        for (int i = str.length() - 1; i >= 0; i--) {
-            if (str.charAt(i) == '#') {
-                hashCount += 1;
-            } else {
-                if (hashCount == 0)
-                    strBuild.append(str.charAt(i));
-                else
-                    hashCount -= 1;
-            }
-        }
-        return strBuild.toString();
-    }
-
-    /**
-     * Given a string s, find the length of the longest substring without repeating characters.
-     * Input: “abbcdb”. Output: 3. “bcd” is the longest substring without repeating characters.
-     *
-     * @param s
-     * @return
-     */
-    public int longestSubstringWithoutRepeatingChars(String s) {
-        int start = 0, end = 0, longest = 0;
-        Set<Character> set = new HashSet<>();
-        while (end < s.length()) {
-            if (!set.contains(s.charAt(end))) {
-                set.add(s.charAt(end));  //If we add to the set without checking, it will replace the character \
-                // as set contains only unique characters.
-                end += 1;
-            }
-            else {
-                set.remove(s.charAt(start));
-                start += 1;
-            }
-            longest = Math.max(longest, (end - start));
-        }
-        return longest;
     }
 
     /**
@@ -195,177 +204,6 @@ public class StringQuestions {
             }
         }
         return anagramsList;
-    }
-
-    /**
-     * Given a non-negative integer num represented as a string,
-     * remove k digits from the number so that the new number is the smallest possible.
-     * Input: num = "1432219", k = 3
-     * Output: "1219"
-     *
-     * @param num
-     * @param k
-     * @return
-     */
-    public String removeKdigits(String num, int k) {
-        StringBuilder builder = new StringBuilder(num);
-
-        while (k > 0) {
-            int i = 0;
-            while (i < builder.length() - 1 && builder.charAt(i) <= builder.charAt(i + 1)) {
-                i++;
-            }
-            builder.deleteCharAt(i);
-            k -= 1;
-        }
-
-        for (int i = 0; i < builder.length(); ) {
-            if (builder.charAt(i) == '0')
-                builder.deleteCharAt(i);
-            else
-                break;
-        }
-        return builder.toString().isBlank() ? "0" : builder.toString();
-    }
-
-    /**
-     * Given two strings t and s, write a function to check if s contains the permutation of t.
-     * Input: t = "ab" s = "eidboaoo"
-     * Output: False
-     *
-     * @param t
-     * @param s
-     * @return
-     */
-    public boolean checkIfStringSContainsPermutationOfT(String s, String t) {
-        int[] tChars = new int[26];
-        for (int i = 0; i < t.length(); i++) {
-            char c = t.charAt(i);
-            tChars[c - 'a'] += 1;
-        }
-
-        int[] sChars = new int[26];
-        int start = 0, end = t.length();
-        while (end <= s.length()) {
-            for (int i = start; i < end; i++) {
-                char c = s.charAt(i);
-                sChars[c - 'a'] += 1;
-            }
-            if (Arrays.equals(tChars, sChars))
-                return true;
-            sChars = new int[26];
-            start += 1;
-            end += 1;
-        }
-        return false;
-    }
-
-    /**
-     * Given strings s and t, check if t is a subsequence of s.
-     * A subsequence of a string is a new string
-     * which is formed from the original string by deleting some (can be none) of the characters
-     * without disturbing the relative positions of the remaining characters.
-     * (ie, "ace" is a subsequence of "abcde" while "aec" is not).
-     * s = "ahbgdc"
-     * t = "acb"
-     * return false.
-     *
-     * @param s
-     * @param t
-     * @return
-     */
-    public boolean isSubsequence(String s, String t) {
-        if (t.isEmpty())
-            return true;
-        else if (s.isEmpty())
-            return false;
-        int sPointer = 0, tPointer = 0, count = t.length();
-        while (sPointer < s.length()) {
-            if (s.charAt(sPointer) == t.charAt(tPointer)) {
-                count -= 1;
-                tPointer += 1;
-            }
-            if (count == 0)
-                return true;
-            sPointer += 1;
-        }
-        return false;
-    }
-
-    /**
-     * Given a string s that consists of only uppercase English letters,
-     * you can perform at most k operations on that string.
-
-     * In one operation, you can choose any character of the string and
-     * change it to any other uppercase English character.
-
-     * Find the length of the longest sub-string containing all repeating letters you can get
-     * after performing the above operations.
-     * Input:
-     * s = "AABABBA", k = 1
-     * Output:
-     * 4
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-    public int LongestSubstringLengthReplacingAtMostKChars(String s, int k) {
-        int start = 0, end = 0;
-        int[] charFreq = new int[26];
-        int maxFreq = 0, longestLength = 0;
-
-        while (end < s.length()) {
-            int endChar = s.charAt(end) - 'A';
-            charFreq[endChar] += 1;
-            maxFreq = Math.max(maxFreq, charFreq[endChar]);
-            end += 1;
-
-            int windowSize = end - start - maxFreq;
-            if (windowSize > k) {
-                int startChar = s.charAt(start) - 'A';
-                charFreq[startChar] -= 1;
-                start += 1;
-            }
-
-            longestLength = Math.max(longestLength, end - start);
-        }
-        return longestLength;
-    }
-
-    /**
-     * Longest substring with at most k distinct characters.
-     * s = "AABBCC", k = 2.
-     * Output: 4. (Either "AABB" or "BBCC")
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
-        int start = 0, end = 0;
-        int[] charFreq = new int[26];
-        int longestLength = 0;
-        HashSet<Integer> uniqueCharSet = new HashSet<>();
-        while (end < s.length()) {
-            int c = s.charAt(end) - 'A';
-            charFreq[c] += 1;
-            uniqueCharSet.add(c);
-            if (uniqueCharSet.size() > k) {
-                int cStart = s.charAt(start) - 'A';
-                int charToRemove = cStart;
-                while (cStart == charToRemove && charFreq[cStart] > 0) {
-                    //While loop because we need to decrement the char count that we are getting rid of.
-                    cStart = s.charAt(start) - 'A';
-                    charFreq[cStart] -= 1;
-                    start += 1;
-                }
-                uniqueCharSet.remove(charToRemove);
-            }
-            longestLength = Math.max(longestLength, end - start + 1);
-            end += 1;
-        }
-        return longestLength;
     }
 
     /**
@@ -486,6 +324,47 @@ public class StringQuestions {
     }
 
     /**
+     * Given a string s that consists of only uppercase English letters,
+     * you can perform at most k operations on that string.
+
+     * In one operation, you can choose any character of the string and
+     * change it to any other uppercase English character.
+
+     * Find the length of the longest sub-string containing all repeating letters you can get
+     * after performing the above operations.
+     * Input:
+     * s = "AABABBA", k = 1
+     * Output:
+     * 4
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int LongestSubstringLengthReplacingAtMostKChars(String s, int k) {
+        int start = 0, end = 0;
+        int[] charFreq = new int[26];
+        int maxFreq = 0, longestLength = 0;
+
+        while (end < s.length()) {
+            int endChar = s.charAt(end) - 'A';
+            charFreq[endChar] += 1;
+            maxFreq = Math.max(maxFreq, charFreq[endChar]);
+            end += 1;
+
+            int windowSize = end - start - maxFreq;
+            if (windowSize > k) {
+                int startChar = s.charAt(start) - 'A';
+                charFreq[startChar] -= 1;
+                start += 1;
+            }
+
+            longestLength = Math.max(longestLength, end - start);
+        }
+        return longestLength;
+    }
+
+    /**
      * Longest substring with at Least k repeating Characters
      * Input: s = "ababbc", k = 2
      * Output: 5
@@ -495,7 +374,7 @@ public class StringQuestions {
      * @param k
      * @return
      */
-    public int longestSubstring(String s, int k) {
+    public int longestSubstringAtLeastKRepeatingChars(String s, int k) {
         return longest(s.toCharArray(), 0, s.length() - 1, k);
     }
 
@@ -514,6 +393,130 @@ public class StringQuestions {
             }
         }
         return end - start + 1;
+    }
+
+    /**
+     * Given two strings S and T, return if they are equal when both are typed into empty text editors.
+     * # means a backspace character.
+     * S = "ab#c", T = "ad#c" : true
+     *
+     * @param S
+     * @param T
+     * @return
+     */
+    public boolean backspaceCompare(String S, String T) {
+        return getActualString(S).equals(getActualString(T));
+    }
+
+    private String getActualString(String str) {
+        StringBuilder strBuild = new StringBuilder();
+        int hashCount = 0;
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if (str.charAt(i) == '#') {
+                hashCount += 1;
+            } else {
+                if (hashCount == 0)
+                    strBuild.append(str.charAt(i));
+                else
+                    hashCount -= 1;
+            }
+        }
+        return strBuild.toString();
+    }
+
+    /**
+     * Given a non-negative integer num represented as a string,
+     * remove k digits from the number so that the new number is the smallest possible.
+     * Input: num = "1432219", k = 3
+     * Output: "1219"
+     *
+     * @param num
+     * @param k
+     * @return
+     */
+    public String removeKdigits(String num, int k) {
+        StringBuilder builder = new StringBuilder(num);
+
+        while (k > 0) {
+            int i = 0;
+            while (i < builder.length() - 1 && builder.charAt(i) <= builder.charAt(i + 1)) {
+                i++;
+            }
+            builder.deleteCharAt(i);
+            k -= 1;
+        }
+
+        for (int i = 0; i < builder.length(); ) {
+            if (builder.charAt(i) == '0')
+                builder.deleteCharAt(i);
+            else
+                break;
+        }
+        return builder.toString().isBlank() ? "0" : builder.toString();
+    }
+
+    /**
+     * Given two strings s and t, write a function to check if s contains the permutation of t.
+     * Input: t = "ab" s = "eidboaoo"
+     * Output: False
+     *
+     * @param t
+     * @param s
+     * @return
+     */
+    public boolean checkIfStringSContainsPermutationOfT(String s, String t) {
+        int[] tChars = new int[26];
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            tChars[c - 'a'] += 1;
+        }
+
+        int[] sChars = new int[26];
+        int start = 0, end = t.length();
+        while (end <= s.length()) {
+            for (int i = start; i < end; i++) {
+                char c = s.charAt(i);
+                sChars[c - 'a'] += 1;
+            }
+            if (Arrays.equals(tChars, sChars))
+                return true;
+            sChars = new int[26];
+            start += 1;
+            end += 1;
+        }
+        return false;
+    }
+
+    /**
+     * Given strings s and t, check if t is a subsequence of s.
+     * A subsequence of a string is a new string
+     * which is formed from the original string by deleting some (can be none) of the characters
+     * without disturbing the relative positions of the remaining characters.
+     * (ie, "ace" is a subsequence of "abcde" while "aec" is not).
+     * s = "ahbgdc"
+     * t = "acb"
+     * return false.
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubsequence(String s, String t) {
+        if (t.isEmpty())
+            return true;
+        else if (s.isEmpty())
+            return false;
+        int sPointer = 0, tPointer = 0, count = t.length();
+        while (sPointer < s.length()) {
+            if (s.charAt(sPointer) == t.charAt(tPointer)) {
+                count -= 1;
+                tPointer += 1;
+            }
+            if (count == 0)
+                return true;
+            sPointer += 1;
+        }
+        return false;
     }
 }
 
