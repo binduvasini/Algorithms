@@ -1,5 +1,6 @@
 package com.Algorithms;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -206,6 +207,47 @@ public class StringQuestions {
         return anagramsList;
     }
 
+    /**
+     * Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+     * An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase,
+     * typically using all the original letters exactly once.
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isAnagram(String s, String t) {
+        Map<Character, Integer> sMap = new HashMap<>();
+        Map<Character, Integer> tMap = new HashMap<>();
+
+        for(char c : s.toCharArray())
+            sMap.put(c, sMap.getOrDefault(c, 0) + 1);
+
+        for(char c : t.toCharArray())
+            tMap.put(c, tMap.getOrDefault(c, 0) + 1);
+
+        return sMap.equals(tMap);
+    }
+
+    /**
+     * Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+
+        for(String str : strs) {
+            char[] strChars = str.toCharArray();
+            Arrays.sort(strChars);
+            String sortedString = String.valueOf(strChars);
+
+            map.putIfAbsent(sortedString, new ArrayList<>());
+            map.get(sortedString).add(str);
+
+        }
+
+        return new ArrayList<>(map.values());
+    }
     /**
      * Determine if the string is a palindrome
      * @param str
