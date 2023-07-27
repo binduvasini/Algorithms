@@ -3,18 +3,102 @@ package com.Algorithms;
 import java.util.*;
 
 public class ArrayQuestions {
+
     /**
-     * Find k-th largest element in an array
-     * Solve Using Min Heap
+     * Given an array of integers nums and an integer target,
+     * return indices of the two numbers such that they add up to target.
+     * Input: nums = [2,7,11,15], target = 9
+     * Output: [0,1]
+     *
+     * @param nums
+     * @param target
+     * @return
      */
-    public int kthLargestElement(int[] array, int k) {
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
-        for (int value : array) {
-            minHeap.add(value);
-            if (minHeap.size() > k)
-                minHeap.remove();
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int[] output = new int[2];
+
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(target - nums[i])) {
+                output[0] = i;
+                output[1] = map.get(target - nums[i]);
+            }
+            else {
+                map.put(nums[i], i);
+            }
         }
-        return minHeap.remove();
+
+        return output;
+    }
+
+    /**
+     * Given an integer array nums, return all the triplets that sum up to 0.
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> tripletSum(int[] nums) {
+        Set<List<Integer>> resultSet = new HashSet<>();
+        for (int i = 0; i < nums.length - 2; i++){
+            Set<Integer> set = new HashSet<>();
+            for (int j = i + 1; j < nums.length; j++){
+                List<Integer> list = new ArrayList<>();
+                if (set.contains(-(nums[i] + nums[j]))){
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(-(nums[i] + nums[j]));
+                }
+                else {
+                    set.add(nums[j]);
+                }
+                if (list.size() > 0){
+                    Collections.sort(list);
+                    resultSet.add(list);
+                }
+            }
+        }
+
+        return new ArrayList<>(resultSet);
+    }
+
+    /**
+     * Given an array nums of size n, return the majority element.
+     * The majority element is the element that appears more than ⌊n / 2⌋ times.
+     * You may assume that the majority element always exists in the array.
+     *
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        for (int k : map.keySet()){
+            if (map.get(k) > nums.length / 2)
+                return k;
+        }
+        return -1;
+    }
+
+    /**
+     * Given an integer array nums, move all 0s to the end of it
+     * while maintaining the relative order of the non-zero elements.
+     *
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        int nonZeroInd = 0;
+        for (int num : nums) {
+            if (num != 0) {
+                nums[nonZeroInd] = num;
+                nonZeroInd += 1;
+            }
+        }
+        while (nonZeroInd < nums.length) {
+            nums[nonZeroInd] = 0;
+            nonZeroInd += 1;
+        }
     }
 
     /**
@@ -42,8 +126,8 @@ public class ArrayQuestions {
             //update the interval in the queue rather the current one.
         }
 
-        for (int[] inters : queue) {
-            System.out.println(inters[0] + "," + inters[1]);
+        for (int[] interval : queue) {
+            System.out.println(interval[0] + "," + interval[1]);
         }
     }
 
@@ -330,15 +414,17 @@ public class ArrayQuestions {
      */
     public int longestConsecutiveSequence(int[] nums) {
         int currentLongestConsec = 1, longestConsec = 0;
-        TreeSet<Integer> set = new TreeSet<>();
-        for (int num : nums) {
+        Set<Integer> set = new TreeSet<>();
+        for (int num : nums) {  //Populate the TreeSet with all the elements
             set.add(num);
         }
         for (int num : set) {
-            if (set.contains(num + 1))
+            if (set.contains(num + 1)) {
                 currentLongestConsec += 1;
-            else
+            }
+            else {  //if the TreeSet DOES NOT contain its previous number, the sequence begins.
                 currentLongestConsec = 1;
+            }
             longestConsec = Math.max(longestConsec, currentLongestConsec);
         }
         return longestConsec;
@@ -470,7 +556,7 @@ public class ArrayQuestions {
             set.add(first * 5);
         }
 
-        return set.pollFirst().intValue();
+        return set.first().intValue();
     }
 
     /**
@@ -532,35 +618,6 @@ public class ArrayQuestions {
         }
 
         return maxProd;
-    }
-
-    /**
-     * Given an integer array nums, return all the triplets that sum up to 0.
-     *
-     * @param nums
-     * @return
-     */
-    public List<List<Integer>> tripletSum(int[] nums, int target) {
-        HashSet<List<Integer>> set = new HashSet<>();
-        for (int i = 0; i < nums.length - 2; i++) {
-            HashSet<Integer> h = new HashSet<>();
-            for (int j = i + 1; j < nums.length; j++) {
-                List<Integer> l = new ArrayList<>();
-                if (h.contains(target - (nums[i] + nums[j]))) {
-                    l.add(nums[i]);
-                    l.add(nums[j]);
-                    l.add(target - (nums[i] + nums[j]));
-                } else {
-                    h.add(nums[j]);
-                }
-                if (l.size() > 0) {
-                    Collections.sort(l);
-                    set.add(l);
-                }
-            }
-        }
-
-        return new ArrayList<>(set);
     }
 
     /**

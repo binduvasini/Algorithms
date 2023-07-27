@@ -228,6 +228,67 @@ public class BinaryMatrix {
     }
 
     /**
+     * Given a 2D board containing 'X' and 'O' (the letter O), flip all 'O's to 'X's on the regions surrounded by 'X'.
+     * You should ignore the boundaries (any 'O' on the border of the board must not be flipped to 'X').
+     * Any 'O' that is connected to an 'O' on the border must not be flipped to 'X'.
+     *
+     * @param board
+     */
+    int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    public void surroundedRegions(char[][] board) {
+        if (board.length == 0)
+            return;
+        int rows = board.length, cols = board[0].length;
+
+        //Do a DFS on all the 4 boundaries.
+        for (int c = 0; c < cols; c++) {
+            if (board[0][c] == 'O')
+                dfsUtil(board, 0, c);
+        }
+
+        for (int r = 0; r < rows; r++) {
+            if (board[r][0] == 'O')
+                dfsUtil(board, r, 0);
+        }
+
+        for (int c = cols - 1; c >= 0; c--) {
+            if (board[rows - 1][c] == 'O')
+                dfsUtil(board, rows - 1, c);
+        }
+
+        for (int r = rows - 1; r >= 0; r--) {
+            if (board[r][cols - 1] == 'O')
+                dfsUtil(board, r, cols - 1);
+        }
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (board[row][col] == 'O')
+                    board[row][col] = 'X';
+                else if (board[row][col] == '-')
+                    board[row][col] = 'O';
+            }
+        }
+
+    }
+
+    private void dfsUtil(char[][] board, int r, int c) {
+        board[r][c] = '-';
+        for (int[] dir : dirs) {
+            int neiR = r + dir[0];
+            int neiC = c + dir[1];
+            if (
+                    neiR >= 0 && neiR < board.length && neiC >= 0
+                            &&
+                            neiC < board[neiR].length && board[neiR][neiC] == 'O'
+            ) {
+                dfsUtil(board, neiR, neiC);
+            }
+        }
+    }
+
+    /**
      * Given a binary matrix, each cell has an initial state live (1) or dead (0).
      * Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
      * 1) Any live cell with fewer than two live neighbors dies, as if caused by under-population.
@@ -286,6 +347,27 @@ public class BinaryMatrix {
     }
 
     /**
+     * Given a 2D Binary array, find the row with maximum number of 1s
+     * @param array
+     * @return
+     */
+    public int findRowWithMaxOnes(int[][] array) {
+        int n = array.length;
+        int m = (n == 0) ? 0 : array[0].length;
+        int row = 0, col = m - 1;  //Start from the top right most corner
+        int max1sRow = 0;
+        while (row < n && col >= 0) {
+            if (array[row][col] == 1) {
+                max1sRow = row;
+                col--;  //Go left till you see 1
+            } else {
+                row++;  //Else go down
+            }
+        }
+        return max1sRow;
+    }
+
+    /**
      * Given a binary matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
      *
      * @param matrix
@@ -318,67 +400,6 @@ public class BinaryMatrix {
         if (firstCol) {
             for (int r = 0; r < matrix.length; r++) {
                 matrix[r][0] = 0;
-            }
-        }
-    }
-
-    /**
-     * Given a 2D board containing 'X' and 'O' (the letter O), flip all 'O's to 'X's on the regions surrounded by 'X'.
-     * You should ignore the boundaries (any 'O' on the border of the board must not be flipped to 'X').
-     * Any 'O' that is connected to an 'O' on the border must not be flipped to 'X'.
-     *
-     * @param board
-     */
-    int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-
-    public void surroundedRegions(char[][] board) {
-        if (board.length == 0)
-            return;
-        int rows = board.length, cols = board[0].length;
-
-        //Do a DFS on all the 4 boundaries.
-        for (int c = 0; c < cols; c++) {
-            if (board[0][c] == 'O')
-                dfsUtil(board, 0, c);
-        }
-
-        for (int r = 0; r < rows; r++) {
-            if (board[r][0] == 'O')
-                dfsUtil(board, r, 0);
-        }
-
-        for (int c = cols - 1; c >= 0; c--) {
-            if (board[rows - 1][c] == 'O')
-                dfsUtil(board, rows - 1, c);
-        }
-
-        for (int r = rows - 1; r >= 0; r--) {
-            if (board[r][cols - 1] == 'O')
-                dfsUtil(board, r, cols - 1);
-        }
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                if (board[row][col] == 'O')
-                    board[row][col] = 'X';
-                else if (board[row][col] == '-')
-                    board[row][col] = 'O';
-            }
-        }
-
-    }
-
-    private void dfsUtil(char[][] board, int r, int c) {
-        board[r][c] = '-';
-        for (int[] dir : dirs) {
-            int neiR = r + dir[0];
-            int neiC = c + dir[1];
-            if (
-                    neiR >= 0 && neiR < board.length && neiC >= 0
-                    &&
-                    neiC < board[neiR].length && board[neiR][neiC] == 'O'
-            ) {
-                dfsUtil(board, neiR, neiC);
             }
         }
     }
@@ -427,102 +448,5 @@ public class BinaryMatrix {
             }
         }
         return matrix;
-    }
-
-    /* Dynamic Programming */
-
-    /**
-     * Given a binary matrix, find the largest square containing only 1s and return its area.
-     * Input:
-     * 1 0 1 0 0
-     * 1 0 1 1 1
-     * 1 1 1 1 1
-     * 1 0 0 1 0
-     * Output: 4
-     *
-     * @param matrix
-     * @return
-     */
-    public int maximalSquare(char[][] matrix) {
-        if (matrix.length == 0)
-            return 0;
-        int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
-        int rows = matrix.length, cols = matrix[0].length, maxSide = 0;
-
-        for (int r = 1; r <= rows; r++) {
-            for (int c = 1; c <= cols; c++) {
-                if (matrix[r - 1][c - 1] == '1') {
-                    dp[r][c] = Math.min(Math.min(dp[r][c - 1], dp[r - 1][c]), dp[r - 1][c - 1]) + 1;
-                    maxSide = Math.max(maxSide, dp[r][c]);
-                }
-            }
-        }
-
-        return maxSide * maxSide;
-    }
-
-    /**
-     * Given a binary matrix, return how many square sub-matrices have all 1s.
-     * Input: matrix =
-     * [
-     * [0,1,1,1],
-     * [1,1,1,1],
-     * [0,1,1,1]
-     * ]
-     * Output: 15
-     * There are 10 squares of side 1.
-     * There are 4 squares of side 2.
-     * There is  1 square of side 3.
-     * Total number of squares = 10 + 4 + 1 = 15.
-     *
-     * @param matrix
-     * @return
-     */
-    public int countSquares(int[][] matrix) {
-        int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
-        int rows = matrix.length, cols = matrix[0].length, count = 0;
-
-        for (int r = 1; r <= rows; r++) {
-            for (int c = 1; c <= cols; c++) {
-                if (matrix[r - 1][c - 1] == 1) {
-                    dp[r][c] = Math.min(Math.min(dp[r][c - 1], dp[r - 1][c]), dp[r - 1][c - 1]) + 1;
-                    count += dp[r][c];
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Given a binary array that has exactly one island (i.e., one or more connected land cells).
-     * One cell is a square with side length 1. Determine the perimeter of the island.
-     * Input:
-     * [[0,1,0,0],
-     *  [1,1,1,0],
-     *  [0,1,0,0],
-     *  [1,1,0,0]]
-     *
-     * Output: 16
-     * @param grid
-     * @return
-     */
-    public int islandPerimeter(int[][] grid) {
-        int rows = grid.length, cols = grid[0].length, perimeter = 0;
-        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                if (grid[row][col] == 1) {
-                    for (int[] dir : directions) {
-                        int r = row + dir[0];
-                        int c = col + dir[1];
-
-                        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
-                            perimeter += 1;
-                        }
-                    }
-                }
-            }
-        }
-        return perimeter;
     }
 }

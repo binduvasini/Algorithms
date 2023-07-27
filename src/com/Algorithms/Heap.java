@@ -105,6 +105,20 @@ public class Heap {
     }
 
     /**
+     * Find k-th largest element in an array
+     * Solve Using Min Heap
+     */
+    public int kthLargestElement(int[] array, int k) {
+        Queue<Integer> minHeap = new PriorityQueue<>(k);
+        for (int value : array) {
+            minHeap.add(value);
+            if (minHeap.size() > k)
+                minHeap.remove();
+        }
+        return minHeap.remove();
+    }
+
+    /**
      * Given an integer array nums and an integer k, return the k most frequent elements.
      * You may return the answer in any order.
      * nums = [1,1,1,2,2,3], k = 2
