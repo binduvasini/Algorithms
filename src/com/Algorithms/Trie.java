@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 class TrieNode {
-    HashMap<Character, TrieNode> children;
+    Map<Character, TrieNode> children;
     boolean isWord;
 
     public TrieNode() {
@@ -30,14 +31,14 @@ public class Trie {
      * Iterate through each character of the word.
      * If the current node has the current character (through one of the elements in the “children” field), move on.
      * Otherwise, create a new node for this character.
-     * Repeat the entire word is traversed.
+     * Repeat until the entire word is traversed.
      *
      * @param word
      */
     public void insert(String word) {
         TrieNode current = root;
         for (char ch : word.toCharArray()) {
-            current.children.computeIfAbsent(ch, c -> new TrieNode());  //ch is the key. new TrieNode() is the value.
+            current.children.putIfAbsent(ch, new TrieNode());  //ch is the key. new TrieNode() is the value.
             current = current.children.get(ch);
         }
         current.isWord = true;
@@ -49,7 +50,7 @@ public class Trie {
      * If the current node has the current character (through one of the elements in the “children” field),
      * move on to its sub-trie.
      * Otherwise, return false.
-     * Repeat the entire word is traversed.
+     * Repeat until the entire word is traversed.
      * In the end, return the current node's isWord boolean.
      *
      * @param word

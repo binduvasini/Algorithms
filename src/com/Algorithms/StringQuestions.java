@@ -560,6 +560,69 @@ public class StringQuestions {
         }
         return false;
     }
+
+    /**
+     * Find the longest common prefix string amongst an array of strings.
+     * Input: strs = ["flower","flow","flight"]
+     * Output: "fl"
+     *
+     * @param strs
+     * @return
+     */
+    public String longestCommonPrefix(String[] strs) {
+        Arrays.sort(strs);
+        String first = strs[0];
+        String last = strs[strs.length - 1];
+
+        int i = 0;
+
+        while (i < first.length()) {
+            if (first.charAt(i) == last.charAt(i)) {
+                i += 1;
+            }
+            else {
+                break;
+            }
+        }
+
+        return first.substring(0, i);
+    }
+
+    /**
+     * Encode a list of strings to a string.
+     * The encoded string is then sent over the network and is decoded back to the original list of strings.
+     * Implement encode and decode
+     * Input: [“algo”,“to”,“do”,“this”] - Encode it.
+     * Output: [“algo”,“to”,“do”,“this”] - Decoded.
+     *
+     * @param words
+     * @return
+     */
+    public String encode(List<String> words) {
+        StringBuilder encoded = new StringBuilder();
+        for (String word: words) {
+            encoded.append(word.length()).append('#').append(word);
+        }
+        return encoded.toString();
+    }
+
+    public List<String> decode(String str) {
+        List<String> decoded = new ArrayList<>();
+        int i = 0;
+
+        while (i < str.length()) {  //look at the character one at a time.
+            //the first character we are looking at is an integer.
+            //the second character is a delimiter.
+            int delimiter = str.indexOf('#', i);  //the first delimiter after index i
+            int wordLength = Integer.parseInt(str.substring(i, delimiter));
+
+            i = delimiter + wordLength + 1;  //move the index to the position of the next word
+
+            decoded.add(str.substring(delimiter + 1, i));  //add the word to the output
+        }
+
+        return decoded;
+    }
 }
 
 /**
