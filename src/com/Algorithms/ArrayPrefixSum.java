@@ -96,32 +96,6 @@ public class ArrayPrefixSum {
     }
 
     /**
-     * Find the maximum length subarray for a given sum.
-     * nums = { 10, 5, 2, 7, 1, 9 },
-     * target = 15
-     * Output: 4
-     *
-     * @param nums
-     * @param target
-     * @return
-     */
-    public int maxLengthSubarray(int[] nums, int target) {
-        int prefixSum = 0;
-        int longestSubarrayLen = 0;
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            prefixSum += nums[i];
-            if (map.containsKey(prefixSum - target)) {
-                int prefixIndex = map.get(prefixSum - target);
-                longestSubarrayLen = Math.max(longestSubarrayLen, i - prefixIndex);
-            } else {
-                map.put(prefixSum, i);
-            }
-        }
-        return longestSubarrayLen;
-    }
-
-    /**
      * Given a binary array, find the maximum length of a contiguous subarray with an equal number of 0 and 1.
      *
      * @param nums
@@ -134,8 +108,8 @@ public class ArrayPrefixSum {
         map.put(0, -1);
 
         for (int i = 0; i < nums.length; i++) {
-            int n = nums[i] == 0 ? -1 : 1;
-            prefixSum += n;
+            int num = nums[i] == 0 ? -1 : 1;
+            prefixSum += num;
             if (map.containsKey(prefixSum)) {
                 maxLen = Math.max(maxLen, i - map.get(prefixSum));
             } else {
@@ -146,23 +120,50 @@ public class ArrayPrefixSum {
     }
 
     /**
+     * Find the maximum length subarray for a given sum.
+     * nums = { 10, 5, 2, 7, 1, 9 },
+     * target = 15
+     * Output: 4
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int maxLengthSubarray(int[] nums, int target) {
+        int prefixSum = 0;
+        int maxLen = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            prefixSum += nums[i];
+            if (map.containsKey(prefixSum - target)) {
+                int prefixIndex = map.get(prefixSum - target);
+                maxLen = Math.max(maxLen, i - prefixIndex);
+            } else {
+                map.put(prefixSum, i);
+            }
+        }
+        return maxLen;
+    }
+
+    /**
      * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
      * The subarray with maximum sum is 6: [4, -1, 2, 1].
+     * Return the maximum sum.
      *
      * @param nums
      * @return
      */
     public int subarrayWithMaxSum(int[] nums) {
-        int max = Integer.MIN_VALUE, prefixSum = 0;
-        for(int num : nums) {
+        int maxSum = Integer.MIN_VALUE, prefixSum = 0;
+        for (int num : nums) {
             prefixSum += num;
-            max = Math.max(max, prefixSum);
+            maxSum = Math.max(maxSum, prefixSum);
 
-            if(prefixSum < 0) {
+            if (prefixSum < 0) {
                 prefixSum = 0;
             }
         }
 
-        return max;
+        return maxSum;
     }
 }

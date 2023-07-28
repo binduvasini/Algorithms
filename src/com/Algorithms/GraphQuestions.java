@@ -97,6 +97,7 @@ public class GraphQuestions {
      * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
      */
 //    graph = new HashMap<>();
+    Deque<Integer> courseOrder = new ArrayDeque<>();
     public int[] findOrderOfCourses(int numCourses, int[][] prerequisites) {
         for (int i = 0; i < numCourses; i++) {  //This is to cover test case: numCourses = 2, []. Output: [1,0]
             graph.putIfAbsent(i, new ArrayList<>());
@@ -107,32 +108,24 @@ public class GraphQuestions {
         }
 
         //Use topological sort.
-        Deque<Integer> courseOrder = new ArrayDeque<>();
         Set<Integer> visited = new HashSet<>();
         Set<Integer> visiting = new HashSet<>();
         for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting, courseOrder)) {
+            if (!visited.contains(prereq) && hasCycle1(prereq, visited, visiting)) {
                 return new int[0];  //return an empty array because there is a cycle.
             }
         }
 
-        int[] order = new int[numCourses];
-        for(int i = 0; i < numCourses && !courseOrder.isEmpty(); i++) {
-            order[i] = courseOrder.pop();
-        }
-
-        return order;
+        return courseOrder.stream().mapToInt(i -> i).toArray();
     }
 
-    private boolean hasCycle(
-            Integer prereq, Set<Integer> visited, Set<Integer> visiting, Deque<Integer> courseOrder
-    ) {
+    private boolean hasCycle1(Integer prereq, Set<Integer> visited, Set<Integer> visiting) {
         visited.add(prereq);
         visiting.add(prereq); //To detect a cycle
         if (graph.containsKey(prereq)) {
             //We need to check this cuz we come back here during recursion with the actual course of prerequisites
             for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && hasCycle(course, visited, visiting, courseOrder)) {
+                if (!visited.contains(course) && hasCycle1(course, visited, visiting)) {
                     return true;
                 } else if (visiting.contains(course)) {
                     return true;
@@ -158,7 +151,7 @@ public class GraphQuestions {
      * @return
      */
     public boolean possibleBipartition(int N, int[][] dislikes) {
-        HashMap<Integer, List<Integer>> graph = new HashMap<>();
+        Map<Integer, List<Integer>> graph = new HashMap<>();
         for (int[] dislike : dislikes) {
             graph.putIfAbsent(dislike[0], new ArrayList<>());
             graph.get(dislike[0]).add(dislike[1]);
@@ -166,7 +159,7 @@ public class GraphQuestions {
             graph.get(dislike[1]).add(dislike[0]);
         }
         Queue<Integer> queue = new LinkedList<>();
-        HashSet<Integer> visited = new HashSet<>();
+        Set<Integer> visited = new HashSet<>();
         boolean[] color = new boolean[N + 1];
         for (int i = 1; i <= N; i++) {
             if (visited.contains(i))
@@ -214,14 +207,14 @@ public class GraphQuestions {
      * @return
      */
     public int networkDelayTime(int[][] times, int N, int source) {
-        HashMap<Integer, Map<Integer, Integer>> graph = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> graph = new HashMap<>();
         for (int[] time : times) {
             graph.putIfAbsent(time[0], new HashMap<>());
             graph.get(time[0]).put(time[1], time[2]);
         }
         //We don't need the distance array separately as in BFSShortestPath.
         // We can make use of the minHeap to store the distance.
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        Queue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
         boolean[] visited = new boolean[N+1];
         minHeap.add(new int[]{source, 0});
         int totalDistance = 0;
@@ -268,13 +261,13 @@ public class GraphQuestions {
      * @return
      */
     public int findCheapestPrice(int N, int[][] flights, int source, int dest, int K) {
-        HashMap<Integer, Map<Integer, Integer>> graph = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> graph = new HashMap<>();
         for (int[] flight : flights) {
             graph.putIfAbsent(flight[0], new HashMap<>());
             graph.get(flight[0]).put(flight[1], flight[2]);
         }
 
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        Queue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
         minHeap.add(new int[]{source, 0, K + 1});
         while (!minHeap.isEmpty()) {
             int[] nodeDist = minHeap.remove();
@@ -310,8 +303,8 @@ public class GraphQuestions {
      * @param tickets
      * @return
      */
-    private Map<String, PriorityQueue<String>> itineraryGraph = new HashMap<>();
-    private LinkedList<String> orderedItinerary = new LinkedList<>();
+    Map<String, Queue<String>> itineraryGraph = new HashMap<>();
+    LinkedList<String> orderedItinerary = new LinkedList<>();
     public List<String> orderItinerary(List<List<String>> tickets) {
         for (List<String> ticket : tickets) {
             itineraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
@@ -323,7 +316,7 @@ public class GraphQuestions {
 
     private void dfsUtil(String flight) {
         if (itineraryGraph.containsKey(flight)) {
-            PriorityQueue<String> connectingFlights = itineraryGraph.get(flight);
+            Queue<String> connectingFlights = itineraryGraph.get(flight);
             while (!connectingFlights.isEmpty()) {
                 dfsUtil(connectingFlights.remove());
             }
@@ -385,21 +378,22 @@ public class GraphQuestions {
 
     /**
      * In a given grid, each cell can have one of three values:
-     *
+
      * the value 0 representing an empty cell;
      * the value 1 representing a fresh orange;
      * the value 2 representing a rotten orange.
      * Every minute, any fresh orange that is adjacent (4-directionally) to a rotten orange becomes rotten.
-     *
+
      * Return the minimum number of minutes that must elapse until no cell has a fresh orange.
      * If this is impossible, return -1 instead.
-     *
+
      * Input: [
      *         [2,1,1],
      *         [1,1,0],
      *         [0,1,1]
      *        ]
      * Output: 4
+     *
      * @param grid
      * @return
      */
@@ -481,6 +475,5 @@ public class GraphQuestions {
                 }
             }
         }
-
     }
 }
