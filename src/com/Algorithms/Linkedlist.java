@@ -1,7 +1,9 @@
 package com.Algorithms;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 class Node {
     int data;
@@ -180,7 +182,7 @@ public class Linkedlist {
         if (lists.length == 0)
             return null;
 
-        PriorityQueue<Node> minHeap = new PriorityQueue<>((o1, o2) -> o1.data - o2.data);
+        Queue<Node> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o.data));
         Node merged = new Node(0);
         Node head = merged;
 

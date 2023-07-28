@@ -6,7 +6,7 @@ public class ArrayQuestions {
 
     /**
      * Given an array of integers nums and an integer target,
-     * return indices of the two numbers such that they add up to target.
+     * return the indices of the two numbers such that they add up to target.
      * Input: nums = [2,7,11,15], target = 9
      * Output: [0,1]
      *
@@ -39,11 +39,11 @@ public class ArrayQuestions {
      */
     public List<List<Integer>> tripletSum(int[] nums) {
         Set<List<Integer>> resultSet = new HashSet<>();
-        for (int i = 0; i < nums.length - 2; i++){
+        for (int i = 0; i < nums.length - 2; i++) {
             Set<Integer> set = new HashSet<>();
-            for (int j = i + 1; j < nums.length; j++){
+            for (int j = i + 1; j < nums.length; j++) {
                 List<Integer> list = new ArrayList<>();
-                if (set.contains(-(nums[i] + nums[j]))){
+                if (set.contains(-(nums[i] + nums[j]))) {
                     list.add(nums[i]);
                     list.add(nums[j]);
                     list.add(-(nums[i] + nums[j]));
@@ -51,7 +51,7 @@ public class ArrayQuestions {
                 else {
                     set.add(nums[j]);
                 }
-                if (list.size() > 0){
+                if (list.size() > 0) {
                     Collections.sort(list);
                     resultSet.add(list);
                 }
@@ -102,33 +102,58 @@ public class ArrayQuestions {
     }
 
     /**
+     * Merge two sorted arrays.
+     * @param leftArr
+     * @param rightArr
+     * @return
+     */
+    public int[] mergeSortedArrays(int[] leftArr, int[] rightArr) {
+        int[] tmp = new int[leftArr.length + rightArr.length];
+        int i = 0, lefti = 0, righti = 0;
+        while (lefti < leftArr.length && righti < rightArr.length) {
+            if (leftArr[lefti] <= rightArr[righti]) {
+                tmp[i] = leftArr[lefti];
+                lefti += 1;
+            } else {
+                tmp[i] = rightArr[righti];
+                righti += 1;
+            }
+            i += 1;
+        }
+
+        //when one of the indices goes out of bounds, we copy the remaining elements from that array to the main array
+        System.arraycopy(leftArr, lefti, tmp, i, leftArr.length - lefti);
+        System.arraycopy(rightArr, righti, tmp, i, rightArr.length - righti);
+        return tmp;
+    }
+
+    /**
      * Given a collection of intervals, merge all overlapping intervals.
      * Input: [[1,3],[2,6],[8,10],[15,18]]
      * Output: [[1,6],[8,10],[15,18]]
      *
      * @param intervals
      */
-    public void mergeIntervals(int[][] intervals) {
-        LinkedList<int[]> queue = new LinkedList<>();
-        //sort the value in 0th index of each array
+    public int[][] mergeIntervals(int[][] intervals) {
+        //sort the starting point of the intervals.
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
 
-        queue.add(intervals[0]);
-        for (int i = 1; i < intervals.length; i++) {
-            int[] currInterval = intervals[i];
-            int[] prevInterval = queue.getLast();
+        LinkedList<int[]> result = new LinkedList<>();
 
-            if (currInterval[0] > prevInterval[1]) {
-                //if the current interval end point is already greater than the prev, we need it in the queue.
-                queue.addLast(currInterval);
+        result.addLast(intervals[0]);
+        for (int[] current : intervals) {
+            int[] prev = result.getLast();
+
+            if (prev[1] >= current[0]) {  //The end point of the previous interval is greater than or equal to the
+                // start point of the current interval. Therefore, it needs to be merged.
+                result.getLast()[1] = Math.max(prev[1], current[1]);
             }
-            queue.getLast()[1] = Math.max(prevInterval[1], currInterval[1]);
-            //update the interval in the queue rather the current one.
+            else {
+                result.addLast(current);
+            }
         }
 
-        for (int[] interval : queue) {
-            System.out.println(interval[0] + "," + interval[1]);
-        }
+        return result.toArray(int[][]::new);
     }
 
     /**
@@ -568,18 +593,18 @@ public class ArrayQuestions {
     public int maxProfitSellOnce(int[] prices) {
         if (prices.length == 0)
             return 0;
-        int maxDiff = Integer.MIN_VALUE;
+        int maxProfit = Integer.MIN_VALUE;
         int minimum = Integer.MAX_VALUE;
         for (int price : prices) {
             minimum = Math.min(minimum, price);
-            maxDiff = Math.max(maxDiff, price - minimum);
+            maxProfit = Math.max(maxProfit, price - minimum);
         }
-        return maxDiff;
+        return maxProfit;
     }
 
     /**
      * Best day to buy stock and the best day to sell it. You can only hold at most one share of the stock at any time.
-     * However, you can buy it then immediately sell it on the same day.
+     * However, you can buy it then immediately sell it on the same day. You should sell before you buy another stock.
      *
      * @param prices
      * @return
@@ -595,29 +620,58 @@ public class ArrayQuestions {
     }
 
     /**
-     * Find a contiguous subarray that has the largest product.
+     * Find a contiguous subarray that has the largest product. Return the product.
+     * Input: nums = [-2,4,-1]
+     * Output: 4
      *
      * @param nums
      * @return
      */
     public int maxProduct(int[] nums) {
-        int maxProd_currIndex = 0;
-        int minProd_currIndex = 0;
+        int currentMin = 0, currentMax = 0;
         int maxProd = 0;
 
         if (nums.length == 1)
             return nums[0];
 
-        for (int i : nums) {
-            int tmp = maxProd_currIndex;
+        for (int num : nums) {
+            int tempMax = currentMax;  //Store the current max in temp variable
+            // because we need it to find the current min
 
-            maxProd_currIndex = Math.max(i, Math.max(i * tmp, i * minProd_currIndex));
-            minProd_currIndex = Math.min(i, Math.min(i * tmp, i * minProd_currIndex));
+            currentMax = Math.max(num, Math.max(num * currentMin, num * currentMax));
+            maxProd = Math.max(maxProd, currentMax);
 
-            maxProd = Math.max(maxProd, maxProd_currIndex);
+            currentMin = Math.min(num, Math.min(num * currentMin, num * tempMax));
         }
 
         return maxProd;
+    }
+
+    public int trap(int[] arr) {
+        if(arr.length == 0)
+            return 0;
+        int n = arr.length, water = 0;
+
+        //Maintain two arrays left and right
+        int[] left = new int[n];
+        int[] right = new int[n];
+        left[0] = arr[0];
+
+        for (int i = 1; i < n; i++) { //Left to right: Store the highest of previous and current elements
+            left[i] = Math.max(left[i - 1], arr[i]);
+        }
+
+        right[n - 1] = arr[n - 1];
+        for (int i = n - 2; i >= 0; i--) { //Right to left: Store the highest of next and current elements
+            right[i] = Math.max(right[i + 1], arr[i]);
+        }
+
+        for (int i = 0; i < n; i++) { //Scan the original array.
+            // Subtract the minimum of left and right array’s elements with the current element
+            water += Math.min(left[i], right[i]) - arr[i];
+        }
+
+        return water;
     }
 
     /**

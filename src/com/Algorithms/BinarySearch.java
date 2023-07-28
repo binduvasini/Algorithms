@@ -282,7 +282,7 @@ public class BinarySearch {
      * sort them in-place so that objects of the same color are adjacent,
      * with the colors in the order red, white, and blue.
 
-     * We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+     * We will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
 
      * Input: nums = [2,0,2,1,1,0]
      * Output: [0,0,1,1,2,2]
@@ -293,12 +293,12 @@ public class BinarySearch {
         int lo = 0, mid = 0, hi = nums.length-1;
 
         while (mid <= hi) {  //Look at the value in the mid position.
-            if (nums[mid] == 0) {  //If it's 0, swap it with array[lo]. increment lo and mid.
+            if (nums[mid] == 0) {  //If it's 0, swap it with nums[lo]. increment lo and mid.
                 swap(nums, lo, mid);
                 lo += 1;
                 mid += 1;
             }
-            else if (nums[mid] == 2) {  //If it's 2, swap it with array[hi]. decrement hi.
+            else if (nums[mid] == 2) {  //If it's 2, swap it with nums[hi]. decrement hi.
                 swap(nums, hi, mid);
                 hi -= 1;
             }

@@ -164,13 +164,14 @@ public class Backtracking {
     /**
      * Given an array nums and a target,
      * find all unique combinations in nums where the candidate numbers sums to target.
-     * The same repeated number may be chosen unlimited number of times.
+     * The same number may be chosen unlimited number of times.
+     * The combination set will be unique as long as the frequency of the chosen numbers are different.
      * nums = [2,3,5], target = 8,
      * A solution set is:
      * [
-     * [2,2,2,2],
-     * [2,3,3],
-     * [3,5]
+     *  [2,2,2,2],
+     *  [2,3,3],
+     *  [3,5]
      * ]
      *
      * @param nums
@@ -189,11 +190,12 @@ public class Backtracking {
     private void combinationSumRepeatAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
         if (target < 0)
             return;
-        else if (target == 0)
+        if (target == 0)
             resultList.add(new ArrayList<>(tmp));
         for (int i = pointer; i < nums.length; i++) {
             tmp.add(nums[i]);
-            combinationSumRepeatAllowed(nums, target - nums[i], tmp, i);
+            combinationSumRepeatAllowed(nums, target - nums[i], tmp, i);  //We consider the same element
+            // over and over. That's why we pass the same index to the recursion.
             tmp.remove(tmp.size() - 1);
         }
     }
@@ -205,10 +207,10 @@ public class Backtracking {
      * nums = [10,1,2,7,6,1,5], target = 8,
      * A solution set is:
      * [
-     * [1, 7],
-     * [1, 2, 5],
-     * [2, 6],
-     * [1, 1, 6]
+     *  [1, 7],
+     *  [1, 2, 5],
+     *  [2, 6],
+     *  [1, 1, 6]
      * ]
      *
      * @param nums
@@ -227,7 +229,7 @@ public class Backtracking {
     private void combinationSumRepeatNotAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
         if (target < 0)
             return;
-        else if (target == 0)
+        if (target == 0)
             resultList.add(new ArrayList<>(tmp));
         for (int i = pointer; i < nums.length; i++) {
             if (i > pointer && nums[i] == nums[i - 1])
