@@ -10,8 +10,18 @@ public class Matrix {
     /**
      * You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
      * You have to rotate the image in-place.
-     * Input: [[1,2,3],[4,5,6],[7,8,9]]
-     * Output: [[7,4,1],[8,5,2],[9,6,3]]
+     * Input:
+     * [
+     *    [1,2,3],
+     *    [4,5,6],
+     *    [7,8,9]
+     * ]
+     * Output:
+     * [
+     *    [7,4,1],
+     *    [8,5,2],
+     *    [9,6,3]
+     * ]
      *
      * @param matrix
      */
@@ -36,86 +46,13 @@ public class Matrix {
     }
 
     /**
-     * You are given an array coordinates,
-     * coordinates[i] = [x, y], where [x, y] represents the coordinate of a point.
-     * Check if these points make a straight line in the XY plane.
-     *
-     * @param coordinates
-     * @return
-     */
-    public boolean checkStraightLine(int[][] coordinates) {
-        if (coordinates.length <= 2)
-            return true;
-
-        int y1 = coordinates[0][1], y2 = coordinates[1][1];
-        int num = y2 - y1;
-        int x1 = coordinates[0][0], x2 = coordinates[1][0];
-        int denom = x2 - x1;
-        int gcdY2Y1 = gcd(num, denom);
-        String slope = num / gcdY2Y1 + ":" + denom / gcdY2Y1;
-
-        for (int i = 2; i < coordinates.length; i++) {
-            int y3 = coordinates[i][1];
-            int x3 = coordinates[i][0];
-            int gcdY3Y1 = gcd(y3 - y1, x3 - x1);
-            String slopeY3 = (y3 - y1) / gcdY3Y1 + ":" + (x3 - x1) / gcdY3Y1;
-            if (!slopeY3.equals(slope))
-                return false;
-        }
-        return true;
-    }
-
-    private int gcd(int a, int b) {
-        while (b != 0) {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
-
-
-    /**
-     * Given two lists of closed intervals, each list of intervals is pairwise disjoint and in sorted order.
-     * Return the intersection of these two interval lists.
-     * A = [[0,2],[5,10],[13,23],[24,25]]
-     * B = [[1,5],[8,12],[15,24],[25,26]]
-     * Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]
-     *
-     * @param A
-     * @param B
-     * @return
-     */
-    public int[][] intervalIntersection(int[][] A, int[][] B) {
-        int a = 0, b = 0;
-        List<int[]> list = new LinkedList<>();
-
-        while (a < A.length && b < B.length) {
-            //The maximum start point from any two intervals and
-            // the minimum end point from any two intervals must intersect.
-            int maxStartpoint = Math.max(A[a][0], B[b][0]);
-            int minEndpoint = Math.min(A[a][1], B[b][1]);
-
-            if (minEndpoint >= maxStartpoint) {
-                list.add(new int[]{maxStartpoint, minEndpoint});
-            }
-
-            if (minEndpoint == A[a][1])  //increment based on the minimum end point.
-                a += 1;
-            else
-                b += 1;
-        }
-
-        return list.toArray(new int[list.size()][]);
-    }
-
-    /**
      * Given an n x n matrix where each of the rows and columns are sorted in ascending order,
      * find the kth smallest element in the matrix.
-     * matrix = [
-     * [ 1,  5,  9],
-     * [10, 11, 14],
-     * [12, 14, 15]
+     * matrix =
+     * [
+     *   [ 1,  5,  9],
+     *   [10, 11, 14],
+     *   [12, 14, 15]
      * ],
      * k = 8,
      * return 14.
@@ -134,6 +71,25 @@ public class Matrix {
             }
         }
         return maxHeap.remove();
+    }
+
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix.length == 0)
+            return false;
+
+        int row = 0;
+        int col = matrix[0].length - 1;
+
+        while (row < matrix.length && col >= 0) {
+            if (target == matrix[row][col])
+                return true;
+            else if (target > matrix[row][col])
+                row += 1;
+            else
+                col -= 1;
+        }
+
+        return false;
     }
 
     /**
@@ -178,6 +134,79 @@ public class Matrix {
         board[r][c] = tmp; //Setting the char back to original because
         // we might visit this char again in other cases (that are invoked from the for loop above)
         return exists;
+    }
+
+    /**
+     * You are given an array coordinates,
+     * coordinates[i] = [x, y], where [x, y] represents the coordinate of a point.
+     * Check if these points make a straight line in the XY plane.
+     *
+     * @param coordinates
+     * @return
+     */
+    public boolean checkStraightLine(int[][] coordinates) {
+        if (coordinates.length <= 2)
+            return true;
+
+        int y1 = coordinates[0][1], y2 = coordinates[1][1];
+        int num = y2 - y1;
+        int x1 = coordinates[0][0], x2 = coordinates[1][0];
+        int denom = x2 - x1;
+        int gcdY2Y1 = gcd(num, denom);
+        String slope = num / gcdY2Y1 + ":" + denom / gcdY2Y1;
+
+        for (int i = 2; i < coordinates.length; i++) {
+            int y3 = coordinates[i][1];
+            int x3 = coordinates[i][0];
+            int gcdY3Y1 = gcd(y3 - y1, x3 - x1);
+            String slopeY3 = (y3 - y1) / gcdY3Y1 + ":" + (x3 - x1) / gcdY3Y1;
+            if (!slopeY3.equals(slope))
+                return false;
+        }
+        return true;
+    }
+
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    /**
+     * Given two lists of closed intervals, each list of intervals is pairwise disjoint and in sorted order.
+     * Return the intersection of these two interval lists.
+     * A = [[0,2],[5,10],[13,23],[24,25]]
+     * B = [[1,5],[8,12],[15,24],[25,26]]
+     * Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]
+     *
+     * @param A
+     * @param B
+     * @return
+     */
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        int a = 0, b = 0;
+        List<int[]> list = new LinkedList<>();
+
+        while (a < A.length && b < B.length) {
+            //The maximum start point from any two intervals and
+            // the minimum end point from any two intervals must intersect.
+            int maxStartpoint = Math.max(A[a][0], B[b][0]);
+            int minEndpoint = Math.min(A[a][1], B[b][1]);
+
+            if (minEndpoint >= maxStartpoint) {
+                list.add(new int[]{maxStartpoint, minEndpoint});
+            }
+
+            if (minEndpoint == A[a][1])  //increment based on the minimum end point.
+                a += 1;
+            else
+                b += 1;
+        }
+
+        return list.toArray(new int[list.size()][]);
     }
 
 
@@ -257,10 +286,11 @@ public class Matrix {
      * other rooms are either empty (0's) or contain magic orbs that increase the knight's health (positive integers).
      * The knight moves only rightward or downward in each step.
      * Determine the knight's minimum initial health so that he is able to rescue the princess.
-     * Input: [
-     * [-2 (K),	-3,	3],
-     * [-5,	-10, 1],
-     * [10,	30,	-5 (P)]
+     * Input:
+     * [
+     *    [-2 (K),	-3,	3],
+     *    [-5,	   -10, 1],
+     *    [10,	   30, -5 (P)]
      * ]
      * Output: 7.
      * @param dungeon
