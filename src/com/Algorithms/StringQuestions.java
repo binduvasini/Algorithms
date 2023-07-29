@@ -24,7 +24,7 @@ public class StringQuestions {
         Set<Character> set = new HashSet<>();
         while (end < s.length()) {
             if (!set.contains(s.charAt(end))) {
-                set.add(s.charAt(end));  //If we add to the set without checking, it will replace the character \
+                set.add(s.charAt(end));  //If we add to the set without checking, it will replace the character
                 // as set contains only unique characters.
                 end += 1;
             }
@@ -35,44 +35,6 @@ public class StringQuestions {
             longest = Math.max(longest, (end - start));
         }
         return longest;
-    }
-
-    /**
-     * Longest substring with at most k distinct characters.
-     * s = "AABBCC", k = 2.
-     * Output: 4. (Either "AABB" or "BBCC")
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
-        int start = 0, end = 0;
-        int[] charFreq = new int[26];
-        int longestLength = 0;
-        Set<Integer> uniqueCharSet = new HashSet<>();
-
-        while (end < s.length()) {
-            int endChar = s.charAt(end) - 'A';
-            charFreq[endChar] += 1;
-            uniqueCharSet.add(endChar);
-
-            if (uniqueCharSet.size() > k) {
-                int startChar = s.charAt(start) - 'A';
-                int charToRemove = startChar;
-                while (startChar == charToRemove && charFreq[startChar] > 0) {
-                    //While loop because we need to decrement the char count that we are getting rid of.
-                    startChar = s.charAt(start) - 'A';
-                    charFreq[startChar] -= 1;
-                    start += 1;
-                }
-                uniqueCharSet.remove(charToRemove);
-            }
-            end += 1;
-            longestLength = Math.max(longestLength, end - start);
-        }
-
-        return longestLength;
     }
 
     /**
@@ -366,6 +328,44 @@ public class StringQuestions {
     }
 
     /**
+     * Longest substring with at most k distinct characters.
+     * s = "AABBCC", k = 2.
+     * Output: 4. (Either "AABB" or "BBCC")
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
+        int start = 0, end = 0;
+        int[] charFreq = new int[26];
+        int longestLength = 0;
+        Set<Integer> uniqueCharSet = new HashSet<>();
+
+        while (end < s.length()) {
+            int endChar = s.charAt(end) - 'A';
+            charFreq[endChar] += 1;
+            uniqueCharSet.add(endChar);
+
+            if (uniqueCharSet.size() > k) {
+                int startChar = s.charAt(start) - 'A';
+                int charToRemove = startChar;
+                while (startChar == charToRemove && charFreq[startChar] > 0) {
+                    //While loop because we need to decrement the char count that we are getting rid of.
+                    startChar = s.charAt(start) - 'A';
+                    charFreq[startChar] -= 1;
+                    start += 1;
+                }
+                uniqueCharSet.remove(charToRemove);
+            }
+            end += 1;
+            longestLength = Math.max(longestLength, end - start);
+        }
+
+        return longestLength;
+    }
+
+    /**
      * Given a string s that consists of only uppercase English letters,
      * you can perform at most k operations on that string.
 
@@ -451,19 +451,19 @@ public class StringQuestions {
     }
 
     private String getActualString(String str) {
-        StringBuilder strBuild = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         int hashCount = 0;
         for (int i = str.length() - 1; i >= 0; i--) {
             if (str.charAt(i) == '#') {
                 hashCount += 1;
             } else {
                 if (hashCount == 0)
-                    strBuild.append(str.charAt(i));
+                    builder.append(str.charAt(i));
                 else
                     hashCount -= 1;
             }
         }
-        return strBuild.toString();
+        return builder.toString();
     }
 
     /**
