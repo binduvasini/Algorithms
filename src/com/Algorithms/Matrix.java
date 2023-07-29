@@ -73,6 +73,12 @@ public class Matrix {
         return maxHeap.remove();
     }
 
+    /**
+     * Given an integer target, return true if target is in matrix or false otherwise.
+     * @param matrix
+     * @param target
+     * @return
+     */
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix.length == 0)
             return false;
