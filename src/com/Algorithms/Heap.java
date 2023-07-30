@@ -12,100 +12,7 @@ import java.util.Queue;
 public class Heap {
 
     /**
-     * Running median in a data stream.
-     * Solve using MinHeap and MaxHeap.
-     * void addNum(int num) - Add a integer number from the data stream to the data structure.
-     * double findMedian() - Return the median of all elements so far.
-     *
-     * @param array
-     * @return
-     */
-
-    Queue<Integer> minHeap = new PriorityQueue<>();
-    Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-
-    void addNum(int num) {
-        if (minHeap.size() == 0 || num > minHeap.peek())
-            minHeap.add(num);
-        else
-            maxHeap.add(num);
-        balanceHeaps();
-    }
-
-    private void balanceHeaps() {
-        if (minHeap.size() - maxHeap.size() > 1) {
-            maxHeap.add(minHeap.poll());
-        } else if (maxHeap.size() - minHeap.size() > 1) {
-            minHeap.add(maxHeap.poll());
-        }
-    }
-
-    public double findMedianInADataStream() {
-        if (minHeap.size() == maxHeap.size()) {
-            return (double) (minHeap.element() + maxHeap.element()) / 2;
-        } else if (minHeap.size() > maxHeap.size()) {
-            return (double) minHeap.peek();
-        }
-        return (double) maxHeap.peek();
-    }
-
-    /**
-     * Given a collection of stones weighing a non-negative number,
-     * each turn, we choose the two heaviest stones and smash them together.
-     * Suppose the stones have weights x and y, the result of this smash is
-     * If x == y, both stones are totally destroyed.
-     * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
-
-     * stones = [2,7,4,1,8,1]
-     * output = 1
-     *
-     * @param stones
-     * @return
-     */
-    public int lastStoneWeight(int[] stones) {
-        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        for (int s : stones) {
-            maxHeap.add(s);
-        }
-        while (maxHeap.size() > 1) {
-            int stone1 = maxHeap.remove();
-            int stone2 = maxHeap.remove();
-
-            if(stone1 > stone2) {
-                maxHeap.add(stone1 - stone2);
-            }
-        }
-        return maxHeap.isEmpty() ? 0 : maxHeap.poll();
-    }
-
-    /**
-     * Given an array, there is a sliding window of size k which is moving from left to right.
-     * Return the max in each sliding window.
-     * input [1,3,-1,-3,5,3,6,7], and k = 3
-     * output [3,3,5,5,6,7]
-     *
-     * @param nums
-     * @param k
-     * @return
-     */
-    public int[] maxSlidingWindow(int[] nums, int k) {
-        int start = 0, end = k - 1, ind = 0;
-        int[] result = new int[nums.length - k + 1];
-        while (end < nums.length) {
-            Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-            for (int i = start; i <= end; i++) {
-                maxHeap.add(nums[i]);
-            }
-            result[ind] = maxHeap.element();  //instead of poll()
-            start += 1;
-            end += 1;
-            ind += 1;
-        }
-        return result;
-    }
-
-    /**
-     * Find k-th largest element in an array
+     * Find kth largest element in an array
      * Solve Using Min Heap
      */
     public int kthLargestElement(int[] array, int k) {
@@ -128,7 +35,7 @@ public class Heap {
      * @param k
      * @return
      */
-    public int[] topKFrequent(int[] nums, int k) {
+    public int[] topKFrequentInteger(int[] nums, int k) {
         Map<Integer, Integer> map = new HashMap<>();
         int[] result = new int[k];
         for (int num : nums) {
@@ -139,7 +46,35 @@ public class Heap {
         maxHeap.addAll(map.keySet());
 
         for (int i = 0; i < k; i++) {
-            result[i] = maxHeap.element();
+            result[i] = maxHeap.remove();
+        }
+
+        return result;
+    }
+
+    /**
+     * Given an array, there is a sliding window of size k which is moving from left to right.
+     * Return the max in each sliding window.
+     * input [1,3,-1,-3,5,3,6,7], and k = 3
+     * output [3,3,5,5,6,7]
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int start = 0, end = k - 1, ind = 0;
+        int[] result = new int[nums.length - k + 1];
+
+        while (end < nums.length) {
+            Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+            for (int i = start; i <= end; i++) {
+                maxHeap.add(nums[i]);
+            }
+            result[ind] = maxHeap.remove();
+            start += 1;
+            end += 1;
+            ind += 1;
         }
 
         return result;
@@ -167,6 +102,7 @@ public class Heap {
         // The below declaration is equivalent to
         // new PriorityQueue<>((o1, o2) -> (o1.get(0)+o1.get(1)) - (o2.get(0)+o2.get(1)));
         Queue<List<Integer>> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> (o.get(0) + o.get(1))));
+
         for (int num1 : nums1) {
             for (int num2 : nums2) {
                 minHeap.add(List.of(num1, num2));
@@ -174,13 +110,16 @@ public class Heap {
                 // So we aren't checking if the size > k and removing elements.
             }
         }
+
         List<List<Integer>> list = new LinkedList<>();
+
         while (k > 0) {
             list.add(minHeap.remove());
             if (minHeap.size() == 0)
                 break;
             k -= 1;
         }
+
         return list;
     }
 
@@ -202,53 +141,56 @@ public class Heap {
             double o2Distance = Math.sqrt(o2[0] * o2[0] + o2[1] * o2[1]);
             return Double.compare(o2Distance, o1Distance);
         });
+
         for (int[] point : points) {
             maxHeap.add(point);
             if (maxHeap.size() > k)
                 maxHeap.remove();
         }
+
         List<int[]> list = new LinkedList<>();
+
         while (!maxHeap.isEmpty()) {
             list.add(maxHeap.remove());
         }
+
         return list.toArray(new int[list.size()][]);
     }
 
     /**
-     * Given a string S, rearrange it such that the characters adjacent to each other are not the same.
+     * Given an array and two integers k and x, return the k closest elements to x in the array.
+     * An integer a is closer to x than an integer b if:
+
+     * |a - x| < |b - x|, or
+     * |a - x| == |b - x| and a < b
      *
-     * @param S
+     * @param arr
+     * @param k
+     * @param x
      * @return
      */
-    String reorganizeString(String S) {
-        StringBuilder sb = new StringBuilder();
-        Map<Character, Integer> map = new HashMap<>();
-        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+    public List<Integer> kClosestElements(int[] arr, int k, int x) {
+        Queue<Integer> minHeap = new PriorityQueue<>((o1, o2) -> {
+            if (Math.abs(o1 - x) == Math.abs(o2 - x)) {
+                return o2 - o1;
+            }
+            return (Math.abs(o2 - x) - Math.abs(o1 - x));
+        });
 
-        char[] sChar = S.toCharArray();
-        for (char c : sChar) {
-            int count = map.getOrDefault(c, 0) + 1;
-            map.put(c, count);
-            if (count > (S.length() + 1) / 2)
-                //If the given string contains a character that occurs more than half of its length,
-                // we cannot rearrange it.
-                return "";
+        for (int value : arr) {
+            minHeap.add(value);
+            if (minHeap.size() > k) {
+                minHeap.remove();
+            }
         }
 
-        maxHeap.addAll(map.keySet());
+        List<Integer> list = new LinkedList<>();
 
-        char prev = '#';
-        while (!maxHeap.isEmpty()) {
-            char mostOccurChar = maxHeap.poll();
-            sb.append(mostOccurChar);
-            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-
-            if (map.containsKey(prev) && map.get(prev) >= 1)
-                maxHeap.add(prev);
-            prev = mostOccurChar;
+        while (!minHeap.isEmpty()) {
+            list.add(minHeap.remove());
         }
 
-        return sb.toString();
+        return list;
     }
 
     /**
@@ -298,6 +240,73 @@ public class Heap {
     }
 
     /**
+     * Running median in a data stream.
+     * Solve using MinHeap and MaxHeap.
+     * void addNum(int num) - Add a integer number from the data stream to the data structure.
+     * double findMedian() - Return the median of all elements so far.
+     *
+     * @param array
+     * @return
+     */
+
+    Queue<Integer> minHeap = new PriorityQueue<>();
+    Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+
+    void addNum(int num) {
+        if (minHeap.size() == 0 || num > minHeap.peek())
+            minHeap.add(num);
+        else
+            maxHeap.add(num);
+        balanceHeaps();
+    }
+
+    private void balanceHeaps() {
+        if (minHeap.size() - maxHeap.size() > 1) {
+            maxHeap.add(minHeap.poll());
+        } else if (maxHeap.size() - minHeap.size() > 1) {
+            minHeap.add(maxHeap.poll());
+        }
+    }
+
+    public double findMedianInADataStream() {
+        if (minHeap.size() == maxHeap.size()) {
+            return (double) (minHeap.element() + maxHeap.element()) / 2;  //element() works like peek()
+        } else if (minHeap.size() > maxHeap.size()) {
+            return (double) minHeap.peek();
+        }
+        return (double) maxHeap.peek();
+    }
+
+    /**
+     * Given a collection of stones weighing a non-negative number,
+     * each turn, we choose the two heaviest stones and smash them together.
+     * Suppose the stones have weights x and y, the result of this smash is
+     * If x == y, both stones are totally destroyed.
+     * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
+
+     * stones = [2,7,4,1,8,1]
+     * output = 1
+     *
+     * @param stones
+     * @return
+     */
+    public int lastStoneWeight(int[] stones) {
+        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for (int s : stones) {
+            maxHeap.add(s);
+        }
+        while (maxHeap.size() > 1) {
+            int stone1 = maxHeap.remove();
+            int stone2 = maxHeap.remove();
+
+            if(stone1 > stone2) {
+                maxHeap.add(stone1 - stone2);
+            }
+        }
+        return maxHeap.isEmpty() ? 0 : maxHeap.poll();
+    }
+
+    /**
      * Given a string, sort it in decreasing order based on the frequency of characters.
      *
      * @param s
@@ -308,11 +317,12 @@ public class Heap {
         Map<Character, Integer> map = new HashMap<>();
         Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
 
-        char[] sChar = s.toCharArray();
-        for (char c : sChar) {
+        for (char c : s.toCharArray()) {
             map.put(c, map.getOrDefault(c, 0) + 1);
         }
+
         maxHeap.addAll(map.keySet());
+
         while (!maxHeap.isEmpty()) {
             char mostOccurChar = maxHeap.poll();
             while (map.get(mostOccurChar) > 0) {
@@ -320,6 +330,44 @@ public class Heap {
                 map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
             }
         }
+
+        return builder.toString();
+    }
+
+    /**
+     * Given a string, rearrange it such that the characters adjacent to each other are not the same.
+     *
+     * @param s
+     * @return
+     */
+    String reorganizeString(String s) {
+        StringBuilder builder = new StringBuilder();
+        Map<Character, Integer> map = new HashMap<>();
+        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+
+        for (char c : s.toCharArray()) {
+            int count = map.getOrDefault(c, 0) + 1;
+            map.put(c, count);
+            if (count > (s.length() + 1) / 2)
+                //If the given string contains a character that occurs more than half of its length,
+                // we cannot rearrange it.
+                return "";
+        }
+
+        maxHeap.addAll(map.keySet());
+
+        char prev = '#';
+        while (!maxHeap.isEmpty()) {
+            char mostOccurChar = maxHeap.poll();
+            builder.append(mostOccurChar);
+            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+
+            if (map.containsKey(prev) && map.get(prev) >= 1)
+                maxHeap.add(prev);
+
+            prev = mostOccurChar;
+        }
+
         return builder.toString();
     }
 }

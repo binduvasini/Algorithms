@@ -224,6 +224,7 @@ public class Linkedlist {
             even = even.next;
         }
         odd.next = evenHead;
+
         return head;
     }
 
