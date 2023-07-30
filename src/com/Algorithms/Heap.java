@@ -35,7 +35,7 @@ public class Heap {
      * @param k
      * @return
      */
-    public int[] topKFrequentInteger(int[] nums, int k) {
+    public int[] topKFrequentElements(int[] nums, int k) {
         Map<Integer, Integer> map = new HashMap<>();
         int[] result = new int[k];
         for (int num : nums) {
