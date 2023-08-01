@@ -76,15 +76,75 @@ public class BinaryMatrix {
     }
 
     /**
+     * Given a 2D Binary array, find the row with maximum number of 1s
+     * @param array
+     * @return
+     */
+    public int findRowWithMaxOnes(int[][] array) {
+        int row = 0, col = array[0].length - 1;  //Start from the top right corner
+        int max1sRow = 0;
+
+        while (row < array.length && col >= 0) {
+            if (array[row][col] == 1) {
+                max1sRow = row;
+                col -= 1;  //Go left till you see 1
+            } else {
+                row += 1;  //Else go down
+            }
+        }
+
+        return max1sRow;
+    }
+
+    /**
+     * Given a binary matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
+     *
+     * @param matrix
+     */
+    public void setZeroes(int[][] matrix) {
+        boolean firstRow = false, firstCol = false;
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix[r].length; c++) {
+                if (matrix[r][c] == 0) {
+                    if (r == 0)
+                        firstRow = true;
+                    if (c == 0)
+                        firstCol = true;
+                    matrix[0][c] = 0;
+                    matrix[r][0] = 0;
+                }
+            }
+        }
+        for (int r = 1; r < matrix.length; r++) {
+            for (int c = 1; c < matrix[r].length; c++) {
+                if (matrix[0][c] == 0 || matrix[r][0] == 0)
+                    matrix[r][c] = 0;
+            }
+        }
+        if (firstRow) {
+            for (int c = 0; c < matrix[0].length; c++) {
+                matrix[0][c] = 0;
+            }
+        }
+        if (firstCol) {
+            for (int r = 0; r < matrix.length; r++) {
+                matrix[r][0] = 0;
+            }
+        }
+    }
+
+    /**
      * Given a grid, each cell is either empty (0) or blocked (1). Adjacent cells are connected 8-directionally.
      * Return the length of the shortest clear path from top-left to bottom-right.
      * If such a path does not exist, return -1.
-     * Input: [
-     * [0,0,0],
-     * [1,1,0],
-     * [1,1,0]
+     * Input:
+     * [
+     *    [0,0,0],
+     *    [1,1,0],
+     *    [1,1,0]
      * ]
      * Output: 4
+     *
      * @param grid
      * @return
      */
@@ -289,6 +349,52 @@ public class BinaryMatrix {
     }
 
     /**
+     * Given a binary matrix, find the nearest 1 for each cell.
+     *
+     * @param matrix
+     * @return
+     */
+    public int[][] findNearest1(int[][] matrix) {
+        LinkedList<int[]> queue = new LinkedList<>();
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        boolean[][] visited = new boolean[m][n];
+        //We can’t use a HashSet<int[]> because the equality of new int[]{i,j} will differ.
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    queue.add(new int[]{i, j});
+                    visited[i][j] = true;
+                }
+            }
+        }
+
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
+        //BFS on this queue
+        while (!queue.isEmpty()) {
+            int[] cellPosition = queue.remove();
+
+            for (int[] dir : directions) {
+                int r = cellPosition[0] + dir[0];
+                int c = cellPosition[1] + dir[1];
+                int[] newCellPosition = new int[]{r, c};
+
+                if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c])
+                    continue;
+
+                //From the old cell to the new cell position, add up the distance.
+                matrix[r][c] = matrix[cellPosition[0]][cellPosition[1]] + 1;
+                visited[r][c] = true;
+                queue.add(newCellPosition);
+            }
+        }
+        return matrix;
+    }
+
+    /**
      * Given a binary matrix, each cell has an initial state live (1) or dead (0).
      * Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules:
      * 1) Any live cell with fewer than two live neighbors dies, as if caused by under-population.
@@ -344,109 +450,5 @@ public class BinaryMatrix {
                     board[row][col] = 1;
             }
         }
-    }
-
-    /**
-     * Given a 2D Binary array, find the row with maximum number of 1s
-     * @param array
-     * @return
-     */
-    public int findRowWithMaxOnes(int[][] array) {
-        int n = array.length;
-        int m = (n == 0) ? 0 : array[0].length;
-        int row = 0, col = m - 1;  //Start from the top right most corner
-        int max1sRow = 0;
-        while (row < n && col >= 0) {
-            if (array[row][col] == 1) {
-                max1sRow = row;
-                col--;  //Go left till you see 1
-            } else {
-                row++;  //Else go down
-            }
-        }
-        return max1sRow;
-    }
-
-    /**
-     * Given a binary matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
-     *
-     * @param matrix
-     */
-    public void setZeroes(int[][] matrix) {
-        boolean firstRow = false, firstCol = false;
-        for (int r = 0; r < matrix.length; r++) {
-            for (int c = 0; c < matrix[r].length; c++) {
-                if (matrix[r][c] == 0) {
-                    if (r == 0)
-                        firstRow = true;
-                    if (c == 0)
-                        firstCol = true;
-                    matrix[0][c] = 0;
-                    matrix[r][0] = 0;
-                }
-            }
-        }
-        for (int r = 1; r < matrix.length; r++) {
-            for (int c = 1; c < matrix[r].length; c++) {
-                if (matrix[0][c] == 0 || matrix[r][0] == 0)
-                    matrix[r][c] = 0;
-            }
-        }
-        if (firstRow) {
-            for (int c = 0; c < matrix[0].length; c++) {
-                matrix[0][c] = 0;
-            }
-        }
-        if (firstCol) {
-            for (int r = 0; r < matrix.length; r++) {
-                matrix[r][0] = 0;
-            }
-        }
-    }
-
-    /**
-     * Given a binary matrix, find the nearest 1 for each cell.
-     *
-     * @param matrix
-     * @return
-     */
-    public int[][] findNearest1(int[][] matrix) {
-        LinkedList<int[]> queue = new LinkedList<>();
-
-        int m = matrix.length;
-        int n = matrix[0].length;
-        boolean[][] visited = new boolean[m][n];
-        //We can’t use a HashSet<int[]> because the equality of new int[]{i,j} will differ.
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (matrix[i][j] == 0) {
-                    queue.add(new int[]{i, j});
-                    visited[i][j] = true;
-                }
-            }
-        }
-
-        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-
-        //BFS on this queue
-        while (!queue.isEmpty()) {
-            int[] cellPosition = queue.remove();
-
-            for (int[] dir : directions) {
-                int r = cellPosition[0] + dir[0];
-                int c = cellPosition[1] + dir[1];
-                int[] newCellPosition = new int[]{r, c};
-
-                if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c])
-                    continue;
-
-                //From the old cell to the new cell position, add up the distance.
-                matrix[r][c] = matrix[cellPosition[0]][cellPosition[1]] + 1;
-                visited[r][c] = true;
-                queue.add(newCellPosition);
-            }
-        }
-        return matrix;
     }
 }

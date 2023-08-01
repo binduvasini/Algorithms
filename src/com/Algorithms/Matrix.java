@@ -84,15 +84,15 @@ public class Matrix {
             return false;
 
         int row = 0;
-        int col = matrix[0].length - 1;
+        int col = matrix[0].length - 1;  //Start from the top right corner
 
         while (row < matrix.length && col >= 0) {
             if (target == matrix[row][col])
                 return true;
-            else if (target > matrix[row][col])
-                row += 1;
+            else if (target < matrix[row][col])
+                col -= 1;  //Go left
             else
-                col -= 1;
+                row += 1;  //Go down
         }
 
         return false;
@@ -220,7 +220,7 @@ public class Matrix {
 
     /**
      * Return the count of all possible paths from the first cell to the last cell in a matrix.
-     * A robot is located on the top-left corner of a m x n grid.
+     * A robot is at the top-left corner of a m x n grid.
      * The robot can only move either down or right at any point in time.
      * The robot is trying to reach the bottom-right corner of the grid.
      * How many possible unique paths are there?
