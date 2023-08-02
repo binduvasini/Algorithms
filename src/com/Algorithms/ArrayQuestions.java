@@ -5,7 +5,7 @@ import java.util.*;
 public class ArrayQuestions {
 
     /**
-     * Given an array of integers nums and an integer target,
+     * Given an unsorted array of integers nums and an integer target,
      * return the indices of the two numbers such that they add up to target.
      * Input: nums = [2,7,11,15], target = 9
      * Output: [0,1]
@@ -366,15 +366,18 @@ public class ArrayQuestions {
      * @return
      */
     public int containerWithMostWater(int[] height) {
-        int i = 0, j = height.length - 1, maxarea = Integer.MIN_VALUE;
-        while (i < j) {
-            maxarea = Math.max(maxarea, (Math.min(height[i], height[j]) * (j - i)));
-            if (height[i] < height[j])
-                i += 1;
+        int lo = 0, hi = height.length - 1;
+        int maxArea = Integer.MIN_VALUE;
+
+        while (lo < hi) {
+            maxArea = Math.max(maxArea, (Math.min(height[lo], height[hi]) * (hi - lo)));
+            if (height[lo] < height[hi])
+                lo += 1;
             else
-                j -= 1;
+                hi -= 1;
         }
-        return maxarea;
+
+        return maxArea;
     }
 
     /**

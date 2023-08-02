@@ -198,6 +198,37 @@ public class BinarySearch {
     }
 
     /**
+     * Given a sorted array of integers nums and an integer targetSum,
+     * return the indices of the two numbers such that they add up to target.
+     * Input: nums = [2,7,11,15], target = 9
+     * Output: [0,1]
+     *
+     * @param nums
+     * @param targetSum
+     * @return
+     */
+    public int[] twoSum(int[] nums, int targetSum) {
+        int lo = 0, hi = nums.length - 1;
+        int[] output = new int[2];
+
+        while (lo <= hi) {
+            int sum = nums[lo] + nums[hi];
+            if (sum == targetSum) {
+                output[0] = lo;
+                output[1] = hi;
+                break;
+            }
+            else if (sum < targetSum) {
+                lo = lo + 1;
+            }
+            else {
+                hi = hi - 1;
+            }
+        }
+        return output;
+    }
+
+    /**
      * Given a positive integer num, write a function to determine whether num is a perfect square.
      *
      * @param num
