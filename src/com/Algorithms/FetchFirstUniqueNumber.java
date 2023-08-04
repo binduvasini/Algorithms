@@ -2,6 +2,7 @@ package com.Algorithms;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * You have a queue of integers, you need to retrieve the first unique integer in the queue.
@@ -14,37 +15,37 @@ import java.util.LinkedHashSet;
  * void add(int value) insert value to the queue.
  */
 class FirstUniqueNumber {
-    LinkedHashSet<Integer> queue;
-    HashSet<Integer> set;
+    Set<Integer> queue;
+    Set<Integer> set;
 
     public FirstUniqueNumber(int[] nums) {
         queue = new LinkedHashSet<>();
         set = new HashSet<>();
-        for (int n : nums) {
-            if (!set.contains(n) && !queue.contains(n))
-                set.add(n);
+        for (int num : nums) {
+            if (!set.contains(num) && !queue.contains(num))
+                set.add(num);
             else
-                set.remove(n);
-            queue.add(n);
+                set.remove(num);
+            queue.add(num);
         }
     }
 
     public int showFirstUnique() {
-        for (int k : queue) {
-            if (set.contains(k))
-                return k;
+        for (int num : queue) {
+            if (set.contains(num))
+                return num;
             else
-                queue.add(k);
+                queue.add(num);
         }
         return -1;
     }
 
-    public void add(int value) {
-        if (!set.contains(value) && !queue.contains(value))
-            set.add(value);
+    public void add(int num) {
+        if (!set.contains(num) && !queue.contains(num))
+            set.add(num);
         else
-            set.remove(value);
-        queue.add(value);
+            set.remove(num);
+        queue.add(num);
     }
 }
 

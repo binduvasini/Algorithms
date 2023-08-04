@@ -44,7 +44,7 @@ public class RandomizedSet {
             map.put(temp, listIndex);  //Update the new index position of the swapped element in the map.
         }
 
-        list.remove(lastIndex);
+        list.remove(lastIndex);  //O(1) time.
         map.remove(num);
 
         return true;
