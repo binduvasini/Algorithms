@@ -209,34 +209,6 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given a circular array, find the subarray with maximum sum.
-     * A circular array means the end of the array connects to the beginning of the array.
-     * Input: [5,-3,5]
-     * Output: 10
-     *
-     * @param nums
-     * @return
-     */
-    public int maxSubarraySumCircular(int[] nums) {
-        int currentMax = 0, currentMin = 0;
-        int minSum = Integer.MAX_VALUE;
-        int maxSum = Integer.MIN_VALUE;
-        int sum = 0;
-
-        for (int num : nums) {
-            currentMax = Math.max(currentMax + num, num);
-            maxSum = Math.max(maxSum, currentMax);
-
-            currentMin = Math.min(currentMin + num, num);
-            minSum = Math.min(minSum, currentMin);
-
-            sum += num;
-        }
-
-        return maxSum > 0 ? Math.max(maxSum, sum - minSum) : maxSum;
-    }
-
-    /**
      * Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
      * Input: [100, 4, 200, 1, 3, 2]
      * Output: 4

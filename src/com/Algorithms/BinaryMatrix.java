@@ -215,10 +215,10 @@ public class BinaryMatrix {
 
         grid[row][col] = '0';
 
-        dfs(grid, row-1, col);
-        dfs(grid, row, col-1);
-        dfs(grid, row+1, col);
-        dfs(grid, row, col+1);
+        dfs(grid, row - 1, col);
+        dfs(grid, row, col - 1);
+        dfs(grid, row + 1, col);
+        dfs(grid, row, col + 1);
 
     }
 
@@ -275,7 +275,7 @@ public class BinaryMatrix {
         return maxsize;
     }
 
-    private static int dfsUtil(int[][] grid, int row, int col, int[][] directions) {
+    private int dfsUtil(int[][] grid, int row, int col, int[][] directions) {
         grid[row][col] = 0;  //Mark this cell as visited
         int size = 1;
         for (int[] dir : directions) {

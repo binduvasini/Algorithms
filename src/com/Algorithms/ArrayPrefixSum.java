@@ -166,4 +166,32 @@ public class ArrayPrefixSum {
 
         return maxSum;
     }
+
+    /**
+     * A circular array means the end of the array connects to the beginning of the array.
+     * Given a circular array, find the subarray with maximum sum. Return the maximum sum.
+     * Input: [5,-3,5]
+     * Output: 10
+     *
+     * @param nums
+     * @return
+     */
+    public int circularSubarrayWithMaxSum(int[] nums) {
+        int currentMax = 0, currentMin = 0;
+        int minSum = Integer.MAX_VALUE;
+        int maxSum = Integer.MIN_VALUE;
+        int sum = 0;
+
+        for (int num : nums) {
+            currentMax = Math.max(currentMax + num, num);
+            maxSum = Math.max(maxSum, currentMax);
+
+            currentMin = Math.min(currentMin + num, num);
+            minSum = Math.min(minSum, currentMin);
+
+            sum += num;
+        }
+
+        return maxSum > 0 ? Math.max(maxSum, sum - minSum) : maxSum;  //Total sum - minimum subarray sum in the middle.
+    }
 }
