@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.TreeMap;
 
@@ -189,7 +190,7 @@ public class BinaryTree {
         if (root == null) {
             return;
         }
-        ArrayDeque<TreeNode> stack = new ArrayDeque<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
         stack.push(root);
         while (!stack.isEmpty()) {
             TreeNode node = stack.pop();
@@ -206,7 +207,7 @@ public class BinaryTree {
     }
 
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-        TreeMap<Integer, List<Integer>> positions = new TreeMap<>();
+        Map<Integer, List<Integer>> positions = new TreeMap<>();
         Queue<TreeNode> qNodes = new LinkedList<>();
         Queue<Integer> qIndices = new LinkedList<>();
 
@@ -405,13 +406,13 @@ public class BinaryTree {
     private String preOrderUtil1(TreeNode node) {
         if(node == null)
             return "";
-        else if (node.left == null && node.right == null)
+        if (node.left == null && node.right == null)
             return String.valueOf(node.data);
-        else if (node.left == null)
-            return node.data + "()" + "("+tree2str(node.right)+")";
-        else if (node.right == null)
-            return node.data + "(" + tree2str(node.left) + ")";
-        return node.data + "(" + tree2str(node.left) + ")" + "(" + tree2str(node.right) + ")";
+        if (node.left == null)
+            return node.data + "()" + "(" + preOrderUtil1(node.right) + ")";
+        if (node.right == null)
+            return node.data + "(" + preOrderUtil1(node.left) + ")";
+        return node.data + "(" + preOrderUtil1(node.left) + ")" + "(" + preOrderUtil1(node.right) + ")";
     }
 
     /**
@@ -523,7 +524,7 @@ public class BinaryTree {
         queue.add(root);
         while (!queue.isEmpty()) {
             int size = queue.size();
-            for (int i=1;i<=size;i++){
+            for (int i = 1; i <= size; i++){
                 TreeNode node = queue.element();
                 if (i == size)
                     node.next = null;

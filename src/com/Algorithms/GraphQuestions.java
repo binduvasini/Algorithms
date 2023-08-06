@@ -43,16 +43,17 @@ public class GraphQuestions {
      */
 
 //    graph = new HashMap<>();
-    public boolean canFinishCourses(int numCourses, int[][] prerequisites) {
-        for (int[] prerequisite : prerequisites) {
-            graph.putIfAbsent(prerequisite[1], new ArrayList<>());
-            graph.get(prerequisite[1]).add(prerequisite[0]);
+    public boolean canFinishCourses(int numCourses, int[][] courses) {
+        for (int[] course : courses) {
+            graph.putIfAbsent(course[1], new ArrayList<>());
+            graph.get(course[1]).add(course[0]);
         }
 
         Set<Integer> visited = new HashSet<>();
         Set<Integer> visiting = new HashSet<>();
-        for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting)) {
+
+        for (Integer course : graph.keySet()) {
+            if (!visited.contains(course) && hasCycle(course, visited, visiting)) {
                 return false;
             }
         }
@@ -66,19 +67,19 @@ public class GraphQuestions {
     // visiting - node has not been added to the output. We are visiting and moving forward to the next node.
     //              This helps us determine if there is a cycle.
     // unvisited - node has not been added to the output and we don't know if there is a cycle.
-    private boolean hasCycle(Integer prereq, Set<Integer> visited, Set<Integer> visiting) {
-        visited.add(prereq);
-        visiting.add(prereq);
-        if (graph.containsKey(prereq)) {
-            for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && hasCycle(course, visited, visiting)) {
+    private boolean hasCycle(Integer course, Set<Integer> visited, Set<Integer> visiting) {
+        visited.add(course);
+        visiting.add(course);
+        if (graph.containsKey(course)) {
+            for (Integer prereq : graph.get(course)) {
+                if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting)) {
                     return true;
-                } else if (visiting.contains(course)) {
+                } else if (visiting.contains(prereq)) {
                     return true;
                 }
             }
         }
-        visiting.remove(prereq);
+        visiting.remove(course);
         return false;
     }
 
@@ -273,9 +274,9 @@ public class GraphQuestions {
             int[] nodeDist = minHeap.remove();
             int node = nodeDist[0], price = nodeDist[1], stops = nodeDist[2];
             // It fails when we include the visited logic. This solution doesn't need a visited array.
-            if(node == dest)  //Found the destination.
+            if (node == dest)  //Found the destination.
                 return price;
-            if(stops > 0){  //Checking if (stops < 0) and breaking the loop doesn't work.
+            if (stops > 0) {  //Checking if (stops < 0) and breaking the loop doesn't work.
                 if (graph.containsKey(node)) {
                     Map<Integer, Integer> neighbors = graph.get(node);
                     for (Integer neighbor : neighbors.keySet()) {

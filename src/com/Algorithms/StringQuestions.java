@@ -104,7 +104,7 @@ public class StringQuestions {
                 char startChar = s.charAt(start);
                 if (tMap.containsKey(startChar)) {
                     tMap.put(startChar, tMap.get(startChar) + 1);  //Now we are visiting this character.
-                    // Increase the count.
+                    // Increase the count in the map.
                     if (tMap.get(startChar) > 0) {
                         tCount -= 1;  //make this substring window invalid
                     }
@@ -205,7 +205,6 @@ public class StringQuestions {
 
             map.putIfAbsent(sortedString, new ArrayList<>());
             map.get(sortedString).add(str);
-
         }
 
         return new ArrayList<>(map.values());
