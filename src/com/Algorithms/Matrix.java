@@ -1,9 +1,11 @@
 package com.Algorithms;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 
 public class Matrix {
 
@@ -96,6 +98,40 @@ public class Matrix {
         }
 
         return false;
+    }
+
+    /**
+     * Determine if a 9 x 9 Sudoku board is valid.
+     * Only the filled cells need to be validated according to the following rules:
+     * Each row must contain the digits 1-9 without repetition.
+     * Each column must contain the digits 1-9 without repetition.
+     * Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+     *
+     * @param board
+     * @return
+     */
+    public boolean isValidSudoku(char[][] board) {
+        Set<String> set = new HashSet<>();
+        for (int r = 0; r < board.length; r++) {
+            for (int c = 0; c < board[r].length; c++) {
+                char num = board[r][c];
+
+                if (num != '.') {  //empty cell
+                    if (
+                            set.contains(num + " in row " + r) ||
+                            set.contains(num + " in column " + c) ||
+                            set.contains(num + " in block " + r / 3 + " " + c / 3)
+                    ) {
+                        return false;
+                    }
+
+                    set.add(num + " in row " + r);
+                    set.add(num + " in column " + c);
+                    set.add(num + " in block " + r / 3 + " " + c / 3);
+                }
+            }
+        }
+        return true;
     }
 
     /**
