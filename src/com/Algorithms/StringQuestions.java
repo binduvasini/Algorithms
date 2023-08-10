@@ -181,10 +181,10 @@ public class StringQuestions {
         Map<Character, Integer> sMap = new HashMap<>();
         Map<Character, Integer> tMap = new HashMap<>();
 
-        for(char c : s.toCharArray())
+        for (char c : s.toCharArray())
             sMap.put(c, sMap.getOrDefault(c, 0) + 1);
 
-        for(char c : t.toCharArray())
+        for (char c : t.toCharArray())
             tMap.put(c, tMap.getOrDefault(c, 0) + 1);
 
         return sMap.equals(tMap);
@@ -198,7 +198,7 @@ public class StringQuestions {
     public List<List<String>> groupAnagrams(String[] strs) {
         Map<String, List<String>> map = new HashMap<>();
 
-        for(String str : strs) {
+        for (String str : strs) {
             char[] strChars = str.toCharArray();
             Arrays.sort(strChars);
             String sortedString = String.valueOf(strChars);
@@ -261,6 +261,7 @@ public class StringQuestions {
 
         String s1Middle = s1.substring(start, end + 1);
         String s2Middle = s2.substring(start, end + 1);
+
         return isPalindrome(s1Middle) || isPalindrome(s2Middle);
     }
 
