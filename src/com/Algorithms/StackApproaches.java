@@ -12,6 +12,7 @@ public class StackApproaches {
      * The Next greater element of a number is the first greater number to its right.
      * Input: [4, 1, 6, 5, 9, 3, 2, 7]
      * Output: [6, 6, 9, 9, -1, 7, 7, -1]
+     *
      * @param nums
      * @return
      */
@@ -48,6 +49,7 @@ public class StackApproaches {
      * Explanation: The first 1's next greater number is 2;
      * The number 2 can't find next greater number;
      * The second 1's next greater number needs to search circularly, which is also 2.
+     *
      * @param nums
      * @return
      */
@@ -80,6 +82,7 @@ public class StackApproaches {
      * Open brackets are closed by the same type of brackets.
      * Open brackets are closed in the correct order.
      * Every close bracket has a corresponding open bracket of the same type.
+     *
      * @param s
      * @return
      */

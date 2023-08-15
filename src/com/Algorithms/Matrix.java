@@ -77,6 +77,7 @@ public class Matrix {
 
     /**
      * Given an integer target, return true if target is in matrix or false otherwise.
+     *
      * @param matrix
      * @param target
      * @return
@@ -287,12 +288,12 @@ public class Matrix {
      * You can only move either down or right at any point in time.
      * Input:
      * [
-     * [1,3,1],
-     * [1,5,1],
-     * [4,2,1]
+     *    [1,3,1],
+     *    [1,5,1],
+     *    [4,2,1]
      * ]
      * Output: 7
-     * The path 1→3→1→1→1 minimizes the sum.
+     * The path 1 → 3 → 1 → 1 → 1 minimizes the sum.
      *
      * @param grid
      * @return
@@ -335,6 +336,7 @@ public class Matrix {
      *    [10,	   30, -5 (P)]
      * ]
      * Output: 7.
+     *
      * @param dungeon
      * @return
      */

@@ -15,6 +15,9 @@ public class Heap {
     /**
      * Find kth largest element in an array
      *
+     * @param nums
+     * @param k
+     * @return
      */
     public int kthLargestElement(int[] nums, int k) {
         Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);

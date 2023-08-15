@@ -41,7 +41,6 @@ public class GraphQuestions {
      * To take course 1 you should have finished course 0,
      * and to take course 0 you should also have finished course 1. So it is impossible.
      */
-
 //    graph = new HashMap<>();
     public boolean canFinishCourses(int numCourses, int[][] courses) {
         for (int[] course : courses) {
@@ -202,6 +201,7 @@ public class GraphQuestions {
      * N = 3
      * source = 1
      * output: 3.
+     *
      * @param times
      * @param N
      * @param source
@@ -254,6 +254,7 @@ public class GraphQuestions {
      *                  ]
      * source = 0, dest = 2, K = 0
      * Output: 500
+     *
      * @param N
      * @param flights
      * @param source
@@ -301,6 +302,7 @@ public class GraphQuestions {
      *         ["ATL","SFO"]
      *        ]
      * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+     *
      * @param tickets
      * @return
      */

@@ -77,6 +77,7 @@ public class BinaryMatrix {
 
     /**
      * Given a 2D Binary array, find the row with maximum number of 1s
+     *
      * @param array
      * @return
      */
@@ -189,6 +190,7 @@ public class BinaryMatrix {
     /**
      * Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water),
      * return the number of islands.
+     *
      * @param grid
      * @return
      */
@@ -225,6 +227,7 @@ public class BinaryMatrix {
     /**
      * Find the largest region of connected 1s in a given binary matrix.
      * (Without direction array).
+     *
      * @param grid
      * @return
      */
@@ -258,6 +261,7 @@ public class BinaryMatrix {
     /**
      * Find the largest region of connected 1s in a given binary matrix.
      * (Use directions array).
+     *
      * @param grid
      * @return
      */

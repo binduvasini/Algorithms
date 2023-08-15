@@ -18,6 +18,7 @@ public class BinarySearch {
 
     /**
      * Search an element in a rotated sorted array.
+     *
      * @param nums
      * @param target
      * @return
@@ -52,6 +53,7 @@ public class BinarySearch {
      * In other words, find the minimum element in a rotated sorted array.
      * nums = [12, 14, 1, 5, 8, 9]
      * Output: 1
+     *
      * @param nums
      * @return
      */
@@ -86,6 +88,7 @@ public class BinarySearch {
      * Search an element in a rotated sorted array with duplicates.
      * nums = [1,1,1,1,5,1,1]. target = 5.
      * Output: 4
+     *
      * @param nums
      * @param target
      * @return
@@ -123,6 +126,7 @@ public class BinarySearch {
      * In other words, find the minimum element in a rotated sorted array.
      * nums = [3,3,1,3]
      * Output: 1
+     *
      * @param nums
      * @return
      */
@@ -159,6 +163,7 @@ public class BinarySearch {
      * Find the first and last index of a repetitive element in a sorted array.
      * nums = [2, 3, 5, 5, 5, 5, 5, 8, 9]. target = 5
      * Output: [2, 6]
+     *
      * @param nums
      * @param target
      * @return
@@ -286,6 +291,7 @@ public class BinarySearch {
     /**
      * A peak element is an element that is strictly greater than its neighbors.
      * If the array contains multiple peaks, return the index to any of the peaks.
+     *
      * @param nums
      * @return
      */

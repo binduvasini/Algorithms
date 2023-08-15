@@ -87,6 +87,7 @@ public class ArrayQuestions {
 
     /**
      * Merge two sorted arrays.
+     *
      * @param leftArr
      * @param rightArr
      * @return
@@ -354,6 +355,7 @@ public class ArrayQuestions {
 
     /**
      * Find the minimum length subarray whose sum is greater than or equal to the target.
+     *
      * @param nums
      * @param target
      * @return
@@ -379,6 +381,7 @@ public class ArrayQuestions {
 
     /**
      * Find minimum length subarray whose sum is equal to the target.
+     *
      * @param nums
      * @param target
      * @return

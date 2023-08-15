@@ -280,6 +280,7 @@ public class BinaryTree {
     /**
      * Given two binary trees, write a function to check if they are the same or not.
      * Two binary trees are considered the same if they are structurally identical and the nodes have the same value.
+     *
      * @param p
      * @param q
      * @return
@@ -335,6 +336,7 @@ public class BinaryTree {
     /**
      * Construct BST from a sorted array
      * Input: [-10,-3,0,5,9]
+     *
      * @param nums
      * @return
      */
@@ -417,6 +419,7 @@ public class BinaryTree {
 
     /**
      * Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+     *
      * @param root
      * @return
      */
@@ -441,6 +444,7 @@ public class BinaryTree {
 
      * Given the roots of two binary trees root1 and root2,
      * return true if the two trees are flip equivalent or false otherwise.
+     *
      * @param root1
      * @param root2
      * @return
@@ -461,6 +465,7 @@ public class BinaryTree {
     /**
      * Given the root of a binary search tree, and an integer k,
      * return the k-th smallest value (1-indexed) of all the values of the nodes in the tree.
+     *
      * @param root
      * @param k
      * @return
@@ -486,6 +491,7 @@ public class BinaryTree {
 
     /**
      * Given the root of a binary tree, print the nodes appearing on right side of the tree.
+     *
      * @param root
      * @return
      */
@@ -542,6 +548,7 @@ public class BinaryTree {
      * Given preorder and inorder traversal of a tree, construct the binary tree.
      * preorder = [3,9,20,15,7]
      * inorder = [9,3,15,20,7]
+     *
      * @param preorder
      * @param inorder
      * @return
@@ -573,6 +580,7 @@ public class BinaryTree {
      * Given inorder and postorder traversal of a tree, construct the binary tree.
      * inorder = [9,3,15,20,7]
      * postorder = [9,15,7,20,3]
+     *
      * @param inorder
      * @param postorder
      * @return
@@ -604,6 +612,7 @@ public class BinaryTree {
      * Construct BST from a preorder traversal
      * Input: [8,5,1,7,10,12]
      * Output: [8,5,10,1,7,null,12]
+     *
      * @param preorder
      * @return
      */
@@ -707,6 +716,7 @@ public class BinaryTree {
      *     4   5
      * x = 4, y = 5.
      * Output: true
+     *
      * @param root
      * @param x
      * @param y
@@ -878,6 +888,7 @@ public class BinaryTree {
      * The root-to-leaf path 4->9->1 represents the number 491.
      * The root-to-leaf path 4->0 represents the number 40.
      * Therefore, sum = 495 + 491 + 40 = 1026.
+     *
      * @param root
      * @return
      */
@@ -926,6 +937,7 @@ public class BinaryTree {
      * where the null nodes between the end-nodes are also counted into the length calculation.
      * Input: [1,1,1,1,null,null,1,1,null,null,1]
      * Output: 8
+     *
      * @param root
      * @return
      */
@@ -1013,6 +1025,7 @@ public class BinaryTree {
 
     /**
      * Given a BST with duplicates, find all the mode(s) (the most frequently occurred element).
+     *
      * @param root
      * @return
      */
@@ -1057,6 +1070,7 @@ public class BinaryTree {
 
     /**
      * Given the root of a binary tree, flatten the tree.
+     *
      * @param root
      */
 //    TreeNode prev = null;

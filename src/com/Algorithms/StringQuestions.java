@@ -44,6 +44,7 @@ public class StringQuestions {
      * No two characters may map to the same character, but a character may map to itself.
      * Input: s = "foo", t = "bar"
      * Output: false
+     *
      * @param s
      * @param t
      * @return
@@ -173,6 +174,7 @@ public class StringQuestions {
      * Given two strings s and t, return true if t is an anagram of s, and false otherwise.
      * An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase,
      * typically using all the original letters exactly once.
+     *
      * @param s
      * @param t
      * @return
@@ -192,6 +194,7 @@ public class StringQuestions {
 
     /**
      * Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+     *
      * @param strs
      * @return
      */
@@ -211,6 +214,7 @@ public class StringQuestions {
     }
     /**
      * Determine if the string is a palindrome
+     *
      * @param str
      * @return
      */
@@ -303,6 +307,7 @@ public class StringQuestions {
 
     /**
      * Find the longest palindromic substring in s.
+     *
      * @param s
      * @return
      */
@@ -440,7 +445,8 @@ public class StringQuestions {
     /**
      * Given two strings S and T, return if they are equal when both are typed into empty text editors.
      * # means a backspace character.
-     * S = "ab#c", T = "ad#c" : true
+     * S = "ab#c", T = "ad#c"
+     * Output: true
      *
      * @param S
      * @param T

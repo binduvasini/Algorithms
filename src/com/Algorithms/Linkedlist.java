@@ -107,7 +107,7 @@ public class Linkedlist {
         return pointerA;
     }
 
-    public boolean isPalidrome(Node head) {
+    public boolean isPalindrome(Node head) {
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         Node curr = head;
 
@@ -231,9 +231,8 @@ public class Linkedlist {
     /**
      * Given a linked list, swap every two adjacent nodes and return its head.
      * You may not modify the values in the list's nodes, only nodes itself may be changed.
-     * Example:
-     *
      * Given 1->2->3->4, you should return the list as 2->1->4->3.
+     *
      * @param head
      * @return
      */
@@ -257,9 +256,10 @@ public class Linkedlist {
      * You are given a doubly linked list which in addition to the next and previous pointers,
      * it could have a child pointer, which may or may not point to a separate doubly linked list.
      * These child lists may have one or more children of their own, and so on, to produce a multilevel data structure.
-     *
+
      * Flatten the list so that all the nodes appear in a single-level, doubly linked list.
      * You are given the head of the first level of the list.
+     *
      * @param head
      * @return
      */
@@ -289,6 +289,7 @@ public class Linkedlist {
      * Remove all elements from a linked list that have value val.
      * Input:  1->2->6->3->4->5->6, val = 6
      * Output: 1->2->3->4->5
+     *
      * @param head
      * @param val
      * @return
@@ -309,6 +310,7 @@ public class Linkedlist {
      * Given the head of a linked list, remove the nth node from the end of the list and return its head.
      * Input:  1->2->3->4->5->6, n = 2
      * Output: 1->2->3->4->6
+     *
      * @param head
      * @param n
      * @return
