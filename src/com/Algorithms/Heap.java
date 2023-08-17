@@ -91,8 +91,8 @@ public class Heap {
      * You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k.
      * Define a pair (u,v) which consists of one element from the first array and one element from the second array.
      * Find the k pairs (u1,v1),(u2,v2) ...(uk,vk) with the smallest sums.
-     * Input: nums1 = [1,7,11],
-     * nums2 = [2,4,6],
+     * nums1 = [1,7,11]
+     * nums2 = [2,4,6]
      * k = 3
      * Output: [[1,2],[1,4],[1,6]]
      * The first 3 pairs are returned from the sequence:
@@ -107,7 +107,7 @@ public class Heap {
         if (nums1.length == 0 || nums2.length == 0)
             return new LinkedList<>();
         // The below declaration is equivalent to
-        // new PriorityQueue<>((o1, o2) -> (o1.get(0)+o1.get(1)) - (o2.get(0)+o2.get(1)));
+        // new PriorityQueue<>((o1, o2) -> (o1.get(0) + o1.get(1)) - (o2.get(0) + o2.get(1)));
         Queue<List<Integer>> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> (o.get(0) + o.get(1))));
 
         for (int num1 : nums1) {
@@ -191,52 +191,6 @@ public class Heap {
     }
 
     /**
-     * Given a char array representing tasks CPU needs to do.
-     * It contains capital letters A to Z where different letters represent different tasks.
-     * Tasks could be done without original order. Each task could be done in one interval.
-     * For each interval, CPU could finish one task or just be idle.
-     * However, there is a cooling interval n between two same tasks,
-     * there must be at least n intervals that CPU are doing different tasks or just be idle.
-     * Return the intervals and task count by which the CPU will take to finish all the given tasks.
-     * Input: tasks = ["A","A","A","B","B","B"], n = 2
-     * Output: 8
-     * A -> B -> idle -> A -> B -> idle -> A -> B.
-     *
-     * @param tasks
-     * @param k
-     * @return
-     */
-    public int cpuTasks(char[] tasks, int k) {
-        Map<Character, Integer> map = new HashMap<>();
-        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
-
-        for (char task : tasks) {
-            map.put(task, map.getOrDefault(task, 0) + 1);
-        }
-
-        maxHeap.addAll(map.keySet());
-        int count = 0;
-        while (!maxHeap.isEmpty()) {
-            //Store the removed characters and add it back after the completion of the task interval.
-            List<Character> list = new ArrayList<>();
-            for (int i = 0; i <= k; i++) {
-                if (!maxHeap.isEmpty()) {
-                    char mostOccurChar = maxHeap.poll();
-                    map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-                    if (map.get(mostOccurChar) >= 1)
-                        list.add(mostOccurChar); //Add to the list only when this character's occurrence is at least 1.
-                }
-                count += 1;
-                if (maxHeap.isEmpty() && list.isEmpty())
-                    break;
-            }
-            //Add the removed characters back. We checked for the occurrences already inside the for loop.
-            maxHeap.addAll(list);
-        }
-        return count;
-    }
-
-    /**
      * Running median in a data stream.
      * Solve using MinHeap and MaxHeap.
      * void addNum(int num) - Add a integer number from the data stream to the data structure.
@@ -292,15 +246,63 @@ public class Heap {
         for (int s : stones) {
             maxHeap.add(s);
         }
+
         while (maxHeap.size() > 1) {
             int stone1 = maxHeap.remove();
             int stone2 = maxHeap.remove();
 
-            if(stone1 > stone2) {
+            if (stone1 > stone2) {
                 maxHeap.add(stone1 - stone2);
             }
         }
         return maxHeap.isEmpty() ? 0 : maxHeap.poll();
+    }
+
+    /**
+     * Given a char array representing tasks CPU needs to do.
+     * It contains capital letters A to Z where different letters represent different tasks.
+     * Tasks could be done without original order. Each task could be done in one interval.
+     * For each interval, CPU could finish one task or just be idle.
+     * However, there is a cooling interval n between two same tasks,
+     * there must be at least n intervals that CPU is doing different tasks or just be idle.
+     * Return the intervals and task count by which the CPU will take to finish all the given tasks.
+     * Input: tasks = ["A","A","A","B","B","B"], n = 2
+     * Output: 8
+     * A -> B -> idle -> A -> B -> idle -> A -> B.
+     *
+     * @param tasks
+     * @param k
+     * @return
+     */
+    public int cpuTasks(char[] tasks, int k) {
+        Map<Character, Integer> map = new HashMap<>();
+        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
+
+        for (char task : tasks) {
+            map.put(task, map.getOrDefault(task, 0) + 1);
+        }
+
+        maxHeap.addAll(map.keySet());
+        int count = 0;
+
+        while (!maxHeap.isEmpty()) {
+            //Store the removed characters and add it back after the completion of the task interval.
+            List<Character> list = new ArrayList<>();
+            for (int i = 0; i <= k; i++) {
+                if (!maxHeap.isEmpty()) {
+                    char mostOccurChar = maxHeap.poll();
+                    map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+                    if (map.get(mostOccurChar) >= 1)
+                        list.add(mostOccurChar); //Add to the list only when this character's occurrence is at least 1.
+                }
+                count += 1;
+                if (maxHeap.isEmpty() && list.isEmpty())
+                    break;
+            }
+            //Add the removed characters back. We checked for the occurrences already inside the for loop.
+            maxHeap.addAll(list);
+        }
+        return count;
     }
 
     /**
@@ -322,7 +324,7 @@ public class Heap {
 
         while (!maxHeap.isEmpty()) {
             char mostOccurChar = maxHeap.poll();
-            while (map.get(mostOccurChar) > 0) {
+            while (map.get(mostOccurChar) >= 1) {
                 builder.append(mostOccurChar);
                 map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
             }
@@ -354,6 +356,7 @@ public class Heap {
         maxHeap.addAll(map.keySet());
 
         char prev = '#';
+
         while (!maxHeap.isEmpty()) {
             char mostOccurChar = maxHeap.poll();
             builder.append(mostOccurChar);

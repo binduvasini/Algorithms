@@ -34,8 +34,6 @@ class FirstUniqueNumber {
         for (int num : queue) {
             if (set.contains(num))
                 return num;
-            else
-                queue.add(num);
         }
         return -1;
     }

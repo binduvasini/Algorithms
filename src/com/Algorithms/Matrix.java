@@ -113,6 +113,7 @@ public class Matrix {
      */
     public boolean isValidSudoku(char[][] board) {
         Set<String> set = new HashSet<>();
+
         for (int r = 0; r < board.length; r++) {
             for (int c = 0; c < board[r].length; c++) {
                 char num = board[r][c];
@@ -147,9 +148,10 @@ public class Matrix {
      */
     public boolean wordSearch(char[][] board, String word) {
         char[] wordArr = word.toCharArray();
-        for(int r = 0; r < board.length; r++){
-            for(int c = 0; c < board[r].length; c++){
-                if(board[r][c] == wordArr[0] && dfsUtil(board, wordArr, r, c, 0)){
+
+        for (int r = 0; r < board.length; r++) {
+            for (int c = 0; c < board[r].length; c++) {
+                if (board[r][c] == wordArr[0] && dfsUtil(board, wordArr, r, c, 0)) {
                     //Just having an additional check here.
                     return true;
                 }
@@ -168,7 +170,7 @@ public class Matrix {
         }
 
         char tmp = board[r][c];
-        board[r][c] = '#'; //Marking the visited character.
+        board[r][c] = '#'; //Marking this character visited.
         boolean exists = (dfsUtil(board, wordArr, r, c+1, wordIndex+1)
                 || dfsUtil(board, wordArr, r, c-1, wordIndex+1)
                 || dfsUtil(board, wordArr, r+1, c, wordIndex+1)

@@ -104,6 +104,7 @@ public class BinaryMatrix {
      */
     public void setZeroes(int[][] matrix) {
         boolean firstRow = false, firstCol = false;
+
         for (int r = 0; r < matrix.length; r++) {
             for (int c = 0; c < matrix[r].length; c++) {
                 if (matrix[r][c] == 0) {
@@ -116,12 +117,14 @@ public class BinaryMatrix {
                 }
             }
         }
+
         for (int r = 1; r < matrix.length; r++) {
             for (int c = 1; c < matrix[r].length; c++) {
                 if (matrix[0][c] == 0 || matrix[r][0] == 0)
                     matrix[r][c] = 0;
             }
         }
+
         if (firstRow) {
             for (int c = 0; c < matrix[0].length; c++) {
                 matrix[0][c] = 0;
@@ -164,6 +167,7 @@ public class BinaryMatrix {
         distance[0][0] = 1;
 
         int[][] directions = {{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
+
         while (!queue.isEmpty()) {
             int[] cellPosition = queue.remove();
 
@@ -342,11 +346,8 @@ public class BinaryMatrix {
         for (int[] dir : dirs) {
             int neiR = r + dir[0];
             int neiC = c + dir[1];
-            if (
-                    neiR >= 0 && neiR < board.length && neiC >= 0
-                            &&
-                            neiC < board[neiR].length && board[neiR][neiC] == 'O'
-            ) {
+            if (neiR >= 0 && neiR < board.length && neiC >= 0 &&
+                    neiC < board[neiR].length && board[neiR][neiC] == 'O') {
                 dfsUtil(board, neiR, neiC);
             }
         }
