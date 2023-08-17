@@ -272,13 +272,13 @@ public class BinarySearch {
 
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
-            if (mid % 2 == 0) {
-                if (nums[mid] == nums[mid + 1])
+            if (mid % 2 == 0) {  //The middle index is an even number
+                if (nums[mid] == nums[mid + 1])  //the left side is sorted. So go right.
                     lo = mid + 2;
                 else
                     hi = mid - 1;
-            } else {
-                if (nums[mid] == nums[mid - 1])
+            } else {  //The middle index is an odd number
+                if (nums[mid] == nums[mid - 1])  //the right side is sorted. So go left.
                     lo = mid + 1;
                 else
                     hi = mid - 1;
@@ -304,7 +304,7 @@ public class BinarySearch {
 
             int mid = lo + (hi - lo) / 2;
 
-            if (nums[mid] > nums[mid+1])
+            if (nums[mid] > nums[mid + 1])
                 hi = mid;
             else
                 lo = mid + 1;
@@ -326,9 +326,9 @@ public class BinarySearch {
      * @param nums
      */
     public void sortColors(int[] nums) {  //Dutch national flag problem
-        int lo = 0, mid = 0, hi = nums.length-1;
+        int lo = 0, mid = 0, hi = nums.length - 1;
 
-        while (mid <= hi) {  //Look at the value in the mid position.
+        while (mid <= hi) {  //Look at the value in the middle position.
             if (nums[mid] == 0) {  //If it's 0, swap it with nums[lo]. increment lo and mid.
                 swap(nums, lo, mid);
                 lo += 1;

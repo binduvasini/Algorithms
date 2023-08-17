@@ -268,25 +268,25 @@ public class ArrayQuestions {
      * Input : [1, 2, 3, 4]
      * Output : [24, 12, 8, 6]
      *
-     * @param nums
+     * @param arr
      * @return
      */
-    public int[] productExceptSelf(int[] nums) {
-        int[] left = new int[nums.length];
-        int[] right = new int[nums.length];
-        int[] output = new int[nums.length];
+    public int[] productExceptSelf(int[] arr) {
+        int[] left = new int[arr.length];
+        int[] right = new int[arr.length];
+        int[] output = new int[arr.length];
 
         left[0] = 1;
-        for (int i = 1; i < nums.length; i++) {
-            left[i] = nums[i - 1] * left[i - 1];
+        for (int i = 1; i < arr.length; i++) {
+            left[i] = arr[i - 1] * left[i - 1];
         }
 
-        right[nums.length - 1] = 1;
-        for (int i = nums.length - 2; i >= 0; i--) {
-            right[i] = nums[i + 1] * right[i + 1];
+        right[arr.length - 1] = 1;
+        for (int i = arr.length - 2; i >= 0; i--) {
+            right[i] = arr[i + 1] * right[i + 1];
         }
 
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < arr.length; i++) {
             output[i] = left[i] * right[i];
         }
 

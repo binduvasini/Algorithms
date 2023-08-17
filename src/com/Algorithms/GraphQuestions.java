@@ -339,16 +339,18 @@ public class GraphQuestions {
      * plus any pixels connected 4-directionally to those pixels (also with the same color as the starting pixel),
      * and so on.
      * Replace the color of all the aforementioned pixels with the newColor. At the end, return the modified image.
-     * Input: [
-     * [1,1,1],
-     * [1,1,0],
-     * [1,0,1]
+     * Input:
+     * [
+     *   [1,1,1],
+     *   [1,1,0],
+     *   [1,0,1]
      * ]
      * sr = 1, sc = 1, newColor = 2
-     * Output: [
-     * [2,2,2],
-     * [2,2,0],
-     * [2,0,1]
+     * Output:
+     * [
+     *   [2,2,2],
+     *   [2,2,0],
+     *   [2,0,1]
      * ]
      *
      * @param image
@@ -390,11 +392,12 @@ public class GraphQuestions {
      * Return the minimum number of minutes that must elapse until no cell has a fresh orange.
      * If this is impossible, return -1 instead.
 
-     * Input: [
-     *         [2,1,1],
-     *         [1,1,0],
-     *         [0,1,1]
-     *        ]
+     * Input:
+     * [
+     *   [2,1,1],
+     *   [1,1,0],
+     *   [0,1,1]
+     * ]
      * Output: 4
      *
      * @param grid
@@ -454,7 +457,7 @@ public class GraphQuestions {
     }
 
     public void alienDictionary() {
-        String[] dictionary =  {"wrt", "wrf", "er", "ett", "rftt"};
+        String[] dictionary =  {"wrt", "wrp", "er", "ett", "rmtt"};
         Map<Character, List<Character>> graph = new HashMap<>();
         for (String word : dictionary) {
             for (char c : word.toCharArray()) {
