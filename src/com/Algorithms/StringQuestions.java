@@ -596,6 +596,29 @@ public class StringQuestions {
     }
 
     /**
+     * Given a string s and an array of integers cost where cost[i] is the cost of deleting the character i in s.
+     * Return the minimum cost of deletions such that there are no two identical letters next to each other.
+     * s = "aaaaabaa", cost = [11,5,3,4,6,9,1,15]
+     * Output: 19
+     *
+     * @param s
+     * @param cost
+     * @return
+     */
+    public int minDeletionCost(String s, int[] cost) {
+        int result = 0;
+
+        for (int i = 1; i < s.length(); i++) {
+            if (s.charAt(i) == s.charAt(i - 1)) {
+                result += Math.min(cost[i], cost[i - 1]);
+                cost[i] = Math.max(cost[i], cost[i - 1]);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Encode a list of strings to a string.
      * The encoded string is then sent over the network and is decoded back to the original list of strings.
      * Implement encode and decode
