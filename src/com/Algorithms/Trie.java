@@ -28,7 +28,7 @@ public class Trie {
 
     /**
      * Start from the root. It is the current node.
-     * Iterate through each character of the word.
+     * Iterate through each character of the given word.
      * If the current node has the current character (through one of the elements in the “children” field), move on.
      * Otherwise, create a new node for this character.
      * Repeat until the entire word is traversed.
@@ -67,6 +67,17 @@ public class Trie {
         return current.isWord;
     }
 
+    public boolean startsWith(String prefix) {
+        TrieNode current = root;
+        for (int i = 0; i < prefix.length(); i++){
+            char ch = prefix.charAt(i);
+            if (!current.children.containsKey(ch))
+                return false;
+            current = current.children.get(ch);
+        }
+        return true;
+    }
+
     /**
      * Recursively delete each character in the word from the trie.
      *
@@ -95,20 +106,6 @@ public class Trie {
             return current.children.isEmpty();
         }
         return false;
-    }
-
-    public boolean startsWith(String prefix) {
-        return startsWith(root, prefix, 0);
-    }
-
-    private boolean startsWith(TrieNode current, String prefix, int i) {
-        if (prefix.length() == i)
-            return true;
-        char ch = prefix.charAt(i);
-        TrieNode child = current.children.get(ch);
-        if (child == null)
-            return false;
-        return startsWith(child, prefix, i + 1);
     }
 
     public void allWordsStartingWith(String prefix) {
@@ -150,13 +147,13 @@ public class Trie {
     public static void main(String[] args) {
         Trie trie = new Trie();
         trie.insert("apple");
-//        System.out.println(trie.contains("apple"));   // returns true
-//        System.out.println(trie.contains("app"));     // returns false
-//        System.out.println(trie.startsWith("app")); // returns true
-//        trie.insert("app");
+        System.out.println(trie.contains("apple"));   // returns true
+        System.out.println(trie.contains("app"));     // returns false
+        System.out.println(trie.startsWith("app")); // returns true
+        trie.insert("app");
         trie.insert("append");
         trie.insert("appreciate");
-//        System.out.println(trie.contains("app"));     // returns true
+        System.out.println(trie.contains("app"));     // returns true
         trie.allWordsStartingWith("app");
     }
 }

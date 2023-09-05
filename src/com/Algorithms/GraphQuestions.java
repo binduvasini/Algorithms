@@ -28,7 +28,6 @@ public class GraphQuestions {
         return distance[destination];
     }
 
-
     /**
      * There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
      * Some courses may have prerequisites,
@@ -223,8 +222,7 @@ public class GraphQuestions {
             int[] nodeDist = minHeap.remove();
             int node = nodeDist[0], distance = nodeDist[1];
             //Setting visited = true for this node before the while loop and
-            // having a !visited condition for every neighbor
-            // doesn't work.
+            // having a !visited condition for every neighbor doesn't work.
             if (visited[node])
                 continue;
             visited[node] = true;

@@ -288,7 +288,7 @@ public class StringQuestions {
     int count = 0;
     public int findAllPalindromeSubstrings(String s) {
         for(int i = 0; i < s.length() - 1; i++) {
-            palindromicSubstrings(s, i, i);     //Odd length palindromic sub-string.
+            palindromicSubstrings(s, i, i);     //Odd length palindromic substring.
             // Imagine having both pointers pointing at the same character.
             // Expanding one character at a time on each direction will be a string with odd length.
             palindromicSubstrings(s, i, i + 1);   //Even length palindromic sub-string
@@ -692,5 +692,26 @@ class TimeMap {
         }
 
         return "";
+    }
+
+    public String countAndSay(String num) {
+        int count;
+        StringBuilder result = new StringBuilder();
+
+        int i = 0;
+
+        while (i < num.length()) {
+            count = 1; //To store how many times a digit occurred
+
+            //Inner while loop compares current digit and the next digit
+            while (i + 1 < num.length() && num.charAt(i) == num.charAt(i + 1)) {
+                i += 1;
+                count += 1;
+            }
+
+            result.append(count).append(num.charAt(i));
+            i += 1;
+        }
+        return result.toString();
     }
 }

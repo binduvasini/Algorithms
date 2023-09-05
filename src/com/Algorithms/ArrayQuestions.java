@@ -684,4 +684,59 @@ public class ArrayQuestions {
 
         return result;
     }
+
+    /**
+     * Given a list of cities, find the nearest cities that shares either an x or a y coordinate with the queried point.
+     * The distance is denoted on a Euclidean plane: the difference in x plus the difference in y.
+     * cities = ["p1","p2","p3"]
+     * x = [30, 20, 10]
+     * y = [30, 20, 30]
+     * queries = ["p3", "p2", "p1"]
+     * Output: ["p1", NONE, "p3"]
+     *
+     * @param cities
+     * @param x
+     * @param y
+     * @param queries
+     * @return
+     */
+    public List<String> closestCities(String[] cities, int[] x, int[] y, String[] queries) {
+        Map<String, Integer> map = new HashMap<>(); // <city, index>
+        for (int i = 0; i < cities.length; i++) {
+            map.put(cities[i], i);
+        }
+
+        List<String> output = new ArrayList<>();
+        for (String query : queries) {
+            output.add(getClosestCity(cities, x, y, query, map));
+        }
+        return output;
+    }
+
+    private String getClosestCity(String[] cities, int[] x, int[] y, String queryCity, Map<String, Integer> map) {
+        int ind = -1, minDist = Integer.MAX_VALUE;
+        if (!map.containsKey(queryCity))
+            return "NONE";
+
+        int queryIndex = map.get(queryCity);
+        int xCoord = x[queryIndex], yCoord = y[queryIndex];
+
+        for (int i = 0; i < cities.length; i++) {
+            if (i == queryIndex)
+                continue;
+
+            if (x[i] == xCoord || y[i] == yCoord) {
+                int dist = Math.abs(x[i] - xCoord) + Math.abs(y[i] - yCoord);
+                if (dist < minDist) {
+                    minDist = dist;
+                    ind = i;
+                } else if (dist == minDist) {
+                    if (cities[i].compareTo(cities[ind]) < 0) {
+                        ind = i;
+                    }
+                }
+            }
+        }
+        return ind == -1 ? "NONE" : cities[ind];
+    }
 }

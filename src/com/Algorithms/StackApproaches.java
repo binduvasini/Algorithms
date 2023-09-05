@@ -198,4 +198,39 @@ public class StackApproaches {
         return spanOfStock;
     }
 
+    /**
+     * Given an array of integers heights representing the histogram's bar height where the width of each bar is 1,
+     * return the area of the largest rectangle in the histogram.
+     * Input: heights = [2,1,5,6,2,3]
+     * Output: 10
+     * The above is a histogram where width of each bar is 1.
+     * The largest rectangle is shown in the red area, which has an area = 10 units.
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleInHistogram(int[] heights) {
+        int maxArea = Integer.MIN_VALUE;
+        Deque<int[]> stack = new ArrayDeque<>();  //index and current element as a pair
+
+        for (int i = 0; i < heights.length; i++) {
+            int start = i;  //There is a way to extend it backwards. So maintain a start index.
+            int currHeight = heights[i];
+
+            //If the heights are in increasing order, we don't have to pop from the stack.
+            while (!stack.isEmpty() && currHeight < stack.peek()[1]) {
+                int[] prevHeight = stack.pop();
+                maxArea = Math.max(maxArea, prevHeight[1] * (i - prevHeight[0]));
+                start = prevHeight[0];
+            }
+            stack.push(new int[]{start, currHeight});
+        }
+
+        while (!stack.isEmpty()) {
+            int[] height = stack.pop();
+            maxArea = Math.max(maxArea, height[1] * (heights.length - height[0]));
+        }
+
+        return maxArea;
+    }
 }

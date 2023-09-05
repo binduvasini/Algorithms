@@ -279,7 +279,7 @@ public class Heap {
         Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
 
         for (char task : tasks) {
-            map.put(task, map.getOrDefault(task, 0) + 1);
+            map.put(task, map.getOrDefault(task, 0) + 1);  //task as key and its count as value
         }
 
         maxHeap.addAll(map.keySet());

@@ -159,7 +159,7 @@ public class BinaryMatrix {
         LinkedList<int[]> queue = new LinkedList<>();
         int rows = grid.length, cols = grid[0].length;
 
-        int[][] distance = new int[rows][cols];  //We can use distance array rather than boolean visited array.
+        int[][] distance = new int[rows][cols];  //We can use distance grid rather than boolean visited array.
         for (int[] row : distance) {
             Arrays.fill(row, -1);
         }
