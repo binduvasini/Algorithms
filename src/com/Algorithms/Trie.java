@@ -38,7 +38,7 @@ public class Trie {
     public void insert(String word) {
         TrieNode current = root;
         for (char ch : word.toCharArray()) {
-            current.children.putIfAbsent(ch, new TrieNode());  //ch is the key. new TrieNode() is the value.
+            current.children.putIfAbsent(ch, new TrieNode());
             current = current.children.get(ch);
         }
         current.isWord = true;

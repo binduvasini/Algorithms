@@ -1,9 +1,6 @@
 package com.Algorithms;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class StackApproaches {
 
@@ -232,5 +229,30 @@ public class StackApproaches {
         }
 
         return maxArea;
+    }
+}
+
+//Queue approach
+class MovingAverage {
+    int size;
+    int sum;
+    LinkedList<Integer> queue;
+
+    public MovingAverage(int size) {
+        this.size = size;
+        this.sum = 0;
+        queue = new LinkedList<>();
+    }
+
+    public double nextVal(int val) {
+        queue.add(val);
+        sum += val;
+
+        if (queue.size() > size) {
+            int firstVal = queue.remove();
+            sum -= firstVal;
+        }
+
+        return (double) sum / queue.size();
     }
 }

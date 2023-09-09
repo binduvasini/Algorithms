@@ -324,6 +324,7 @@ public class BinaryTree {
     private void preorderUtil(TreeNode root) {
         if (root == null)
             return;
+
         TreeNode temp = root.left;
         root.left = root.right;
         root.right = temp;
@@ -343,15 +344,15 @@ public class BinaryTree {
         return buildTreePreOrder(nums, 0, nums.length - 1);
     }
 
-    private TreeNode buildTreePreOrder(int[] nums, int start, int end) {
-        if (start > end)
+    private TreeNode buildTreePreOrder(int[] nums, int lo, int hi) {
+        if (lo > hi)
             return null;
 
-        int mid = (start + end) / 2;
+        int mid = (lo + hi) / 2;
         TreeNode node = new TreeNode(nums[mid]);
 
-        node.left = buildTreePreOrder(nums, start, mid - 1);
-        node.right = buildTreePreOrder(nums, mid + 1, end);
+        node.left = buildTreePreOrder(nums, lo, mid - 1);
+        node.right = buildTreePreOrder(nums, mid + 1, hi);
 
         return node;
     }
@@ -367,6 +368,7 @@ public class BinaryTree {
     private TreeNode buildTreePreOrder(Node head, Node tail) {
         if (head == tail)
             return null;
+
         Node mid = middleElem(head, tail);
         TreeNode node = new TreeNode(mid.data);
         node.left = buildTreePreOrder(head, mid);
@@ -588,13 +590,13 @@ public class BinaryTree {
     int postIndex = 0;
     public TreeNode buildTreeFromInorderAndPostorder(int[] inorder, int[] postorder) {
         postIndex = postorder.length - 1;
-        for(int i=0; i<inorder.length; i++){
+        for (int i = 0; i < inorder.length; i++){
             inOrderIndices.put(inorder[i], i);
         }
-        return build(postorder, inorder, 0, inorder.length-1);
+        return build(postorder, 0, inorder.length-1);
     }
-    private TreeNode build(int[] postorder, int[] inorder, int inStart, int inEnd){
-        if(inStart > inEnd)
+    private TreeNode build(int[] postorder, int inStart, int inEnd){
+        if (inStart > inEnd)
             return null;
 
         TreeNode root = new TreeNode(postorder[postIndex]);
@@ -602,8 +604,8 @@ public class BinaryTree {
 
         int rootInIndex = inOrderIndices.get(root.data);
 
-        root.right = build(postorder, inorder, rootInIndex+1, inEnd);
-        root.left = build(postorder, inorder, inStart, rootInIndex-1);
+        root.right = build(postorder, rootInIndex + 1, inEnd);
+        root.left = build(postorder, inStart, rootInIndex-1);
         return root;
     }
 

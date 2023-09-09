@@ -223,8 +223,10 @@ public class GraphQuestions {
             int node = nodeDist[0], distance = nodeDist[1];
             //Setting visited = true for this node before the while loop and
             // having a !visited condition for every neighbor doesn't work.
+
             if (visited[node])
                 continue;
+
             visited[node] = true;
             totalDistance = distance;
             N -= 1;
@@ -311,6 +313,7 @@ public class GraphQuestions {
             itineraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
             itineraryGraph.get(ticket.get(0)).add(ticket.get(1));
         }
+
         dfsUtil("JFK");
         return orderedItinerary;
     }
@@ -352,26 +355,30 @@ public class GraphQuestions {
      * ]
      *
      * @param image
-     * @param sr
-     * @param sc
+     * @param startRow
+     * @param startCol
      * @param newColor
      * @return
      */
-    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+    public int[][] floodFill(int[][] image, int startRow, int startCol, int newColor) {
         LinkedList<int[]> queue = new LinkedList<>();
         int rows = image.length, cols = image[0].length;
-        int color = image[sr][sc];
-        queue.add(new int[]{sr, sc});
-        image[sr][sc] = newColor;
+        int color = image[startRow][startCol];
+        queue.add(new int[]{startRow, startCol});
+
+        image[startRow][startCol] = newColor;
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
         while (!queue.isEmpty()) {
             int[] cellPosition = queue.remove();
+
             for (int[] dir : directions) {
                 int r = cellPosition[0] + dir[0];
                 int c = cellPosition[1] + dir[1];
                 int[] newCellPosition = new int[]{r, c};
+
                 if (r < 0 || r >= rows || c < 0 || c >= cols || image[r][c] == newColor || image[r][c] != color)
                     continue;
+
                 image[r][c] = newColor;
                 queue.add(newCellPosition);
             }
@@ -402,7 +409,7 @@ public class GraphQuestions {
      * @return
      */
     public int orangesRotting(int[][] grid) {
-        LinkedList<int[]> queue = new LinkedList<>();
+        LinkedList<int[]> queue = new LinkedList<>();  //cell position
 //      int minutes = 0;
 // Keeping minutes 0, isUpdated boolean and having an if condition at the end of for loop didn't work.
 //      boolean isUpdated = false;
@@ -426,9 +433,8 @@ public class GraphQuestions {
         int minutes = -1;
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
         while (!queue.isEmpty()) {
-             minutes += 1;
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
+            minutes += 1;
+            for (int i = 0; i < queue.size(); i++) {
                 int[] cellPosition = queue.remove();
 
                 for (int[] dir : directions) {
@@ -459,7 +465,7 @@ public class GraphQuestions {
         Map<Character, List<Character>> graph = new HashMap<>();
         for (String word : dictionary) {
             for (char c : word.toCharArray()) {
-                graph.putIfAbsent(c, new ArrayList<>());
+                graph.putIfAbsent(c, new ArrayList<>());  //Create the graph and don't populate it yet.
             }
         }
 

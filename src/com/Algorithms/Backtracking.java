@@ -35,6 +35,7 @@ public class Backtracking {
 
     private void subsetsWithoutDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int pointer) {
         resultList.add(new ArrayList<>(tmp));
+
         for (int i = pointer; i < nums.length; i++) {
             tmp.add(nums[i]); //include the current element
             subsetsWithoutDup(resultList, tmp, nums, i + 1);  //the pointer increases to the size of
@@ -70,9 +71,11 @@ public class Backtracking {
 
     private void subsetsWithDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int pointer) {
         resultList.add(new ArrayList<>(tmp));
+
         for (int i = pointer; i < nums.length; i++) {
             if (i > pointer && nums[i] == nums[i - 1])
                 continue;
+
             tmp.add(nums[i]);
             subsetsWithDup(resultList, tmp, nums, i + 1);
             tmp.remove(tmp.size() - 1);
@@ -103,7 +106,9 @@ public class Backtracking {
     private void partitionWithoutDup(List<List<String>> resultList, List<String> tmp, char[] sChar, int pointer) {
         if (pointer == sChar.length)  //Add the list only when we consider all the characters in the given string
             resultList.add(new ArrayList<>(tmp));
+
         StringBuilder builder = new StringBuilder();
+
         for (int i = pointer; i < sChar.length; i++) {
             builder.append(sChar[i]);
             if (isPalindrome(builder.toString(), 0, builder.length() - 1)) {
@@ -144,20 +149,21 @@ public class Backtracking {
     List<String> permutations = new ArrayList<>();
     public List<String> letterCasePermutation(String S) {
         char[] sChar = S.toCharArray();
-        permuteUtil(permutations, sChar, 0);
+        permuteUtil(sChar, 0);
         return permutations;
     }
-    private void permuteUtil(List<String> permutations, char[] sChar, int pointer) {
+
+    private void permuteUtil(char[] sChar, int pointer) {
         if (pointer == sChar.length) {
             permutations.add(String.valueOf(sChar));
         }
         else {
             if (Character.isLetter(sChar[pointer])) {
                 sChar[pointer] = Character.toLowerCase(sChar[pointer]);
-                permuteUtil(permutations, sChar, pointer + 1);
+                permuteUtil(sChar, pointer + 1);
                 sChar[pointer] = Character.toUpperCase(sChar[pointer]);
             }
-            permuteUtil(permutations, sChar, pointer + 1);
+            permuteUtil(sChar, pointer + 1);
         }
     }
 
@@ -190,8 +196,10 @@ public class Backtracking {
     private void combinationSumRepeatAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
         if (target < 0)
             return;
+
         if (target == 0)
             resultList.add(new ArrayList<>(tmp));
+
         for (int i = pointer; i < nums.length; i++) {
             tmp.add(nums[i]);
             combinationSumRepeatAllowed(nums, target - nums[i], tmp, i);  //We consider the same element
@@ -229,11 +237,14 @@ public class Backtracking {
     private void combinationSumRepeatNotAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
         if (target < 0)
             return;
+
         if (target == 0)
             resultList.add(new ArrayList<>(tmp));
+
         for (int i = pointer; i < nums.length; i++) {
             if (i > pointer && nums[i] == nums[i - 1])
                 continue;
+
             tmp.add(nums[i]);
             combinationSumRepeatNotAllowed(nums, target - nums[i], tmp, i + 1);
             tmp.remove(tmp.size() - 1);
@@ -276,10 +287,12 @@ public class Backtracking {
         for (int i = ind; i < nums.length; i++) {
             if (visited[i])  //We are not supposed to reuse the elements.
                 continue;
+
             visited[i] = true;
             //We are in the current element which we finished looking. The recursion must start from the next element.
             if (subsetSum(nums, i + 1, target, currSubsetSum + nums[i], k, visited))
                 return true;
+
             visited[i] = false;  //Backtracking logic - reset the visited element.
         }
 
@@ -344,7 +357,8 @@ public class Backtracking {
     private void permuteUtil(int[] nums, List<Integer> tmp, List<List<Integer>> resultList, boolean[] visited) {
         if (tmp.size() == nums.length && !resultList.contains(tmp))
             resultList.add(new ArrayList<>(tmp));
-        for (int i=0; i<nums.length; i++) {
+
+        for (int i = 0; i < nums.length; i++) {
             if (!visited[i]) {
                 visited[i] = true;
                 tmp.add(nums[i]);
@@ -357,7 +371,7 @@ public class Backtracking {
 
     /**
      * The set [1,2,3,...,n] contains a total of n! unique permutations.
-     * By listing and labeling all of the permutations in order, we get the following sequence for n = 3:
+     * By listing and labeling all the permutations in order, we get the following sequence for n = 3:
      * "123"
      * "132"
      * "213"
@@ -393,9 +407,11 @@ public class Backtracking {
         for (int num = 1; num <= n; num++) {
             if (!visited[num]) {
                 visited[num] = true;
+
                 String ss = permuteUtil(n, builder.append(num), visited, k);
-                if(ss != null)
+                if (ss != null)
                     return ss;
+
                 builder.setLength(builder.length() - 1);
                 visited[num] = false;
             }

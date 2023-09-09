@@ -653,6 +653,27 @@ public class StringQuestions {
 
         return decoded;
     }
+
+    public String countAndSay(String num) {
+        int count;
+        StringBuilder result = new StringBuilder();
+
+        int i = 0;
+
+        while (i < num.length()) {
+            count = 1; //To store how many times a digit occurred
+
+            //Inner while loop compares current digit and the next digit
+            while (i + 1 < num.length() && num.charAt(i) == num.charAt(i + 1)) {
+                i += 1;
+                count += 1;
+            }
+
+            result.append(count).append(num.charAt(i));
+            i += 1;
+        }
+        return result.toString();
+    }
 }
 
 /**
@@ -681,9 +702,8 @@ class TimeMap {
     }
 
     public String get(String key, int timestamp) {
-        TreeMap<Integer, String> treeMap;
         if (map.containsKey(key)) {
-            treeMap = map.get(key);
+            TreeMap<Integer, String> treeMap = map.get(key);
 
             if (treeMap.floorKey(timestamp) != null) {  //Essence of the solution.
                 int tmKey = treeMap.floorKey(timestamp);
@@ -692,26 +712,5 @@ class TimeMap {
         }
 
         return "";
-    }
-
-    public String countAndSay(String num) {
-        int count;
-        StringBuilder result = new StringBuilder();
-
-        int i = 0;
-
-        while (i < num.length()) {
-            count = 1; //To store how many times a digit occurred
-
-            //Inner while loop compares current digit and the next digit
-            while (i + 1 < num.length() && num.charAt(i) == num.charAt(i + 1)) {
-                i += 1;
-                count += 1;
-            }
-
-            result.append(count).append(num.charAt(i));
-            i += 1;
-        }
-        return result.toString();
     }
 }

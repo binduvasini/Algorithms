@@ -13,7 +13,8 @@ public class BinarySearch {
             else
                 return mid; // key found
         }
-        return -1;  // key not found.
+        return -1;  // key not found. If the target doesn't exist in the array, return the lo index
+        // because nums[lo] is the immediate greater element of the target.
     }
 
     /**

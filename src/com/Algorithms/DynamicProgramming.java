@@ -251,13 +251,14 @@ public class DynamicProgramming {
      * @return
      */
     public int editMinDistance(String word1, String word2) {
-        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
-        for (int i = 0; i <= word1.length(); i++) {  //Initialize the first column
-            dp[i][0] = i;
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];  //matrix of indices
+
+        for (int r = 0; r <= word1.length(); r++) {  //Initialize the first column
+            dp[r][0] = r;
         }
 
-        for (int j = 0; j <= word2.length(); j++) {  //Initialize the first row
-            dp[0][j] = j;
+        for (int c = 0; c <= word2.length(); c++) {  //Initialize the first row
+            dp[0][c] = c;
         }
 
         for (int i = 1; i <= word1.length(); i++) {
@@ -407,12 +408,13 @@ public class DynamicProgramming {
 
         Arrays.sort(jobs, Comparator.comparingInt(o -> o[1]));
 
-        int[] dp = new int[n];
+        int[] dp = new int[n]; //profit array
         dp[0] = jobs[0][2];
 
         for (int i = 1; i < n; i++){
             dp[i] = dp[i - 1];
-            int lo = 0, hi = i - 1, prev = 0;
+            int lo = 0, hi = i - 1;
+            int prev = 0;
 
             while (lo <= hi) {
                 int mid = (lo + hi) / 2;
@@ -424,7 +426,7 @@ public class DynamicProgramming {
                     hi = mid - 1;
                 }
             }
-            dp[i] = Math.max(dp[i], jobs[i][2] + prev);
+            dp[i] = Math.max(dp[i], jobs[i][2] + prev);  //max of dp[i] and current profit + profit until now.
         }
 
         return dp[n - 1];

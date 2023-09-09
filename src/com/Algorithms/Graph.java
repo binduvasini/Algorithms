@@ -145,8 +145,8 @@ public class Graph {
         int count = 0;
         for (GraphNode graphNode : nodes) {
             if (!graphNode.visited) {
-                count += 1;
                 DFS(graphNode.data);
+                count += 1;
             }
         }
         return count;

@@ -739,4 +739,35 @@ public class ArrayQuestions {
         }
         return ind == -1 ? "NONE" : cities[ind];
     }
+
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        int n = nums.length;
+        List<String> output = new ArrayList<>();
+
+        if (n == 0) {
+            output.add(format(lower, upper));
+            return output;
+        }
+
+        if (nums[0] > lower) {  //Handle lower bound
+            output.add(format(lower, nums[0] - 1));
+        }
+
+        for (int i = 1; i < n; i++) {  //Handle the missing ranges in the rest of the elements in the array
+            int prev = nums[i - 1], curr = nums[i];
+            if (curr - prev > 1) {
+                output.add(format(prev + 1, curr - 1));
+            }
+        }
+
+        if (nums[n - 1] < upper) {  //Handle upper bound
+            output.add(format(nums[n - 1] + 1, upper));
+        }
+
+        return output;
+    }
+
+    private String format(int a, int b) {
+        return a == b ? String.valueOf(a) : a + "->" + b;
+    }
 }
