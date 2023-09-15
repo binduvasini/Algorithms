@@ -1,9 +1,6 @@
 package com.Algorithms;
 
-import java.util.ArrayDeque;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 class Node {
     int data;
@@ -108,7 +105,7 @@ public class Linkedlist {
     }
 
     public boolean isPalindrome(Node head) {
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        Deque<Integer> stack = new ArrayDeque<>();
         Node curr = head;
 
         while (curr != null) {

@@ -1,10 +1,12 @@
 package com.Algorithms;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
+ * Time Based Key Value Store
+ * Design a time-based key-value data structure that can store multiple values for the same key
+ * at different time stamps and retrieve the key's value at a certain timestamp.
+
  * TimeMap timeMap = new TimeMap();
  * timeMap.put("foo", "bar", 1);  // store the key "foo" and value "bar" along with timestamp = 1.
  * timeMap.get("foo", 1);         // return "bar"
@@ -43,5 +45,35 @@ class TimeMap {
     }
 }
 
-public class SnapShot {  //Add snapshot array question here
+/**
+ * Snapshot Array
+ * Implement a SnapshotArray that supports the following interface:
+ * SnapshotArray(int length) initializes an array-like data structure with the given length.
+ * void set(index, val) sets the element at the given index to be equal to val.
+ * int snap() takes a snapshot of the array and returns the snap_id: the total number of times we called snap() minus 1.
+ * int get(index, snap_id) returns the value at the given index, at the time we took the snapshot with the given snap_id
+ */
+public class SnapShot {  //A treemap is the best data structure for this.
+    List<TreeMap<Integer, Integer>> snapShot;
+    int snapCount;
+
+    public SnapShot(int length) {
+        snapShot = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            snapShot.add(new TreeMap<>());
+        }
+    }
+
+    public void set(int index, int val) {
+        snapShot.get(index).put(snapCount, val);
+    }
+
+    public int snap() {
+        return snapCount;
+    }
+
+    public int get(int index, int snap_id) {
+        Integer key = snapShot.get(index).floorKey(snap_id);
+        return key == null ? 0 : snapShot.get(index).get(key);
+    }
 }

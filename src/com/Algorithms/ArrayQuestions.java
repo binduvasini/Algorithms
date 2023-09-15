@@ -78,9 +78,9 @@ public class ArrayQuestions {
         for (int num : nums) {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
-        for (int k : map.keySet()){
-            if (map.get(k) > nums.length / 2)
-                return k;
+        for (int num : map.keySet()){
+            if (map.get(num) > nums.length / 2)
+                return num;
         }
         return -1;
     }
@@ -213,10 +213,10 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
+     * Given an unsorted array of integers, find the length of the longest consecutive sequence of elements.
      * Input: [100, 4, 200, 1, 3, 2]
      * Output: 4
-     * The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+     * The longest consecutive sequence is [1, 2, 3, 4]. Therefore its length is 4.
      *
      * @param nums
      * @return
@@ -281,12 +281,12 @@ public class ArrayQuestions {
 
         left[0] = 1;
         for (int i = 1; i < arr.length; i++) {
-            left[i] = arr[i - 1] * left[i - 1];
+            left[i] = left[i - 1] * arr[i - 1];
         }
 
         right[arr.length - 1] = 1;
         for (int i = arr.length - 2; i >= 0; i--) {
-            right[i] = arr[i + 1] * right[i + 1];
+            right[i] = right[i + 1] * arr[i + 1];
         }
 
         for (int i = 0; i < arr.length; i++) {
@@ -373,7 +373,7 @@ public class ArrayQuestions {
             end += 1;
 
             while (sum >= target) {  //We found the sum greater or equal to target.
-                // Now we move the start pointer until we find the required the shortest size.
+                // Now we shrink the window we find the required the shortest size.
                 minSubarrayLen = Math.min(minSubarrayLen, end - start);
                 sum -= nums[start];
                 start += 1;

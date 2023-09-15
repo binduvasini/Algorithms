@@ -23,6 +23,7 @@ public class ArrayPrefixSum {
 
         int prefixSum = 0;
         int count = 0;
+
         for (int num : nums) {
             prefixSum += num;
 
@@ -49,6 +50,7 @@ public class ArrayPrefixSum {
         int prefixSum = 0;
         Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, index>
         map.put(0, -1);  //To handle the remainder 0
+
         for (int i = 0; i < nums.length; i++) {
             prefixSum += nums[i];
             int remainder = prefixSum % k;
