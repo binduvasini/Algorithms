@@ -2,9 +2,9 @@ package com.Algorithms;
 
 import java.util.*;
 
-class File {
+class File {  //Similar to TrieNode
     String content;
-    Map<String, File> children;
+    Map<String, File> children;  //<directory-name, file>
     boolean isFile;
 
     public File() {
@@ -14,7 +14,7 @@ class File {
     }
 }
 
-public class FileSystem {
+public class FileSystem {  //Similar to Trie
     File root;
 
     public FileSystem() {
@@ -61,7 +61,7 @@ public class FileSystem {
             }
             if (current.isFile) {
                 res.add(files[files.length - 1]);
-                return res;
+                return res;  //Revisit this logic.
             }
         }
         List<String> res_files = new LinkedList<>(current.children.keySet());

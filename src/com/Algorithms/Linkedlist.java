@@ -179,9 +179,6 @@ public class Linkedlist {
      * @return
      */
     public Node mergeKLists(Node[] lists) {
-        if (lists.length == 0)
-            return null;
-
         Queue<Node> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o.data));
         Node merged = new Node(0);
         Node head = merged;
@@ -195,11 +192,86 @@ public class Linkedlist {
             Node smallest = minHeap.remove();
             merged.next = smallest;
             if (smallest.next != null)
-                minHeap.add(smallest.next);
+                minHeap.add(smallest.next);  //These lists are linked. So we need to add the next elements here.
             merged = merged.next;
         }
 
         return head.next;
+    }
+
+    /**
+     * Sort a linked list in increasing order.
+     *
+     * @param head
+     * @return
+     */
+    public Node sortList(Node head) {
+        if (head == null || head.next == null)
+            return head;
+
+        //Divide the list into two halves
+        Node slow = head, fast = head;
+        Node mid = null;
+
+        while (fast != null && fast.next != null) {
+            mid = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        mid.next = null;  //Separating the left half from the right half. TLE if this is not done.
+
+        //sort each half
+        Node l1 = sortList(head);
+        Node l2 = sortList(slow);  //slow points at the middle position
+
+        //merge l1 and l2
+        return mergeKLists(new Node[]{l1, l2});  //Use the mergeKLists method.
+        // It can be tweaked to just take the 2 lists as arguments.
+    }
+
+    /**
+     * Dutch national flag problem as a Linked List.
+     * @param head
+     * @return
+     */
+    public Node sortColorList(Node head) {
+        if (head == null || head.next == null)
+            return head;
+
+        // Create three empty nodes to point to the beginning of three linked lists.
+        // These empty nodes are created to avoid many null checks.
+        Node zeroList = new Node(0);
+        Node oneList = new Node(0);
+        Node twoList = new Node(0);
+
+        // Initialize the current pointers for these three lists and the original list.
+        Node zero = zeroList, one = oneList, two = twoList;
+        Node curr = head;
+
+        while (curr != null) {
+            if (curr.data == 0) {
+                zero.next = curr;
+                zero = zero.next;
+            }
+            else if (curr.data == 1) {
+                one.next = curr;
+                one = one.next;
+            }
+            else {
+                two.next = curr;
+                two = two.next;
+            }
+            curr = curr.next;
+        }
+
+        // Merge the three lists
+        zero.next = oneList.next;
+        one.next = twoList.next;
+        two.next = null;
+
+        head = zeroList.next;
+        return head;
     }
 
     /**
@@ -214,6 +286,7 @@ public class Linkedlist {
     public Node oddEvenList(Node head) {
         if (head == null)
             return null;
+
         Node odd = head, even = head.next;
         Node evenHead = even;
 

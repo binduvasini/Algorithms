@@ -358,7 +358,7 @@ public class BinaryTree {
     }
 
     /**
-     * Construct BST from a sorted list.
+     * Construct BST from a sorted linked list.
      * Input: -10 -> -3 -> 0 -> 5 -> 9
      */
     public TreeNode sortedListToBST(Node head) {
@@ -371,14 +371,16 @@ public class BinaryTree {
 
         Node mid = middleElem(head, tail);
         TreeNode node = new TreeNode(mid.data);
+
         node.left = buildTreePreOrder(head, mid);
         node.right = buildTreePreOrder(mid.next, tail);
+
         return node;
     }
 
     private Node middleElem(Node head, Node tail) {
         //We need an argument for tail because we will pass the middle element to this method.
-        Node fast = head, slow = head;
+        Node slow = head, fast = head;
         while (fast != tail && fast.next != tail) {
             slow = slow.next;
             fast = fast.next.next;
@@ -505,7 +507,7 @@ public class BinaryTree {
         while (!queue.isEmpty()) {
             int n = queue.size();
             for (int i = 1; i <= n; i++) {
-                TreeNode treeNode = queue.element();
+                TreeNode treeNode = queue.peek();
                 if (i == n && treeNode != null)
                     rightSideList.add(treeNode.data);
                 if (treeNode.left != null) {
@@ -532,7 +534,7 @@ public class BinaryTree {
         while (!queue.isEmpty()) {
             int size = queue.size();
             for (int i = 1; i <= size; i++){
-                TreeNode node = queue.element();
+                TreeNode node = queue.peek();
                 if (i == size)
                     node.next = null;
                 else
@@ -555,15 +557,15 @@ public class BinaryTree {
      * @return
      */
     HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
-    int preIndex = 0;  //Initializing this inside the method throws ArraysIndexOutOfBoundsException during recursion.
+    int preIndex;  //Initializing this inside the method throws ArraysIndexOutOfBoundsException during recursion.
     public TreeNode buildTreeFromPreorderAndInorder(int[] preorder, int[] inorder) {
         for (int i = 0; i < inorder.length; i++) {
             inOrderIndices.put(inorder[i], i);
         }
-        return buildRec(preorder, inorder, 0, inorder.length - 1);
+        return buildRec(preorder, 0, inorder.length - 1);
     }
 
-    private TreeNode buildRec(int[] preorder, int[] inorder, int inStart, int inEnd) {
+    private TreeNode buildRec(int[] preorder, int inStart, int inEnd) {
         if (inStart > inEnd)
             return null;
 
@@ -572,8 +574,8 @@ public class BinaryTree {
 
         int rootInIndex = inOrderIndices.get(root.data);
 
-        root.left = buildRec(preorder, inorder, inStart, rootInIndex - 1);
-        root.right = buildRec(preorder, inorder, rootInIndex + 1, inEnd);
+        root.left = buildRec(preorder, inStart, rootInIndex - 1);
+        root.right = buildRec(preorder, rootInIndex + 1, inEnd);
         return root;
     }
 
@@ -587,13 +589,13 @@ public class BinaryTree {
      * @return
      */
 //    HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
-    int postIndex = 0;
+    int postIndex;
     public TreeNode buildTreeFromInorderAndPostorder(int[] inorder, int[] postorder) {
         postIndex = postorder.length - 1;
         for (int i = 0; i < inorder.length; i++){
             inOrderIndices.put(inorder[i], i);
         }
-        return build(postorder, 0, inorder.length-1);
+        return build(postorder, 0, inorder.length - 1);
     }
     private TreeNode build(int[] postorder, int inStart, int inEnd){
         if (inStart > inEnd)
@@ -605,7 +607,7 @@ public class BinaryTree {
         int rootInIndex = inOrderIndices.get(root.data);
 
         root.right = build(postorder, rootInIndex + 1, inEnd);
-        root.left = build(postorder, inStart, rootInIndex-1);
+        root.left = build(postorder, inStart, rootInIndex - 1);
         return root;
     }
 
@@ -626,9 +628,10 @@ public class BinaryTree {
             return null;
         TreeNode root = new TreeNode(preorder[start]);
         int i = start;
-        for (; i <= end; i++) {
+        while (i <= end) {
             if (preorder[i] > preorder[start])
                 break;
+            i += 1;
         }
         root.left = buildBST(preorder, start + 1, i - 1);
         root.right = buildBST(preorder, i, end);
@@ -769,11 +772,13 @@ public class BinaryTree {
     public boolean hasPathSum(TreeNode root, int sum) {
         if (root == null)
             return false;
-        sum -= root.data;
+
         if (sum == 0 && isLeaf(root))  //If the sum becomes 0, and if it is a leaf node, then return true
             return true;
-        boolean left = hasPathSum(root.left, sum);
-        boolean right = hasPathSum(root.right, sum);
+
+        boolean left = hasPathSum(root.left, sum - root.data);
+        boolean right = hasPathSum(root.right, sum - root.data);
+
         return left || right;  //Either of the subtrees has found the sum
     }
 
@@ -1038,7 +1043,9 @@ public class BinaryTree {
     public int[] findMode(TreeNode root) {
         inOrderUtil1(root);
         int[] array = new int[result.size()];
-        for(int i = 0; i < result.size(); i++) array[i] = result.get(i);
+        for (int i = 0; i < result.size(); i++) {
+            array[i] = result.get(i);
+        }
         return array;
     }
 
@@ -1091,8 +1098,8 @@ public class BinaryTree {
 
     /**
      * Given the root of a Binary Search Tree (BST),
-     * convert it to a Greater Tree such that every key of the original BST is changed to the original key
-     * plus the sum of all keys greater than the original key in BST.
+     * convert it to a Greater Tree such that every key of the original BST is changed to
+     * the original key plus the sum of all keys greater than the original key in BST.
      *
      * @param root
      * @return
@@ -1106,6 +1113,7 @@ public class BinaryTree {
     private void reverseInOrder(TreeNode root){
         if(root == null)
             return;
+
         reverseInOrder(root.right);
         sum += root.data;
         root.data = sum;

@@ -288,7 +288,7 @@ public class DynamicProgramming {
         dp[0] = true;
         for (int i = 1; i <= s.length(); i++) {
             for (int j = 0; j < i; j++) {
-                if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                if (wordDict.contains(s.substring(j, i)) && dp[j]) {
                     dp[i] = true;
                     break;
                 }
@@ -315,7 +315,7 @@ public class DynamicProgramming {
 
         for(int i = 1; i < nums.length; i++) {
             for(int j = 0; j < i; j++){
-                if (i <= j + nums[j] && dp[j]) {
+                if (i - j <= nums[j] && dp[j]) {
                     dp[i] = true;
                     break;
                 }
@@ -335,15 +335,15 @@ public class DynamicProgramming {
     public int jump(int[] nums) {
         int[] dp = new int[nums.length];
         dp[0] = 0;
-        for (int end = 1; end < nums.length; end++) {
-            dp[end] = Integer.MAX_VALUE;
-            for (int start = 0; start < end; start++) {
-                if (nums[start] >= end - start) {
-                    dp[end] = Math.min(dp[end], dp[start]+1);
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int j = 0; j < i; j++) {
+                if (i - j <= nums[j]) {
+                    dp[i] = Math.min(dp[i], dp[j] + 1);
                 }
             }
         }
-        return dp[nums.length-1];
+        return dp[nums.length - 1];
     }
 
     /**

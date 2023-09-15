@@ -59,10 +59,10 @@ public class Trie {
     public boolean contains(String word) {
         TrieNode current = root;
         for (int i = 0; i < word.length(); i++) {
-            char ch = word.charAt(i);
-            if (!current.children.containsKey(ch))
+            char c = word.charAt(i);
+            if (!current.children.containsKey(c))
                 return false;
-            current = current.children.get(ch);
+            current = current.children.get(c);
         }
         return current.isWord;
     }
@@ -70,10 +70,10 @@ public class Trie {
     public boolean startsWith(String prefix) {
         TrieNode current = root;
         for (int i = 0; i < prefix.length(); i++){
-            char ch = prefix.charAt(i);
-            if (!current.children.containsKey(ch))
+            char c = prefix.charAt(i);
+            if (!current.children.containsKey(c))
                 return false;
-            current = current.children.get(ch);
+            current = current.children.get(c);
         }
         return true;
     }
@@ -88,21 +88,21 @@ public class Trie {
     }
 
     private boolean delete(TrieNode current, String word, int i) {
-        if (word.length() == i) {
+        if (i == word.length()) {
             if (!current.isWord) {
                 return false;
             }
             current.isWord = false;
             return current.children.isEmpty();
         }
-        char ch = word.charAt(i);
-        TrieNode child = current.children.get(ch);
+        char c = word.charAt(i);
+        TrieNode child = current.children.get(c);
         if (child == null) {
             return false;
         }
         boolean shouldDeleteCurrentNode = delete(child, word, i + 1) && !child.isWord;
         if (shouldDeleteCurrentNode) {
-            current.children.remove(ch);
+            current.children.remove(c);
             return current.children.isEmpty();
         }
         return false;

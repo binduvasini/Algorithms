@@ -2,30 +2,34 @@ package com.Algorithms;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * The solution uses bidirectional BFS.
+ * Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+ * Output: 5
+ * Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
  */
-class WordLadder {
+class WordLadder {  //The solution uses bidirectional BFS.
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
 
-        if (!wordList.contains(endWord))
+        if (!wordList.contains(endWord))  //edge case
             return 0;
 
-        HashSet<String> sourceQueue = new HashSet<>();
+        Set<String> sourceQueue = new HashSet<>();
         //For this problem, it is better to use HashSet rather than LinkedList
-        HashSet<String> targetQueue = new HashSet<>();
+        Set<String> targetQueue = new HashSet<>();
 
-        HashSet<String> visited = new HashSet<>();
+        Set<String> visited = new HashSet<>();
         visited.add(beginWord);
         sourceQueue.add(beginWord);
         targetQueue.add(endWord);
 
         //The shortest transformation sequence is the sum of levels of the meet point node from both the ends.
         // Thus, for every visited node we save its level as value in the visited dictionary.
-        for (int trans = 2; !sourceQueue.isEmpty(); trans++) {
+        int trans = 2;
+        while (!sourceQueue.isEmpty()) {
 
-            HashSet<String> transformedWords = new HashSet<>();
+            Set<String> transformedWords = new HashSet<>();
             //At this level, the words are transformed, so save them here.
 
             for (String word : sourceQueue) {
@@ -62,7 +66,9 @@ class WordLadder {
                     ? targetQueue
                     : transformedWords;
 
+            trans += 1;
         }
+
         return 0;
     }
 }

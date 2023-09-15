@@ -125,6 +125,9 @@ public class ArrayQuestions {
         //sort the starting point of the intervals.
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
 
+        //Here the interval is considered a pair (an array).
+        // We can also represent an interval as a class with start & end.
+
         LinkedList<int[]> result = new LinkedList<>();
 
         result.addLast(intervals[0]);

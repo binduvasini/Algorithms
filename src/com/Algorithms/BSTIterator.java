@@ -19,9 +19,7 @@ public class BSTIterator {
     }
 
     public int next() {
-        int nextVal = (int) queue.getFirst();
-        queue.removeFirst();
-        return nextVal;
+        return queue.removeFirst();
     }
 
     public boolean hasNext() {
