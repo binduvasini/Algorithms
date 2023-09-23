@@ -280,7 +280,7 @@ public class Backtracking {
             return true;
 
         //The current subset sum gets increased to target.
-        if (currSubsetSum == target) {  //Don't stop just yet. We still need to build more subsets upto k.
+        if (currSubsetSum == target) {  //Don't stop just yet. We still need to build more subsets up to k.
             return subsetSum(nums, 0, target, 0, k - 1, visited);
         }
 

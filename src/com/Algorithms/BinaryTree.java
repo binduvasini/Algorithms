@@ -506,10 +506,12 @@ public class BinaryTree {
         queue.add(root);
         while (!queue.isEmpty()) {
             int n = queue.size();
+
             for (int i = 1; i <= n; i++) {
                 TreeNode treeNode = queue.peek();
                 if (i == n && treeNode != null)
                     rightSideList.add(treeNode.data);
+
                 if (treeNode.left != null) {
                     queue.add(treeNode.left);
                 }
@@ -733,12 +735,14 @@ public class BinaryTree {
         while (!queue.isEmpty()) {
             int size = queue.size();
             boolean xExists = false, yExists = false;
+
             for (int i = 0; i < size; i++) {
                 TreeNode treeNode = queue.element();
                 if (treeNode.data == x)
                     xExists = true;
                 if (treeNode.data == y)
                     yExists = true;
+
                 if (treeNode.left != null && treeNode.right != null) {
                     //Rather than checking if the children belong to a same parent,
                     // check if the parent's children are x & y.
@@ -804,15 +808,17 @@ public class BinaryTree {
     public void findPathForSum(TreeNode node, int sum, List<Integer> currentPath) {
         if (node == null)
             return;
+
         currentPath.add(node.data);
-        sum -= node.data;
-        if (sum == 0 && isLeaf(node)) {  //If the sum becomes 0, and if it is a leaf node, then return true
+
+        if (sum == 0 && isLeaf(node)) {  //If the sum becomes 0, and if it is a leaf node, then return
             pathlist.add(new LinkedList<>(currentPath));
             currentPath.remove(currentPath.size() - 1);
             return;
         }
-        findPathForSum(node.left, sum, currentPath);
-        findPathForSum(node.right, sum, currentPath);
+        findPathForSum(node.left, sum - node.data, currentPath);
+        findPathForSum(node.right, sum - node.data, currentPath);
+
         currentPath.remove(currentPath.size() - 1);
     }
 
@@ -827,23 +833,26 @@ public class BinaryTree {
      */
     int count = 0;
 
-    public int pathSumParentToChild(TreeNode root, int sum) {
+    public void pathSumParentToChild(TreeNode root, int sum) {
         if (root == null)
-            return 0;
+            return;
+
         countPath(root, sum);
+
         pathSumParentToChild(root.left, sum);
         pathSumParentToChild(root.right, sum);
-        return count;
+
     }
 
     private void countPath(TreeNode node, int sum) {
         if (node == null)
             return;
-        sum -= node.data;
+
         if (sum == 0)
             count += 1;
-        countPath(node.left, sum);
-        countPath(node.right, sum);
+
+        countPath(node.left, sum - node.data);
+        countPath(node.right, sum - node.data);
     }
 
     /**

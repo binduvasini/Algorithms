@@ -218,6 +218,7 @@ public class GraphQuestions {
         boolean[] visited = new boolean[N + 1];
         minHeap.add(new int[]{source, 0});
         int totalDistance = 0;
+
         while (!minHeap.isEmpty()) {
             int[] nodeDist = minHeap.remove();
             int node = nodeDist[0], distance = nodeDist[1];
@@ -271,12 +272,15 @@ public class GraphQuestions {
 
         Queue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
         minHeap.add(new int[]{source, 0, K + 1});
+
         while (!minHeap.isEmpty()) {
             int[] nodeDist = minHeap.remove();
             int node = nodeDist[0], price = nodeDist[1], stops = nodeDist[2];
             // It fails when we include the visited logic. This solution doesn't need a visited array.
+
             if (node == dest)  //Found the destination.
                 return price;
+
             if (stops > 0) {  //Checking if (stops < 0) and breaking the loop doesn't work.
                 if (graph.containsKey(node)) {
                     Map<Integer, Integer> neighbors = graph.get(node);

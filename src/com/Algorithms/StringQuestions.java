@@ -241,12 +241,12 @@ public class StringQuestions {
      * splitting a into two strings: a = aprefix + asuffix, and splitting b into two strings: b = bprefix + bsuffix.
      * Check if aprefix + bsuffix or bprefix + asuffix forms a palindrome.
      *
-     * @param a
-     * @param b
+     * @param s1
+     * @param s2
      * @return
      */
-    public boolean checkPalindromeFormation(String a, String b) {
-        return check(a, b) || check(b, a);
+    public boolean checkPalindromeFormation(String s1, String s2) {
+        return check(s1, s2) || check(s2, s1);
     }
 
     private boolean check(String s1, String s2) {
@@ -291,7 +291,7 @@ public class StringQuestions {
             palindromicSubstrings(s, i, i);     //Odd length palindromic substring.
             // Imagine having both pointers pointing at the same character.
             // Expanding one character at a time on each direction will be a string with odd length.
-            palindromicSubstrings(s, i, i + 1);   //Even length palindromic sub-string
+            palindromicSubstrings(s, i, i + 1);   //Even length palindromic substring
         }
 
         return count;

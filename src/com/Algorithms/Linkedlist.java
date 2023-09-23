@@ -114,8 +114,8 @@ public class Linkedlist {
         }
 
         while (head != null) {
-            int nodeFromStack = stack.pop();
-            if (nodeFromStack != head.data) {
+            int val = stack.pop();
+            if (val != head.data) {
                 return false;
             }
             head = head.next;
