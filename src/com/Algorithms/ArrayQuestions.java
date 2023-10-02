@@ -214,6 +214,7 @@ public class ArrayQuestions {
 
     /**
      * Given an unsorted array of integers, find the length of the longest consecutive sequence of elements.
+     * The question asks for the sequence. Not a subsequence. Therefore, the elements left and right are considered.
      * Input: [100, 4, 200, 1, 3, 2]
      * Output: 4
      * The longest consecutive sequence is [1, 2, 3, 4]. Therefore its length is 4.

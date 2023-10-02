@@ -305,6 +305,7 @@ public class DynamicProgramming {
      * Input: nums = [2,3,1,1,4]
      * Output: true
      * Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+     *
      * @param nums
      * @return
      */
@@ -315,7 +316,7 @@ public class DynamicProgramming {
 
         for(int i = 1; i < nums.length; i++) {
             for(int j = 0; j < i; j++){
-                if (i - j <= nums[j] && dp[j]) {
+                if (nums[j] >= i - j && dp[j]) {
                     dp[i] = true;
                     break;
                 }
@@ -338,7 +339,7 @@ public class DynamicProgramming {
         for (int i = 1; i < nums.length; i++) {
             dp[i] = Integer.MAX_VALUE;
             for (int j = 0; j < i; j++) {
-                if (i - j <= nums[j]) {
+                if (nums[j] >= i - j) {
                     dp[i] = Math.min(dp[i], dp[j] + 1);
                 }
             }
@@ -385,6 +386,41 @@ public class DynamicProgramming {
             }
         }
         return dp[n];
+    }
+
+    /**
+     * Given an integer array, return the length of the length of the longest increasing subsequence.
+     * nums = [10,9,2,5,3,7,101,18]
+     * Output: 4
+     * Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+     *
+     * @param nums
+     * @return
+     */
+    public int longestIncreasingSubsequenceLength(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+
+        int longest = Integer.MIN_VALUE;
+
+        Arrays.fill(dp, 1);
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j] && dp[i] < dp[j] + 1) {
+                    dp[i] = dp[j] + 1;
+                }
+            }
+        }
+
+        // Pick maximum of all LIS values
+        for (int i = 0; i < n; i++) {
+            if (longest < dp[i]) {
+                longest = dp[i];
+            }
+        }
+
+        return longest;
     }
 
     /**
