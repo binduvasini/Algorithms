@@ -199,16 +199,16 @@ public class BinaryMatrix {
      * @return
      */
     public int numberOfIslands(char[][] grid) {
-        int countIsland = 0;
+        int count = 0;
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] == '1') {
                     dfs(grid, row, col);
-                    countIsland += 1;
+                    count += 1;
                 }
             }
         }
-        return countIsland;
+        return count;
     }
 
     private void dfs(char[][] grid, int row, int col) {

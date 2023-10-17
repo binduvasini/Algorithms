@@ -132,7 +132,7 @@ public class ArrayQuestions {
 
         result.addLast(intervals[0]);
         for (int[] current : intervals) {
-            int[] prev = result.getLast();
+            int[] prev = result.getLast(); //Returns the last element in the list
 
             if (prev[1] >= current[0]) {  //The end point of the previous interval is greater than or equal to the
                 // start point of the current interval. Therefore, it needs to be merged.

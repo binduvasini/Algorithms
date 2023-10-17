@@ -153,6 +153,7 @@ public class Matrix {
             for (int c = 0; c < board[r].length; c++) {
                 if (board[r][c] == wordArr[0] && dfsUtil(board, wordArr, r, c, 0)) {
                     //Just having an additional check here.
+                    //If the question asks to return the list of words, add the word to the result list here.
                     return true;
                 }
             }
@@ -171,10 +172,11 @@ public class Matrix {
 
         char tmp = board[r][c];
         board[r][c] = '#'; //Marking this character visited.
-        boolean exists = (dfsUtil(board, wordArr, r, c+1, wordIndex+1)
-                || dfsUtil(board, wordArr, r, c-1, wordIndex+1)
-                || dfsUtil(board, wordArr, r+1, c, wordIndex+1)
-                || dfsUtil(board, wordArr, r-1, c, wordIndex+1));
+        boolean exists =
+                (dfsUtil(board, wordArr, r, c + 1, wordIndex + 1)
+                || dfsUtil(board, wordArr, r, c - 1, wordIndex + 1)
+                || dfsUtil(board, wordArr, r + 1, c, wordIndex + 1)
+                || dfsUtil(board, wordArr, r - 1, c, wordIndex + 1));
 
         board[r][c] = tmp; //Setting the char back to original because
         // we might visit this char again in other cases (that are invoked from the for loop above)

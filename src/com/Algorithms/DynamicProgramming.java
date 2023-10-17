@@ -1,8 +1,6 @@
 package com.Algorithms;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class DynamicProgramming {
     /**
@@ -89,6 +87,19 @@ public class DynamicProgramming {
         return dp[A.length][B.length];
     }
 
+    public int rob(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+
+        for (int i = 2; i < n; i++){
+            dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+        }
+
+        return dp[n - 1];
+    }
+
     /**
      * Given an integer n, return the number of structurally unique BSTs
      * which has exactly n nodes of unique values from 1 to n.
@@ -150,6 +161,45 @@ public class DynamicProgramming {
             }
         }
         return longestPalSubstring;
+    }
+
+    /**
+     * A frog is crossing a river.
+     * The river is divided into some number of units,
+     * and at each unit, there may or may not exist a stone.
+     * The frog can jump on a stone, but it must not jump into the water.
+     * Given a list of stones positions (in units) in sorted order,
+     * determine if the frog can cross the river by landing on the last stone.
+     * Initially, the frog is on the first stone and assumes the first jump must be 1 unit.
+     * The frog's next jump must be either k - 1, k, or k + 1 units. The frog can only jump in the forward direction.
+     * Input: stones = [0,1,3,5,6,8,12,17]
+     * Output: true
+     * Explanation: The frog can jump to the last stone by jumping 1 unit to the 2nd stone,
+     * then 2 units to the 3rd stone, then 2 units to the 4th stone, then 3 units to the 6th stone,
+     * 4 units to the 7th stone, and 5 units to the 8th stone.
+     *
+     * @param stones
+     * @return
+     */
+    public boolean canCross(int[] stones) {
+        Map<Integer, Set<Integer>> dp = new HashMap<>();
+        for (int stone : stones) {
+            dp.put(stone, new HashSet<>());
+        }
+        dp.get(stones[0]).add(1);
+
+        for (int stone : stones) {
+            for (int jump : dp.get(stone)) {
+                int position = stone + jump;
+                if (jump != 0 && dp.containsKey(position)){
+                    dp.get(position).add(jump - 1);
+                    dp.get(position).add(jump);
+                    dp.get(position).add(jump + 1);
+                }
+            }
+        }
+
+        return !dp.get(stones[stones.length - 1]).isEmpty();
     }
 
     public int LCSLength(String x, String y) {
@@ -285,11 +335,13 @@ public class DynamicProgramming {
      */
     public boolean wordBreak(String s, List<String> wordDict) {
         boolean[] dp = new boolean[s.length() + 1];
+
         dp[0] = true;
-        for (int i = 1; i <= s.length(); i++) {
-            for (int j = 0; j < i; j++) {
-                if (wordDict.contains(s.substring(j, i)) && dp[j]) {
-                    dp[i] = true;
+
+        for (int end = 1; end <= s.length(); end++) {
+            for (int start = 0; start < end; start++) {
+                if (wordDict.contains(s.substring(start, end)) && dp[start]) {
+                    dp[end] = true;
                     break;
                 }
             }
@@ -322,7 +374,7 @@ public class DynamicProgramming {
                 }
             }
         }
-        return dp[nums.length-1];
+        return dp[nums.length - 1];
     }
 
     /**
@@ -335,7 +387,9 @@ public class DynamicProgramming {
      */
     public int jump(int[] nums) {
         int[] dp = new int[nums.length];
+
         dp[0] = 0;
+
         for (int i = 1; i < nums.length; i++) {
             dp[i] = Integer.MAX_VALUE;
             for (int j = 0; j < i; j++) {
@@ -546,8 +600,10 @@ public class DynamicProgramming {
      * @return
      */
     public int islandPerimeter(int[][] grid) {
-        int rows = grid.length, cols = grid[0].length, perimeter = 0;
+        int rows = grid.length, cols = grid[0].length;
+        int perimeter = 0;
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (grid[row][col] == 1) {
