@@ -80,6 +80,7 @@ public class ArrayPrefixSum {
         int count = 0;
         Map<Integer, Integer> map = new HashMap<>();
         map.put(0, 1);  //To handle the remainder 0
+
         for (int num : nums) {
             prefixSum += num;
             int remainder = prefixSum % k;

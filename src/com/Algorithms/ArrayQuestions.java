@@ -16,19 +16,49 @@ public class ArrayQuestions {
      */
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
-        int[] output = new int[2];
 
         for (int i = 0; i < nums.length; i++) {
-            if (map.containsKey(target - nums[i])) {
-                output[0] = i;
-                output[1] = map.get(target - nums[i]);
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[]{map.get(complement), i};
             }
             else {
                 map.put(nums[i], i);
             }
         }
 
-        return output;
+        return new int[]{};
+    }
+
+    /**
+     * You are given a list of songs where the ith song has a duration of time[i] seconds.
+     * Return the number of pairs of songs for which their total duration in seconds is divisible by 60.
+     * Formally, we want the number of indices i, j such that i < j with (time[i] + time[j]) % 60 == 0.
+     * Input: time = [30,20,150,100,40]
+     * Output: 3
+     * Explanation: Three pairs have a total duration divisible by 60:
+     * (time[0] = 30, time[2] = 150): total duration 180
+     * (time[1] = 20, time[3] = 100): total duration 120
+     * (time[1] = 20, time[4] = 40): total duration 60
+     *
+     * @param time
+     * @return
+     */
+    public int wholeMinuteDilemma(int[] time) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int count = 0;
+
+        for (int t : time) {
+            int remainder = t % 60;
+            int complement = (60 - remainder) % 60;
+
+            if (map.containsKey(complement)) {
+                count += map.get(complement);
+            }
+            map.put(remainder, map.getOrDefault(remainder, 0) + 1);
+        }
+
+        return count;
     }
 
     /**
@@ -93,25 +123,25 @@ public class ArrayQuestions {
      * @return
      */
     public int[] mergeSortedArrays(int[] leftArr, int[] rightArr) {
-        int[] tmp = new int[leftArr.length + rightArr.length];
+        int[] merged = new int[leftArr.length + rightArr.length];
         int i = 0, lefti = 0, righti = 0;
 
         while (lefti < leftArr.length && righti < rightArr.length) {
             if (leftArr[lefti] <= rightArr[righti]) {
-                tmp[i] = leftArr[lefti];
+                merged[i] = leftArr[lefti];
                 lefti += 1;
             } else {
-                tmp[i] = rightArr[righti];
+                merged[i] = rightArr[righti];
                 righti += 1;
             }
             i += 1;
         }
 
         //when one of the indices goes out of bounds, we copy the remaining elements from that array to the main array
-        System.arraycopy(leftArr, lefti, tmp, i, leftArr.length - lefti);
-        System.arraycopy(rightArr, righti, tmp, i, rightArr.length - righti);
+        System.arraycopy(leftArr, lefti, merged, i, leftArr.length - lefti);
+        System.arraycopy(rightArr, righti, merged, i, rightArr.length - righti);
 
-        return tmp;
+        return merged;
     }
 
     /**

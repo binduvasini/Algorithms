@@ -52,7 +52,7 @@ public class StackApproaches {
      */
     public int[] nextGreaterElementsWithDuplicates(int[] nums) {
         int[] nextGreaterElements = new int[nums.length];
-        Deque<int[]> stack = new ArrayDeque<>();
+        Deque<int[]> stack = new ArrayDeque<>();  //[index, number]
         Map<Integer, Integer> map = new HashMap<>();
         int n = nums.length;
 
@@ -87,9 +87,9 @@ public class StackApproaches {
         Deque<Character> stack = new ArrayDeque<>();
         for(char c : s.toCharArray())
         {
-            if(c == '(')
+            if (c == '(')
                 stack.push(')');
-            else if(c == '{')
+            else if (c == '{')
                 stack.push('}');
             else if (c == '[')
                 stack.push(']');
@@ -281,12 +281,65 @@ public class StackApproaches {
 
 //Queue approach
 class MovingAverage {
-    int size;
+    static class Data {
+        private final double value;
+        private final long timestamp;
+
+        public Data(double value, long timestamp) {
+            this.value = value;
+            this.timestamp = timestamp;
+        }
+
+        public double getValue() {
+            return value;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+    }
+
+    private final Queue<Data> dataQueue;
+    private final long windowSizeInMillis;
+
+    public MovingAverage(long windowSizeInMillis) {
+        this.dataQueue = new LinkedList<>();
+        this.windowSizeInMillis = windowSizeInMillis;
+    }
+
+    public void add(double value) {
+        long currentTime = System.currentTimeMillis();
+
+        // Remove data points that are outside the time window
+        while (!dataQueue.isEmpty() && currentTime - dataQueue.peek().getTimestamp() > windowSizeInMillis) {
+            dataQueue.poll();
+        }
+
+        // Add the new data point
+        dataQueue.offer(new Data(value, currentTime));
+    }
+
+    public double getAverage() {
+        if (dataQueue.isEmpty()) {
+            return 0.0; // or return NaN, throw an exception, or handle this case as appropriate
+        }
+
+        double sum = 0;
+        for (Data data : dataQueue) {
+            sum += data.getValue();
+        }
+
+        return sum / dataQueue.size();
+    }
+}
+
+class MovingAverageFixedNumberOfElements {
+    int windowSize;  // window size in terms of number of elements
     int sum;
     LinkedList<Integer> queue;
 
-    public MovingAverage(int size) {
-        this.size = size;
+    public MovingAverageFixedNumberOfElements(int windowSize) {
+        this.windowSize = windowSize;
         this.sum = 0;
         queue = new LinkedList<>();
     }
@@ -295,7 +348,7 @@ class MovingAverage {
         queue.add(val);
         sum += val;
 
-        if (queue.size() > size) {
+        if (queue.size() > windowSize) {
             int firstVal = queue.remove();
             sum -= firstVal;
         }

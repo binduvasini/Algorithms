@@ -568,6 +568,30 @@ public class StringQuestions {
         return false;
     }
 
+    public static String findMostCommonSubstring(String s, int k) {
+        if (s == null || s.length() < k) {
+            return "";
+        }
+
+        Map<String, Integer> substringMap = new HashMap<>();
+
+        for (int i = 0; i <= s.length() - k; i++) {
+            String sub = s.substring(i, i + k);
+            substringMap.put(sub, substringMap.getOrDefault(sub, 0) + 1);
+        }
+
+        String mostCommonSubstring = "";
+        int maxCount = 0;
+
+        for (String key : substringMap.keySet()) {
+            if (substringMap.get(key) > maxCount) {
+                mostCommonSubstring = key;
+            }
+        }
+
+        return mostCommonSubstring;
+    }
+
     /**
      * Find the longest common prefix string amongst an array of strings.
      * Input: strs = ["flower","flow","flight"]

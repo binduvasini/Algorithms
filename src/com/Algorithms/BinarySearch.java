@@ -69,13 +69,14 @@ public class BinarySearch {
                 return nums[lo];
 
             int mid = lo + (hi - lo) / 2;
+
             if (nums[mid] < nums[hi]) {  //The minimum is in the left half.
-                if (mid > lo && nums[mid - 1] > nums[mid])  //If the mid element is the minimum. Have a boundary check.
+                if (mid > lo && nums[mid] < nums[mid - 1])  //If the mid element is the minimum. Have a boundary check.
                     return nums[mid];
                 hi = mid - 1;
             }
             else {  //The minimum is in the right half.
-                if (mid < nums.length - 1 && nums[mid + 1] < nums[mid])  //If mid+1 element is the minimum.
+                if (mid < nums.length - 1 && nums[mid + 1] < nums[mid])  //If mid + 1 element is the minimum.
                     // Have a boundary check.
                     return nums[mid + 1];
                 lo = mid + 1;
@@ -215,14 +216,11 @@ public class BinarySearch {
      */
     public int[] twoSum(int[] nums, int targetSum) {
         int lo = 0, hi = nums.length - 1;
-        int[] output = new int[2];
 
         while (lo <= hi) {
             int sum = nums[lo] + nums[hi];
             if (sum == targetSum) {
-                output[0] = lo;
-                output[1] = hi;
-                break;
+                return new int[]{lo, hi};
             }
             else if (sum < targetSum) {
                 lo = lo + 1;
@@ -231,7 +229,7 @@ public class BinarySearch {
                 hi = hi - 1;
             }
         }
-        return output;
+        return new int[]{};
     }
 
     /**
