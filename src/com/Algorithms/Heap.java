@@ -13,13 +13,15 @@ import java.util.Queue;
 public class Heap {
 
     /**
-     * Find kth largest element in an array
+     * Find kth largest element in an array.
+     * The array may contain duplicates.
+     * Solve using max heap.
      *
      * @param nums
      * @param k
      * @return
      */
-    public int kthLargestElement(int[] nums, int k) {
+    public int kthLargestElementUsingMaxHeap(int[] nums, int k) {
         Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
         for (int num : nums) {
             maxHeap.add(num);
@@ -30,6 +32,27 @@ public class Heap {
         }
 
         return maxHeap.remove();
+    }
+
+    /**
+     * Find kth largest element in an array.
+     * The array may contain duplicates.
+     * Solve using min heap.
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int kthLargestElementUsingMinHeap(int[] nums, int k) {
+        Queue<Integer> minHeap = new PriorityQueue<>();
+        for (int num : nums) {
+            minHeap.add(num);
+            if (minHeap.size() > k) {
+                minHeap.remove();
+            }
+        }
+
+        return minHeap.remove();
     }
 
     /**
@@ -160,7 +183,7 @@ public class Heap {
     /**
      * Given an array and two integers k and x, return the k closest elements to x in the array.
      * An integer a is closer to x than an integer b if:
-
+     * <p>
      * |a - x| < |b - x|, or
      * |a - x| == |b - x| and a < b
      *
@@ -193,7 +216,7 @@ public class Heap {
     /**
      * Running median in a data stream.
      * Solve using MinHeap and MaxHeap.
-     * void addNum(int num) - Add a integer number from the data stream to the data structure.
+     * void addNum(int num) - Add a number from the data stream to the data structure.
      * double findMedian() - Return the median of all elements so far.
      *
      * @param array
@@ -229,12 +252,48 @@ public class Heap {
     }
 
     /**
+     * You have a set which contains all positive integers [1, 2, 3, 4, 5, ...].
+     * Implement the SmallestInfiniteSet class.
+     * SmallestInfiniteSet() initializes the SmallestInfiniteSet object to contain all positive integers.
+     * int popSmallest() removes and returns the smallest integer contained in the infinite set.
+     * void addBack(int num) adds a positive integer num back into the infinite set,
+     * if it is not already in the infinite set.
+     */
+    class SmallestInfiniteSet {
+        int min;
+        Queue<Integer> minHeap;
+
+        public SmallestInfiniteSet() {
+            min = 1;
+            minHeap = new PriorityQueue<>();
+        }
+
+        public int popSmallest() {
+            if (!minHeap.isEmpty()) {  //The minHeap is used only to store the added back elements.
+                return minHeap.remove(); //If the minHeap has a value, it means the minimum element is here.
+            }
+
+            //The minHeap is empty. That means the minimum element is in the class variable "min".
+            int tempMin = min;
+            min += 1;  //Since we popped the minimum element, we need to increment the "min" variable to next element.
+            return tempMin;
+        }
+
+        public void addBack(int num) {
+            //We don't add back the minimum element if it is really not the minimum.
+            if (num < min & !minHeap.contains(num)) {  //Heap allows duplicates. So we need to have this check.
+                minHeap.add(num);
+            }
+        }
+    }
+
+    /**
      * Given a collection of stones weighing a non-negative number,
      * each turn, we choose the two heaviest stones and smash them together.
      * Suppose the stones have weights x and y, the result of this smash is
      * If x == y, both stones are totally destroyed.
      * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
-
+     * <p>
      * stones = [2,7,4,1,8,1]
      * output = 1
      *
