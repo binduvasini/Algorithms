@@ -182,17 +182,19 @@ public class StackApproaches {
      * @param price
      * @return
      */
-    Deque<int[]> stocks = new ArrayDeque<>();  //Store the spanValue and the current price as a pair.
+    Deque<int[]> stack = new ArrayDeque<>();  //Store the spanValue and the current price as a pair.
 
     public int stockSpanner(int price) {
-        int spanOfStock = 1;
-        //Dig into the stack only when this price is greater than the immediate previous stock price.
-        while (!stocks.isEmpty() && price >= stocks.peek()[1]) {
-            int[] prevPrice = stocks.pop();
-            spanOfStock += prevPrice[0];
+        int span = 1;  //By default, the span is 1. Meaning this stock price has been there at least for 1 day.
+
+        //Are there stock prices in the stack lesser than the current day's price? Pop them and add the span.
+        while (!stack.isEmpty() && stack.peek()[0] <= price) {
+            span += stack.pop()[1];
         }
-        stocks.push(new int[]{spanOfStock, price});
-        return spanOfStock;
+
+        stack.push(new int[]{price, span});
+
+        return span;
     }
 
     /**
@@ -242,37 +244,38 @@ public class StackApproaches {
      */
     public int calculator(String s) {
         Deque<Integer> stack = new ArrayDeque<>();
-        int number = 0;
-        int sign = 1;
-        int result = 0;
+        int number = 0;  //Need this to store the number in the equation.
+        int sign = 1;  //Need this to keep track of the sign so far.
+        int result = 0;  //Need this to store the result so far.
 
         for (char c : s.toCharArray()) {
             if (Character.isDigit(c)) {
                 number = 10 * number + (c - '0');  //If the digit is 217, we look at each character.
                 // So we need to build the full number by doing this.
-            } else if (c == '+') {
-                result += sign * number;
-                number = 0;
-                sign = 1;
+            } else if (c == '+') {  //The number is over. We have encountered a sign.
+                result += sign * number;  //Now it's time to update the result because
+                // we are going to update the sign and the number.
+                sign = 1;  //Whatever follows next, needs to hold this sign.
+                number = 0;  //We finished looking at the number. Reset it so that the next number is ready to be stored.
             } else if (c == '-') {
                 result += sign * number;
-                number = 0;
                 sign = -1;
-            } else if (c == '(') {
-                //we push the result first, then sign;
+                number = 0;
+            } else if (c == '(') {  //Now it's time to use the stack.
+                //Push the result first, then the sign. There is nothing to do with the number here.
                 stack.push(result);
                 stack.push(sign);
-                //reset the sign and result for the value in the parenthesis
-                result = 0;
+                //reset the sign and result
                 sign = 1;
+                result = 0;  //A new result needs to be calculated using the equation inside this parenthesis.
             } else if (c == ')') {
                 result += sign * number;
-                result *= stack.pop();    //stack.pop() is the sign before the parenthesis
-                result += stack.pop();   //stack.pop() now is the result calculated before the parenthesis
+                result *= stack.pop();   //pop the sign before the number in the close parenthesis
+                result += stack.pop();   //pop the previously calculated result
                 number = 0;
             }
         }
-        if (number != 0) {
+        if (number != 0) {  //In case there is no parentheses in the equation. We need to calculate the result.
             result += sign * number;
         }
         return result;
@@ -281,22 +284,7 @@ public class StackApproaches {
 
 //Queue approach
 class MovingAverage {
-    static class Data {
-        private final double value;
-        private final long timestamp;
-
-        public Data(double value, long timestamp) {
-            this.value = value;
-            this.timestamp = timestamp;
-        }
-
-        public double getValue() {
-            return value;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
+    record Data(double value, long timestamp) {
     }
 
     private final Queue<Data> dataQueue;
@@ -311,7 +299,7 @@ class MovingAverage {
         long currentTime = System.currentTimeMillis();
 
         // Remove data points that are outside the time window
-        while (!dataQueue.isEmpty() && currentTime - dataQueue.peek().getTimestamp() > windowSizeInMillis) {
+        while (!dataQueue.isEmpty() && currentTime - dataQueue.peek().timestamp() > windowSizeInMillis) {
             dataQueue.poll();
         }
 
@@ -326,7 +314,7 @@ class MovingAverage {
 
         double sum = 0;
         for (Data data : dataQueue) {
-            sum += data.getValue();
+            sum += data.value();
         }
 
         return sum / dataQueue.size();

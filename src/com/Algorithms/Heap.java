@@ -292,8 +292,8 @@ public class Heap {
      * each turn, we choose the two heaviest stones and smash them together.
      * Suppose the stones have weights x and y, the result of this smash is
      * If x == y, both stones are totally destroyed.
-     * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y-x.
-     * <p>
+     * If x != y, the stone of weight x is totally destroyed, and the stone of weight y has new weight y - x.
+
      * stones = [2,7,4,1,8,1]
      * output = 1
      *
@@ -302,8 +302,8 @@ public class Heap {
      */
     public int lastStoneWeight(int[] stones) {
         Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        for (int s : stones) {
-            maxHeap.add(s);
+        for (int stone : stones) {
+            maxHeap.add(stone);
         }
 
         while (maxHeap.size() > 1) {

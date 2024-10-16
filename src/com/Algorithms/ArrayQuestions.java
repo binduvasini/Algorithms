@@ -145,38 +145,6 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given a collection of intervals, merge all overlapping intervals.
-     * Input: [[1,3],[2,6],[8,10],[15,18]]
-     * Output: [[1,6],[8,10],[15,18]]
-     *
-     * @param intervals
-     */
-    public int[][] mergeIntervals(int[][] intervals) {
-        //sort the starting point of the intervals.
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-
-        //Here the interval is considered a pair (an array).
-        // We can also represent an interval as a class with start & end.
-
-        LinkedList<int[]> result = new LinkedList<>();
-
-        result.addLast(intervals[0]);
-        for (int[] current : intervals) {
-            int[] prev = result.getLast(); //Returns the last element in the list
-
-            if (prev[1] >= current[0]) {  //The end point of the previous interval is greater than or equal to the
-                // start point of the current interval. Therefore, it needs to be merged.
-                result.getLast()[1] = Math.max(prev[1], current[1]);
-            }
-            else {
-                result.addLast(current);
-            }
-        }
-
-        return result.toArray(int[][]::new);
-    }
-
-    /**
      * Best day to buy stock and the best day to sell it. Find the maximum profit given you buy and sell a stock once.
      *
      * @param prices

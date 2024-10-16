@@ -19,7 +19,7 @@ public class StringQuestions {
      * @param s
      * @return
      */
-    public int longestSubstringWithoutRepeatingChars(String s) {
+    public int longestSubstringLengthWithoutRepeatingChars(String s) {
         int start = 0, end = 0, longest = 0;
         Set<Character> set = new HashSet<>();
         while (end < s.length()) {
@@ -286,20 +286,20 @@ public class StringQuestions {
      * @return
      */
     int count = 0;
-    public int findAllPalindromeSubstrings(String s) {
-        for(int i = 0; i < s.length() - 1; i++) {
-            palindromicSubstrings(s, i, i);     //Odd length palindromic substring.
+    public int findPalindromicSubstrings(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            palindromes(s, i, i);   //Odd length palindromic substring.
             // Imagine having both pointers pointing at the same character.
             // Expanding one character at a time on each direction will be a string with odd length.
-            palindromicSubstrings(s, i, i + 1);   //Even length palindromic substring
+            palindromes(s, i, i + 1);   //Even length palindromic substring
         }
 
         return count;
     }
 
-    private void palindromicSubstrings(String s, int left, int right) {
+    private void palindromes(String s, int left, int right) {
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
-            System.out.println(s.substring(left, right + 1));
+            System.out.println(s.substring(left, right + 1));  //In case we need the substring
             count += 1;  //palindromic substring is found
             left -= 1;   //Expand to the left
             right +=1;   //Expand to the right
@@ -312,26 +312,58 @@ public class StringQuestions {
      * @param s
      * @return
      */
-    int longestLen = Integer.MIN_VALUE, start = 0;
+    int longestLen = Integer.MIN_VALUE;  //We need a variable to maintain the longest length at a given time.
+    int start = 0;  //We will maintain another variable to hold the beginning position of the palindrome so that
+    // we will update this start pointer when we update the longest length.
+    // Because this position is going to be the starting point of the longest palindrome.
     public String longestPalindromicSubstring(String s) {
         for (int i = 0; i < s.length(); i++) {
-            palindromicSubstringsUpdatingLength(s, i, i);
-            palindromicSubstringsUpdatingLength(s, i, i + 1);
+            palindromeLength(s, i, i);
+            palindromeLength(s, i, i + 1);
         }
         return s.substring(start, start + longestLen);
     }
 
-    private void palindromicSubstringsUpdatingLength(String s, int left, int right) {
+    private void palindromeLength(String s, int left, int right) {
         while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
             left -= 1;
             right += 1;
         }
-        if (right - left - 1 > longestLen) {  //This condition must be outside the while loop.
+        if (right - left - 1 > longestLen) {  // Update the longest length when a palindrome is found.
+            // This condition must be outside the while loop.
             longestLen = right - left - 1;  //The reason for doing - 1 is that when the while loop exits,
             // the pointers would have already crossed the boundary.
             start = left + 1;  //Same reason as above.
         }
     }
+
+    /**
+     * Given a string s which consists of lowercase or uppercase letters,
+     * return the length of the longest palindrome that can be built with those letters.
+     * Not a substring. Something like a subsequence.
+     * Letters are case-sensitive, for example, "Aa" is not considered a palindrome.
+     *
+     * @param s
+     * @return
+     */
+    public int longestPalindromeFromASetOfCharacters(String s) {
+        int len = 0;
+        Set<Character> set = new HashSet<>();
+        for (char c : s.toCharArray()) {
+            if (set.contains(c)) {
+                len += 2;
+                set.remove(c);
+            }
+            else {
+                set.add(c);
+            }
+        }
+        if (!set.isEmpty()) {
+            len += 1;
+        }
+        return len;
+    }
+
 
     /**
      * Longest substring with at most k distinct characters.
