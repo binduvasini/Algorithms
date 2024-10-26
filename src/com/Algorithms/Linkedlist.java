@@ -71,8 +71,8 @@ public class Linkedlist {
     private Node reverseListRec(Node curr, Node prev) {
         if (curr == null)
             return prev;
-        Node temp = curr.next;
-        curr.next = prev;
+        Node temp = curr.next;  //Keep hold of the next element.
+        curr.next = prev;  //Reverse the pointer.
         return reverseListRec(temp, curr);
     }
 
@@ -170,6 +170,34 @@ public class Linkedlist {
             result.next = new Node(carry);
         }
         return resultHead;
+    }
+
+    public Node mergeTwoLists(Node list1, Node list2) {
+        Node merged = new Node(-1);
+        Node curr = merged;  // A pointer to point to the merged list.
+
+        while (list1 != null && list2 != null) {
+            // Compare the current nodes of both lists
+            if (list1.data <= list2.data) {
+                curr.next = list1;  // Attach list1's node to the merged list
+                list1 = list1.next; // Move list1 pointer forward
+            }
+            else {
+                curr.next = list2;
+                list2 = list2.next;
+            }
+            curr = curr.next;
+        }
+
+        // Attach the remaining nodes to the merged list
+        if (list1 != null) {
+            curr.next = list1;
+        }
+        if (list2 != null) {
+            curr.next = list2;
+        }
+
+        return merged.next;
     }
 
     /**

@@ -85,7 +85,7 @@ public class StackApproaches {
      */
     public boolean isValidParentheses(String s) {
         Deque<Character> stack = new ArrayDeque<>();
-        for(char c : s.toCharArray())
+        for (char c : s.toCharArray())
         {
             if (c == '(')
                 stack.push(')');

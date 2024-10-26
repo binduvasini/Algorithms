@@ -16,15 +16,21 @@ public class DynamicProgramming {
      * @return
      */
     public int coinChangeFewestCoins(int[] coins, int amount) {
+        // Define a DP array dp where dp[i] represents the minimum number of coins needed to make an amount i.
         int[] dp = new int[amount + 1];
         Arrays.fill(dp, amount + 1);  //Integer.MAX_VALUE doesn't work. So use amount + 1.
-        dp[0] = 0;
+        dp[0] = 0;  //zero coins are needed to make an amount of zero.
+
         for (int i = 1; i < dp.length; i++) {
             for (int coin : coins) {
-                if (coin <= i)  //(coin > i) break; condition doesn't work.
+                if (i - coin >= 0)  // Check if it's possible to use this coin.
+                    // Is the current amount minus the coin is a valid number?
                     dp[i] = Math.min(dp[i], dp[i - coin] + 1);
             }
         }
+
+        // After filling the DP array, if dp[amount] remains a large initial value,
+        // it means we cannot form that amount with the given coins.
         return dp[amount] > amount ? -1 : dp[amount];
     }
 
@@ -364,11 +370,11 @@ public class DynamicProgramming {
     public boolean canJump(int[] nums) {
         boolean[] dp = new boolean[nums.length];
 
-        dp[0] = true;
+        dp[0] = true;  //The starting point is reachable.
 
-        for(int i = 1; i < nums.length; i++) {
-            for(int j = 0; j < i; j++){
-                if (nums[j] >= i - j && dp[j]) {
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (i - j <= nums[j] && dp[j]) {
                     dp[i] = true;
                     break;
                 }

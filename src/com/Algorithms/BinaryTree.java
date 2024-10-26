@@ -74,10 +74,13 @@ public class BinaryTree {
     }
 
     int heightRec(TreeNode root) {
-        if (root == null)
-            return 0;
+        if (root == null) {
+            return 0; // The height of a null node is 0
+        }
+
         int leftHeight = heightRec(root.left);
         int rightHeight = heightRec(root.right);
+
         return Math.max(leftHeight, rightHeight) + 1;
     }
 
@@ -98,19 +101,23 @@ public class BinaryTree {
         return Math.max(leftHeight, rightHeight);
     }
 
-    int fullDiameter = 0;
+    int maxDiameter = 0;
 
     int diameterOfBinaryTree(TreeNode root) {
         diameter(root);
-        return fullDiameter;
+        return maxDiameter;
     }
 
     private int diameter(TreeNode root) {
         if (root == null)
             return 0;
+
         int left = diameter(root.left);
         int right = diameter(root.right);
-        fullDiameter = Math.max(fullDiameter, left + right);
+
+        // The diameter at the current node is left height + right height.
+        maxDiameter = Math.max(maxDiameter, left + right);
+
         return Math.max(left, right) + 1;
     }
 
@@ -436,6 +443,50 @@ public class BinaryTree {
         if (root.data <= min || root.data >= max)
             return false;
         return checkBST(root.right, root.data, max) && checkBST(root.left, min, root.data);
+    }
+
+    /**
+     * Given a binary tree, find the lowest common ancestor (LCA) of two given nodes p and q.
+     * The lowest common ancestor is defined as the deepest node that has both p and q as descendants
+     * (where we allow a node to be a descendant of itself).
+
+     *         3
+     *        / \
+     *       5   1
+     *      / \ / \
+     *     6  2 0  8
+     *       / \
+     *      7   4
+
+     * p = 5 and q = 1
+     * In this case, the left subtree returns 5. Right subtree returns 1.
+     * Both have returned non-null values. Therefore, the parent is the LCA.
+
+     * p = 5 and q = 6
+     * In this case, the left subtree returns 5. Right subtree returns null because 6 is not found in the right subtree.
+     * When one of the subtrees returns a non-null value, that value itself is the LCA.
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {  // If we reach a null node or if we find p or q, return the node
+            return root;
+        }
+
+        // Recursively search for LCA in the left and right subtrees
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        // If both left and right are non-null, root is the LCA
+        if (left != null && right != null) {
+            return root;
+        }
+
+        // Otherwise, return the non-null value (either left or right)
+        return left != null ? left : right;
     }
 
     /**

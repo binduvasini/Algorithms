@@ -2,6 +2,7 @@ package com.Algorithms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Backtracking {
@@ -164,6 +165,36 @@ public class Backtracking {
                 sChar[pointer] = Character.toUpperCase(sChar[pointer]);
             }
             permuteUtil(sChar, pointer + 1);
+        }
+    }
+
+    /**
+     * Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+     * Input: n = 3
+     * Output: ["((()))","(()())","(())()","()(())","()()()"]
+     *
+     * @param n
+     * @return
+     */
+    private List<String> result = new LinkedList<>();
+    public List<String> generateParenthesis(int n) {
+        backtrack(n, "", 0, 0);
+        return result;
+    }
+
+    private void backtrack(int n, String str, int open, int close) {
+        if (str.length() == 2 * n) {  //When the length of the current string reaches 2 * n (which means it's complete),
+            // add it to the result list.
+            result.add(str);
+            return;
+        }
+
+        if (open < n) {
+            backtrack(n, str + "(", open + 1, close);
+        }
+
+        if (close < open) {
+            backtrack(n, str + ")", open, close + 1);
         }
     }
 
