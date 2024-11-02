@@ -1,7 +1,9 @@
 package com.Algorithms;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Map;
 
 /**
  * The inner classes are static because they need to be clubbed inside this class.
@@ -21,8 +23,9 @@ public class QueueApproaches {
 
         /**
          * Record a hit.
+         *
          * @param timestamp - The current timestamp (in seconds granularity) and
-         * is strictly increasing, each new call to hit() will have a timestamp greater than or equal to previous calls
+         *                  is strictly increasing, each new call to hit() will have a timestamp greater than or equal to previous calls
          */
         public void hit(int timestamp) {  //Runtime: O(1)
             queue.add(timestamp);
@@ -30,11 +33,13 @@ public class QueueApproaches {
 
         /**
          * Return the number of hits in the past 5 minutes.
+         *
          * @param timestamp - The current timestamp (in seconds granularity).
          */
         public int getHits(int timestamp) {//Runtime: O(n) where n is the number of hits we are removing from the queue.
             // Remove hits that are older than 5 minutes
-            while (!queue.isEmpty() && queue.peek() <= timestamp - 300) {  // 300 because 5 minutes means 300 seconds.
+            int oldTimestamp = timestamp - 300;  // 300 because 5 minutes means 300 seconds.
+            while (!queue.isEmpty() && queue.peek() <= oldTimestamp) {
                 queue.poll();
             }
 
@@ -62,37 +67,40 @@ public class QueueApproaches {
         record Data(double value, long timestamp) {
         }
 
-        private final Queue<Data> dataQueue;
+        private final Queue<Data> queue;
         private final long windowSizeInMillis;
 
         public TimeBasedMovingAverage(long windowSizeInMillis) {
-            this.dataQueue = new LinkedList<>();
+            this.queue = new LinkedList<>();
             this.windowSizeInMillis = windowSizeInMillis;
         }
 
+        /**
+         * Add a new data point with the specified value and associate it with the current system timestamp.
+         *
+         * @param value
+         */
         public void add(double value) {
             long currentTime = System.currentTimeMillis();
-
-            // Remove data points that are outside the time window
-            while (!dataQueue.isEmpty() && currentTime - dataQueue.peek().timestamp() > windowSizeInMillis) {
-                dataQueue.poll();
-            }
-
             // Add the new data point
-            dataQueue.offer(new Data(value, currentTime));
+            queue.offer(new Data(value, currentTime));
         }
 
         public double getAverage() {
-            if (dataQueue.isEmpty()) {
-                return 0.0; // or return NaN, throw an exception, or handle this case as appropriate
+            long currentTime = System.currentTimeMillis();
+            long oldTimestamp = currentTime - windowSizeInMillis;
+
+            // Remove data points that are outside the time window
+            while (!queue.isEmpty() && queue.peek().timestamp < oldTimestamp) {
+                queue.poll();
             }
 
             double sum = 0;
-            for (Data data : dataQueue) {
+            for (Data data : queue) {
                 sum += data.value();
             }
 
-            return sum / dataQueue.size();
+            return sum / queue.size();
         }
 
         /*
@@ -109,6 +117,89 @@ public class QueueApproaches {
             System.out.println(movingAverage.getAverage()); // Calculates average of data points within the window
 
         */
+    }
+
+    /**
+     * Implement a key-value store where entries expire after a certain configured expiration time.
+     * The data will be received in increasing timestamps, allowing us to manage the expiration effectively.
+
+     * This question is exactly same as above.
+     * Here they are asking to implement a map, so maintain a map in addition to the queue.
+     */
+    static class TimeBasedKeyValueStore {
+        static class Entry {
+            String key;
+            double value;
+            long timestamp;
+
+            Entry(String key, double value, long timestamp) {
+                this.key = key;
+                this.value = value;
+                this.timestamp = timestamp;
+            }
+        }
+
+        Map<String, Entry> map;
+        Queue<Entry> queue;
+        long windowSizeInMillis;
+
+        public TimeBasedKeyValueStore(long windowSizeInMillis) {
+            map = new HashMap<>();
+            queue = new LinkedList<>();
+            this.windowSizeInMillis = windowSizeInMillis;
+        }
+
+        public void put(String key, double value) {
+            long currentTime = System.currentTimeMillis();
+
+            Entry entry = new Entry(key, value, currentTime);
+            queue.add(entry);
+            map.put(key, entry);
+        }
+
+        /**
+         * Retrieve a value by key, removing it if expired
+         * @param key
+         * @return
+         */
+        public Double get(String key) {
+            cleanupOldEntries();
+            if (map.containsKey(key)) {
+                return map.get(key).value;
+            }
+            return null;
+        }
+
+        /**
+         * Get the average of all non-expired values
+         * @return
+         */
+        public double getAverage() {
+            cleanupOldEntries();
+
+            double sum = 0;
+            for (Entry entry : queue) {
+                sum += entry.value;
+            }
+
+            return sum / queue.size();
+        }
+
+        private void cleanupOldEntries() {
+            long currentTime = System.currentTimeMillis();
+            long oldTime = currentTime - windowSizeInMillis;
+
+            while (!queue.isEmpty() && queue.peek().timestamp < oldTime) {
+                Entry oldEntry = queue.remove();
+                map.remove(oldEntry.key);
+            }
+        }
+
+        /*
+          If there is a need to include update and delete methods, do them as follows.
+          For update, remove the entry with this key. Create a new entry with the current timestamp and store them.
+          For delete, delete the entry from both map and queue.
+         */
     }
 
     /**
@@ -131,6 +222,9 @@ public class QueueApproaches {
             sum += val;
 
             if (queue.size() > windowSize) {
+                // The queue size can increase by at most one element with each call to next().
+                // This is the only method where we add an element and find the average at the same time.
+                // So the if condition is enough instead of a while loop.
                 int firstVal = queue.remove();
                 sum -= firstVal;
             }

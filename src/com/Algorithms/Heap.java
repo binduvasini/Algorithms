@@ -351,8 +351,9 @@ public class Heap {
                 if (!maxHeap.isEmpty()) {
                     char mostOccurChar = maxHeap.poll();
                     map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
-                    if (map.get(mostOccurChar) >= 1)
+                    if (map.get(mostOccurChar) >= 1) {
                         list.add(mostOccurChar); //Add to the list only when this character's occurrence is at least 1.
+                    }
                 }
                 count += 1;
                 if (maxHeap.isEmpty() && list.isEmpty())
