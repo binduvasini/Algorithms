@@ -6,26 +6,44 @@ public class GraphQuestions {
 
     Map<Integer, List<Integer>> graph = new HashMap<>();
 
-    int bfsShortestPath(Integer source, Integer destination) {
-        int[] distance = new int[50];  //We don't need visited array cuz we can track everything in distance array
-        Arrays.fill(distance, -1);  //When we don't find a node, return -1
+    /**
+     * Find the shortest path from source to destination using BFS.
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    public int bfsShortestPath(Integer source, Integer destination) {
         Queue<Integer> queue = new LinkedList<>();
         queue.add(source);
-        distance[source] = 0;  //distance to get to the source is 0
+
+        Set<Integer> visited = new HashSet<>();
+        visited.add(source);
+
+        int distance = 0;
+
         while (!queue.isEmpty()) {
-            Integer gn = queue.remove();
-            if (gn.equals(destination))
-                break;
-            if (graph.containsKey(gn)) {
-                for (Integer neighbor : graph.get(gn)) {
-                    if (distance[neighbor] == -1) {
-                        queue.add(neighbor);
-                        distance[neighbor] = distance[gn] + 1;
+            int levelSize = queue.size();
+            distance += 1;
+
+            for (int i = 0; i < levelSize; i++) {
+                Integer node = queue.remove();
+
+                if (graph.containsKey(node)) {
+                    for (Integer neighbor : graph.get(node)) {
+                        if (neighbor.equals(destination)) {
+                            return distance;
+                        }
+                        if (!visited.contains(neighbor)) {
+                            queue.add(neighbor);
+                            visited.add(neighbor);
+                        }
                     }
                 }
             }
+
         }
-        return distance[destination];
+        return -1;
     }
 
     /**
@@ -41,7 +59,9 @@ public class GraphQuestions {
      * and to take course 0 you should also have finished course 1. So it is impossible.
      */
 //    graph = new HashMap<>();
-    public boolean canFinishCourses(int numCourses, int[][] courses) {
+    public boolean canFinishCourses(int[][] courses) {
+        // Runtime: O(V+E), where V is the number of courses and E is the number of prerequisites.
+        // We go through each course and its prerequisites once.
         for (int[] course : courses) {
             graph.putIfAbsent(course[1], new ArrayList<>());
             graph.get(course[1]).add(course[0]);
@@ -64,7 +84,7 @@ public class GraphQuestions {
     // visited - node has been added to the output. We never have to visit this node again.
     // visiting - node has not been added to the output. We are visiting and moving forward to the next node.
     //              This helps us determine if there is a cycle.
-    // unvisited - node has not been added to the output and we don't know if there is a cycle.
+    // unvisited - node has not been added to the output, and we don't know if there is a cycle.
     private boolean hasCycle(Integer course, Set<Integer> visited, Set<Integer> visiting) {
         visited.add(course);
         visiting.add(course);
@@ -77,6 +97,9 @@ public class GraphQuestions {
                 }
             }
         }
+        // We need to clear this node from the visiting set.
+        // It clears the current recursive path once the node is fully processed.
+        // It ensures that the visiting set only reflects the active path in the current recursion.
         visiting.remove(course);
         return false;
     }
@@ -96,21 +119,21 @@ public class GraphQuestions {
      * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
      */
 //    graph = new HashMap<>();
-    Deque<Integer> courseOrder = new ArrayDeque<>();
-    public int[] findOrderOfCourses(int numCourses, int[][] prerequisites) {
+    Deque<Integer> courseOrder = new ArrayDeque<>(); // Stack
+    public int[] findOrderOfCourses(int numCourses, int[][] courses) {
         for (int i = 0; i < numCourses; i++) {  //This is to cover test case: numCourses = 2, []. Output: [1,0]
             graph.putIfAbsent(i, new ArrayList<>());
         }
-        for (int[] prerequisite : prerequisites) {
-            graph.putIfAbsent(prerequisite[1], new ArrayList<>());
-            graph.get(prerequisite[1]).add(prerequisite[0]);
+        for (int[] course : courses) {
+            graph.putIfAbsent(course[1], new ArrayList<>());
+            graph.get(course[1]).add(course[0]);
         }
 
         //Use topological sort.
         Set<Integer> visited = new HashSet<>();
         Set<Integer> visiting = new HashSet<>();
-        for (Integer prereq : graph.keySet()) {
-            if (!visited.contains(prereq) && hasCycle1(prereq, visited, visiting)) {
+        for (Integer course : graph.keySet()) {
+            if (!visited.contains(course) && hasCycle1(course, visited, visiting)) {
                 return new int[0];  //return an empty array because there is a cycle.
             }
         }
@@ -118,21 +141,21 @@ public class GraphQuestions {
         return courseOrder.stream().mapToInt(i -> i).toArray();
     }
 
-    private boolean hasCycle1(Integer prereq, Set<Integer> visited, Set<Integer> visiting) {
-        visited.add(prereq);
-        visiting.add(prereq); //To detect a cycle
-        if (graph.containsKey(prereq)) {
+    private boolean hasCycle1(Integer course, Set<Integer> visited, Set<Integer> visiting) {
+        visited.add(course);
+        visiting.add(course); //To detect a cycle
+        if (graph.containsKey(course)) {
             //We need to check this cuz we come back here during recursion with the actual course of prerequisites
-            for (Integer course : graph.get(prereq)) {
-                if (!visited.contains(course) && hasCycle1(course, visited, visiting)) {
+            for (Integer prereq : graph.get(course)) {
+                if (!visited.contains(prereq) && hasCycle1(prereq, visited, visiting)) {
                     return true;
-                } else if (visiting.contains(course)) {
+                } else if (visiting.contains(prereq)) {
                     return true;
                 }
             }
         }
-        visiting.remove(prereq);
-        courseOrder.push(prereq); //Store the sorted elements
+        visiting.remove(course);
+        courseOrder.push(course); //Store the sorted elements
         return false;
     }
 
@@ -149,7 +172,7 @@ public class GraphQuestions {
      * @param dislikes
      * @return
      */
-    public boolean possibleBipartition(int N, int[][] dislikes) {
+    public boolean possibleBiPartition(int N, int[][] dislikes) {
         Map<Integer, List<Integer>> graph = new HashMap<>();
         for (int[] dislike : dislikes) {
             graph.putIfAbsent(dislike[0], new ArrayList<>());

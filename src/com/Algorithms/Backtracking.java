@@ -344,6 +344,7 @@ public class Backtracking {
      * @return
      */
     public List<List<Integer>> permute(int[] nums) {
+        //Runtime: O(n!)
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> permutation = new ArrayList<>();
         Set<Integer> visited = new HashSet<>();
