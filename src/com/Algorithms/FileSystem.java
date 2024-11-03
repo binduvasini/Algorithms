@@ -2,19 +2,19 @@ package com.Algorithms;
 
 import java.util.*;
 
-class File {  //Similar to TrieNode
-    String content;
-    Map<String, File> children;  //<directory-name, file>
-    boolean isFile;
-
-    public File() {
-        this.content = "";
-        this.children = new HashMap<>();
-        this.isFile = false;
-    }
-}
-
 public class FileSystem {  //Similar to Trie
+    static class File {  //Similar to TrieNode
+        String content;
+        Map<String, File> children;  //<directory-name, file>
+        boolean isFile;
+
+        public File() {
+            this.content = "";
+            this.children = new HashMap<>();
+            this.isFile = false;
+        }
+    }
+
     File root;
 
     public FileSystem() {

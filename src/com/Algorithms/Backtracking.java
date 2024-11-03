@@ -1,13 +1,10 @@
 package com.Algorithms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Backtracking {
     /**
-     * Given a set of distinct integers, nums, return all possible subsets (the power set).
+     * Given a set of distinct integers, return all possible subsets (the power set).
      * The solution set must not contain duplicate subsets.
      * Input: nums = [1,2,3]
      * Output:
@@ -176,25 +173,26 @@ public class Backtracking {
      * @param n
      * @return
      */
-    private List<String> result = new LinkedList<>();
-    public List<String> generateParenthesis(int n) {
-        backtrack(n, "", 0, 0);
+    public List<String> generateParentheses(int n) {
+        // Not a backtrack problem. More of a recursion.
+        List<String> result = new ArrayList<>();
+        parentheses(n, "", 0, 0, result);
         return result;
     }
 
-    private void backtrack(int n, String str, int open, int close) {
-        if (str.length() == 2 * n) {  //When the length of the current string reaches 2 * n (which means it's complete),
-            // add it to the result list.
+    private void parentheses(int n, String str, int open, int close, List<String> result) {
+        if (str.length() == 2 * n) {
+            //When the length of the current string reaches 2*n (which means it's complete), add it to the result list.
             result.add(str);
             return;
         }
 
         if (open < n) {
-            backtrack(n, str + "(", open + 1, close);
+            parentheses(n, str + "(", open + 1, close, result);
         }
 
         if (close < open) {
-            backtrack(n, str + ")", open, close + 1);
+            parentheses(n, str + ")", open, close + 1, result);
         }
     }
 
@@ -215,27 +213,33 @@ public class Backtracking {
      * @param target
      * @return
      */
-    List<List<Integer>> resultList = new ArrayList<>();
-
     public List<List<Integer>> combinationSumRepeatAllowed(int[] nums, int target) {
-        List<Integer> tmp = new ArrayList<>();
-        Arrays.sort(nums);
-        combinationSumRepeatAllowed(nums, target, tmp, 0);
-        return resultList;
+        // Runtime: O(2^target)
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> combination = new ArrayList<>();
+        combinationSumRepeatAllowed(nums, target, combination, 0, result);
+        return result;
     }
 
-    private void combinationSumRepeatAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
-        if (target < 0)
+    private void combinationSumRepeatAllowed(
+            int[] nums, int target, List<Integer> combination, int pointer, List<List<Integer>> result
+    ) {
+        if (target == 0) {  // Base case
+            // If the target becomes zero, we've found a valid combination.
+            result.add(new ArrayList<>(combination));
             return;
-
-        if (target == 0)
-            resultList.add(new ArrayList<>(tmp));
+        }
 
         for (int i = pointer; i < nums.length; i++) {
-            tmp.add(nums[i]);
-            combinationSumRepeatAllowed(nums, target - nums[i], tmp, i);  //We consider the same element
-            // over and over. That's why we pass the same index to the recursion.
-            tmp.remove(tmp.size() - 1);
+            // If the candidate exceeds the target, skip it (not necessary for combinations)
+            if (nums[i] > target) {
+                continue;
+            }
+            combination.add(nums[i]);  // Choose the candidate
+            combinationSumRepeatAllowed(nums, target - nums[i], combination, i, result);
+            // We consider the same element over and over.
+            // That's why we pass the same index to the recursion.
+            combination.remove(combination.size() - 1);
         }
     }
 
@@ -256,29 +260,30 @@ public class Backtracking {
      * @param target
      * @return
      */
-//    List<List<Integer>> resultList = new ArrayList<>();
-
     public List<List<Integer>> combinationSumRepeatNotAllowed(int[] nums, int target) {
-        List<Integer> tmp = new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> combination = new ArrayList<>();
         Arrays.sort(nums);
-        combinationSumRepeatNotAllowed(nums, target, tmp, 0);
-        return resultList;
+        combinationSumRepeatNotAllowed(nums, target, 0, combination, result);
+        return result;
     }
 
-    private void combinationSumRepeatNotAllowed(int[] nums, int target, List<Integer> tmp, int pointer) {
+    private void combinationSumRepeatNotAllowed(
+            int[] nums, int target, int pointer, List<Integer> combination, List<List<Integer>> result
+    ) {
         if (target < 0)
             return;
 
         if (target == 0)
-            resultList.add(new ArrayList<>(tmp));
+            result.add(new ArrayList<>(combination));
 
         for (int i = pointer; i < nums.length; i++) {
             if (i > pointer && nums[i] == nums[i - 1])
                 continue;
 
-            tmp.add(nums[i]);
-            combinationSumRepeatNotAllowed(nums, target - nums[i], tmp, i + 1);
-            tmp.remove(tmp.size() - 1);
+            combination.add(nums[i]);
+            combinationSumRepeatNotAllowed(nums, target - nums[i], i + 1, combination, result);
+            combination.remove(combination.size() - 1);
         }
     }
 
@@ -328,6 +333,41 @@ public class Backtracking {
         }
 
         return false;
+    }
+
+    /**
+     * Given an array nums of distinct integers, return all possible permutations of a given array of distinct integers.
+     * Input: [1,2,3]
+     * Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> permutation = new ArrayList<>();
+        Set<Integer> visited = new HashSet<>();
+
+        permute(nums, visited, permutation, result);
+        return result;
+    }
+
+    private void permute(int[] nums, Set<Integer> visited, List<Integer> permutation, List<List<Integer>> result) {
+        if (permutation.size() == nums.length) {
+            result.add(new ArrayList<>(permutation));
+            return;
+        }
+
+        for (int num : nums) {
+            if (visited.contains(num)) {
+                continue;
+            }
+            permutation.add(num);
+            visited.add(num);
+            permute(nums, visited, permutation, result);
+            visited.remove(num);
+            permutation.remove(permutation.size() - 1);
+        }
     }
 
     /**

@@ -113,8 +113,10 @@ public class Matrix {
     public boolean isValidSudoku(char[][] board) {
         Set<String> set = new HashSet<>();
 
-        for (int r = 0; r < board.length; r++) {
-            for (int c = 0; c < board[r].length; c++) {
+        // This is a single traversal of the board.
+        // We look at each cell only once performing checks and adding to the set in one pass.
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
                 char num = board[r][c];
 
                 if (num != '.') {  //empty cell

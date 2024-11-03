@@ -6,20 +6,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-class TrieNode {
-    Map<Character, TrieNode> children;
-    boolean isWord;
-
-    public TrieNode() {
-        this.children = new HashMap<>();
-        this.isWord = false;
-    }
-}
-
 /**
  * If the characters are lowercase letters, we can simply use an array of size 26.
  */
 public class Trie {
+    static class TrieNode {
+        Map<Character, TrieNode> children;
+        boolean isWord;
+
+        public TrieNode() {
+            this.children = new HashMap<>();
+            this.isWord = false;
+        }
+    }
+
     TrieNode root;
 
     public Trie() {
@@ -35,7 +35,7 @@ public class Trie {
      *
      * @param word
      */
-    public void insert(String word) {
+    public void add(String word) {
         TrieNode current = root;
         for (char c : word.toCharArray()) {
             current.children.putIfAbsent(c, new TrieNode());
@@ -52,16 +52,18 @@ public class Trie {
      * Otherwise, return false.
      * Repeat until the entire word is traversed.
      * In the end, return the current node's isWord boolean.
+
+     * This works only for the exact character match. To handle wildcard matches, incorporate recursion / backtracking.
      *
      * @param word
      * @return whether the trie contains this word.
      */
     public boolean contains(String word) {
         TrieNode current = root;
-        for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            if (!current.children.containsKey(c))
+        for (char c : word.toCharArray()) {
+            if (!current.children.containsKey(c)) {
                 return false;
+            }
             current = current.children.get(c);
         }
         return current.isWord;
@@ -69,13 +71,55 @@ public class Trie {
 
     public boolean startsWith(String prefix) {
         TrieNode current = root;
-        for (int i = 0; i < prefix.length(); i++){
-            char c = prefix.charAt(i);
-            if (!current.children.containsKey(c))
+        for (char c : prefix.toCharArray()) {
+            if (!current.children.containsKey(c)) {
                 return false;
+            }
             current = current.children.get(c);
         }
         return true;
+    }
+
+    /**
+     * Search a word in the Trie with support for '.' wildcard
+     *
+     * @param word
+     * @return
+     */
+    public boolean search(String word) {
+        return searchInNode(word, 0, root);
+    }
+
+    private boolean searchInNode(String word, int index, TrieNode node) {
+        if (index == word.length()) {
+            return node.isWord;
+        }
+
+        TrieNode current = node;
+
+        for (int i = index; i < word.length(); i++) {
+            char c = word.charAt(i);
+
+            if (c == '.') {
+                // Try each child node
+                for (Character key : node.children.keySet()) {
+                    if (searchInNode(word, i + 1, node.children.get(key))) {
+                        return true;
+                    }
+                }
+                return false; // No match found with any child node
+                // Suppose the Trie has the words cat, bat, and rat, and searching for the word c.tz will return false.
+            } else {
+                // Exact character match
+                if (!current.children.containsKey(c)) {
+                    return false; // Character not found
+                }
+                current = current.children.get(c);
+            }
+        }
+
+        // Check if the last node is the end of a word
+        return current.isWord;
     }
 
     /**
@@ -117,7 +161,6 @@ public class Trie {
         List<String> resultList = new LinkedList<>();
         allWordsStartingWith(resultList, current, prefix);
         System.out.println(Arrays.toString(resultList.toArray()));
-
     }
 
     private void allWordsStartingWith(List<String> resultList, TrieNode current, String word) {
@@ -146,13 +189,13 @@ public class Trie {
 
     public static void main(String[] args) {
         Trie trie = new Trie();
-        trie.insert("apple");
+        trie.add("apple");
         System.out.println(trie.contains("apple"));   // returns true
         System.out.println(trie.contains("app"));     // returns false
         System.out.println(trie.startsWith("app")); // returns true
-        trie.insert("app");
-        trie.insert("append");
-        trie.insert("appreciate");
+        trie.add("app");
+        trie.add("append");
+        trie.add("appreciate");
         System.out.println(trie.contains("app"));     // returns true
         trie.allWordsStartingWith("app");
     }

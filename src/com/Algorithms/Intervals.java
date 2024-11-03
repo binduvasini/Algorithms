@@ -1,10 +1,6 @@
 package com.Algorithms;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Intervals {
 
@@ -25,21 +21,72 @@ public class Intervals {
         List<int[]> result = new ArrayList<>();
         result.add(intervals[0]);
 
-        for (int[] interval : intervals) {
+        for (int[] curr : intervals) {
             int[] prev = result.get(result.size() - 1); //Returns the last element in the list
 
-            if (prev[1] >= interval[0]) {  //The end point of the previous interval is greater than or equal to the
+            if (prev[1] >= curr[0]) {  //The end point of the previous interval is greater than or equal to the
                 // start point of the current interval. Therefore, it needs to be merged.
-                result.get(result.size() - 1)[1] = Math.max(prev[1], interval[1]);
+                result.get(result.size() - 1)[1] = Math.max(prev[1], curr[1]);
             }
             else {
-                result.add(interval);
+                result.add(curr);
             }
         }
 
         return result.toArray(int[][]::new);  //This is to convert the ArrayList to array.
     }
 
+
+    /**
+     * Given an array of meeting time intervals consisting of start and end times,
+     * determine the minimum number of conference rooms required to hold all meetings.
+     * Input: [[0, 30], [5, 10], [15, 20]]
+     * Output: 2
+     *
+     * @param meetings
+     * @return
+     */
+    public int meetingRooms(int[][] meetings) {
+        Arrays.sort(meetings, Comparator.comparingInt(o -> o[0]));
+
+        // MinHeap represents the rooms.
+        // We store the end times of the meetings.
+        Queue<Integer> minHeap = new PriorityQueue<>();
+
+        for (int[] meeting : meetings) {
+            // The root of the minHeap gives the earliest ending meeting.
+            // Compare it with the current meeting's start time.
+            // Are we good to start the current meeting in this meeting room?
+            if (!minHeap.isEmpty() && minHeap.peek() <= meeting[0]) {
+                // The meeting has finished before the current meeting starts. So free up the room.
+                minHeap.poll();
+            }
+            minHeap.offer(meeting[1]);
+        }
+
+        return minHeap.size();
+    }
+    /**
+     * Given an array of meeting time intervals consisting of start and end times,
+     * determine if a person could attend all meetings without conflicts.
+     * Input = [[0, 30], [5, 10], [15, 20]]
+     * Output = false
+     *
+     * @param intervals
+     * @return
+     */
+    public boolean meetingWithoutConflicts(int[][] intervals) {
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+
+        for (int i = 1; i < intervals.length; i++) {
+            // If the previous interval's end time is greater than the current interval's start time, return false.
+            if (intervals[i - 1][1] > intervals[i][0]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
     /**
      * Given two lists of closed intervals, each list of intervals is pairwise disjoint and in sorted order.
      * Return the intersection of these two interval lists.
