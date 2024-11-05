@@ -215,7 +215,8 @@ public class BinaryMatrix {
         if (row < 0 || col < 0 || row >= grid.length || col >= grid[row].length) {
             return;
         }
-        if (grid[row][col] == '0') {
+
+        if (grid[row][col] == '0') {  //Base case
             return;
         }
 

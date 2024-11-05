@@ -221,23 +221,26 @@ public class ArrayQuestions {
      * @return
      */
     public int longestConsecutiveSequence(int[] nums) {
-        int currentLongest = 1, longest = 0;
+        // TreeSet automatically handles duplicates and sorts elements
         Set<Integer> set = new TreeSet<>();
 
         for (int num : nums) {  //Populate the TreeSet with all the elements
             set.add(num);
         }
 
+        int currentLongest = 1, longest = 0;
+
         for (int num : set) {
             if (set.contains(num + 1)) {
                 currentLongest += 1;
             }
-            else {  //if the TreeSet DOES NOT contain its previous number, a new sequence begins.
+            else {  //if the TreeSet DOES NOT contain the next number, a new sequence begins.
+                longest = Math.max(longest, currentLongest);
                 currentLongest = 1;
             }
-            longest = Math.max(longest, currentLongest);
         }
         return longest;
+        // O(n log n), where n is the number of elements in nums. O(log n) complexity is for each insertion in TreeSet.
     }
 
     /**

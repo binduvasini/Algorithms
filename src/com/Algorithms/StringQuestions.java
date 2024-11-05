@@ -687,6 +687,7 @@ public class StringQuestions {
     public String encode(List<String> words) {
         StringBuilder encoded = new StringBuilder();
         for (String word: words) {
+            // For each string, calculate its length and create an encoding in the format length#string
             encoded.append(word.length()).append('#').append(word);
         }
         return encoded.toString();
@@ -696,9 +697,9 @@ public class StringQuestions {
         List<String> decoded = new ArrayList<>();
         int i = 0;
 
-        while (i < str.length()) {  //look at the character one at a time.
-            //the first character we are looking at is an integer.
-            //the second character is a delimiter.
+        while (i < str.length()) {  // Iterate over the string.
+            // There is an integer followed by the delimiter.
+            // Find the position of the next '#' character.
             int delimiter = str.indexOf('#', i);  //the first delimiter after index i
             int wordLength = Integer.parseInt(str.substring(i, delimiter));
 

@@ -39,7 +39,7 @@ public class StackApproaches {
      * The Next Greater Number of a number x is the first greater number to its traversing-order next in the array,
      * which means you could search circularly to find its next greater number.
      * If it doesn't exist, output -1 for this number.
-
+     * <p>
      * Example 1:
      * Input: [1,2,1]
      * Output: [2,-1,2]
@@ -74,7 +74,7 @@ public class StackApproaches {
     /**
      * Given a string s containing just the characters '(', ')', '{', '}', '[' and ']',
      * determine if the input string is valid.
-
+     * <p>
      * An input string is valid if:
      * Open brackets are closed by the same type of brackets.
      * Open brackets are closed in the correct order.
@@ -85,8 +85,7 @@ public class StackApproaches {
      */
     public boolean isValidParentheses(String s) {
         Deque<Character> stack = new ArrayDeque<>();
-        for (char c : s.toCharArray())
-        {
+        for (char c : s.toCharArray()) {
             if (c == '(')
                 stack.push(')');
             else if (c == '{')
@@ -170,11 +169,11 @@ public class StackApproaches {
     /**
      * StockSpanner collects the daily price quotes for a stock and
      * returns the span of that stock's price for the current day.
-
+     * <p>
      * The span of the stock's price in one day is the maximum number of consecutive days
      * (starting from that day and going backward)
      * for which the stock price was less than or equal to the price of that day.
-
+     * <p>
      * Example: If the prices of the stock in the last four days is [7,34,1,2] and the price of the stock today is 8,
      * then the span of today is 3
      * because starting from today, the price of the stock was less than or equal 8 for 3 consecutive days.
@@ -182,7 +181,7 @@ public class StackApproaches {
      * @param price
      * @return
      */
-    Deque<int[]> stack = new ArrayDeque<>();  //Store the spanValue and the current price as a pair.
+    Deque<int[]> stack = new ArrayDeque<>();  //[current price, spanValue] as a pair.
 
     public int stockSpanner(int price) {
         int span = 1;  //By default, the span is 1. Meaning this stock price has been there at least for 1 day.
@@ -280,5 +279,46 @@ public class StackApproaches {
         }
         return result;
     }
-}
 
+    /**
+     * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+     */
+    static class MinStack {
+        Deque<Integer> stack;
+        Deque<Integer> minStack;
+
+        public MinStack() {
+            stack = new ArrayDeque<>();
+            minStack = new ArrayDeque<>();
+        }
+
+        public void push(int val) {
+            // Push the element onto the main stack.
+            stack.push(val);
+
+            // Push the element to minStack only if it is the minimum so far.
+            // This ensures that minStack always contains the minimum element at the top.
+            if (minStack.isEmpty() || val <= minStack.peek()) {
+                minStack.push(val);
+            }
+        }
+
+        public void pop() {
+            // We are going to pop the element from the main stack.
+            // If the popped element is the same as the top of the minStack, pop this element from here as well.
+            if (stack.peek().equals(minStack.peek())) {
+                minStack.pop();
+            }
+
+            stack.pop();
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+            return minStack.peek();
+        }
+    }
+}

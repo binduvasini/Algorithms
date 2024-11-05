@@ -35,7 +35,7 @@ public class Heap {
     }
 
     /**
-     * Find kth largest element in an array.
+     * Find k-th largest element in an array.
      * The array may contain duplicates.
      * Solve using min heap.
      *
@@ -92,22 +92,21 @@ public class Heap {
      * @param k
      * @return
      */
-    public int[] maxSlidingWindow(int[] nums, int k) {
-        int start = 0, end = k - 1, ind = 0;
-        int[] result = new int[nums.length - k + 1];
+    public int[] maxInSlidingWindow(int[] nums, int k) {
+        int start = 0, end = k - 1;
+        List<Integer> result = new ArrayList<>();
 
         while (end < nums.length) {
             Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
             for (int i = start; i <= end; i++) {
                 maxHeap.add(nums[i]);
             }
-            result[ind] = maxHeap.remove();
+            result.add(maxHeap.remove());
             start += 1;
             end += 1;
-            ind += 1;
         }
 
-        return result;
+        return result.stream().mapToInt(i -> i).toArray();
     }
 
     /**
@@ -183,7 +182,7 @@ public class Heap {
     /**
      * Given an array and two integers k and x, return the k closest elements to x in the array.
      * An integer a is closer to x than an integer b if:
-     * <p>
+
      * |a - x| < |b - x|, or
      * |a - x| == |b - x| and a < b
      *
@@ -219,38 +218,36 @@ public class Heap {
      * void addNum(int num) - Add a number from the data stream to the data structure.
      * double findMedian() - Return the median of all elements so far.
      *
-     * @param array
-     * @return
      */
+    static class RunningMedian {
+        Queue<Integer> minHeap = new PriorityQueue<>();
+        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
 
-    Queue<Integer> minHeap = new PriorityQueue<>();
-    Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        void addNum(int num) {
+            if (minHeap.size() == 0 || num > minHeap.peek())
+                minHeap.add(num);
+            else
+                maxHeap.add(num);
+            balanceHeaps();
+        }
 
-    void addNum(int num) {
-        if (minHeap.size() == 0 || num > minHeap.peek())
-            minHeap.add(num);
-        else
-            maxHeap.add(num);
-        balanceHeaps();
-    }
+        private void balanceHeaps() {
+            if (minHeap.size() - maxHeap.size() > 1) {
+                maxHeap.add(minHeap.poll());
+            } else if (maxHeap.size() - minHeap.size() > 1) {
+                minHeap.add(maxHeap.poll());
+            }
+        }
 
-    private void balanceHeaps() {
-        if (minHeap.size() - maxHeap.size() > 1) {
-            maxHeap.add(minHeap.poll());
-        } else if (maxHeap.size() - minHeap.size() > 1) {
-            minHeap.add(maxHeap.poll());
+        public double findMedianInADataStream() {
+            if (minHeap.size() == maxHeap.size()) {
+                return (double) (minHeap.element() + maxHeap.element()) / 2;  //element() works like peek()
+            } else if (minHeap.size() > maxHeap.size()) {
+                return (double) minHeap.peek();
+            }
+            return (double) maxHeap.peek();
         }
     }
-
-    public double findMedianInADataStream() {
-        if (minHeap.size() == maxHeap.size()) {
-            return (double) (minHeap.element() + maxHeap.element()) / 2;  //element() works like peek()
-        } else if (minHeap.size() > maxHeap.size()) {
-            return (double) minHeap.peek();
-        }
-        return (double) maxHeap.peek();
-    }
-
     /**
      * You have a set which contains all positive integers [1, 2, 3, 4, 5, ...].
      * Implement the SmallestInfiniteSet class.
@@ -259,7 +256,7 @@ public class Heap {
      * void addBack(int num) adds a positive integer num back into the infinite set,
      * if it is not already in the infinite set.
      */
-    class SmallestInfiniteSet {
+    static class SmallestInfiniteSet {
         int min;
         Queue<Integer> minHeap;
 
