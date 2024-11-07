@@ -157,14 +157,14 @@ public class ArrayPrefixSum {
                 maxLen = i + 1;
             }
             else {
-                if (map.containsKey(prefixSum - 1)) {  //Check if we've seen this prefixSum before
-                    //We are looking for a subarray where the count of tiring days is
+                if (map.containsKey(prefixSum - 1)) {  // Check if we've seen this prefixSum before
+                    // We are looking for a subarray where the count of tiring days is
                     // greater than the count of non-tiring days. So we're checking prefixSum - 1.
                     int prefixIndex = map.get(prefixSum - 1);
                     maxLen = Math.max(maxLen, i - prefixIndex);
                 }
                 map.putIfAbsent(prefixSum, i);  //We are populating the map with prefixSum.
-                // So do it like without the else condition.
+                // So do it without the else condition.
             }
         }
         return maxLen;

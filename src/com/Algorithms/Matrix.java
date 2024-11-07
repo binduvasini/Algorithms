@@ -76,12 +76,13 @@ public class Matrix {
 
     /**
      * Given an integer target, return true if target is in matrix or false otherwise.
+     * Binary search.
      *
      * @param matrix
      * @param target
      * @return
      */
-    public boolean searchMatrix(int[][] matrix, int target) {
+    public boolean searchMatrix(int[][] matrix, int target) {  //Runtime: O(n + m)
         if (matrix.length == 0)
             return false;
 

@@ -78,9 +78,6 @@ public class StringQuestions {
      * @return
      */
     public String minimumWindowSubstring(String s, String t) {
-        if (s == null || t == null || s.length() < t.length())
-            return "";
-
         int start = 0, end = 0;
         int minWindStart = 0, minWindLen = Integer.MAX_VALUE;
         int tCount = 0;  //window size

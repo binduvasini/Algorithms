@@ -19,7 +19,7 @@ class FirstUniqueNumber {
     Set<Integer> set;
 
     public FirstUniqueNumber(int[] nums) {
-        queue = new LinkedHashSet<>();
+        queue = new LinkedHashSet<>();  //Ordered set
         set = new HashSet<>();
         for (int num : nums) {
             if (!set.contains(num) && !queue.contains(num))

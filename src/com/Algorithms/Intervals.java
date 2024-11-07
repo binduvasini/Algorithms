@@ -36,7 +36,6 @@ public class Intervals {
         return result.toArray(int[][]::new);  //This is to convert the ArrayList to array.
     }
 
-
     /**
      * Given an array of meeting time intervals consisting of start and end times,
      * determine the minimum number of conference rooms required to hold all meetings.

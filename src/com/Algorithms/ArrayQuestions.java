@@ -15,7 +15,7 @@ public class ArrayQuestions {
      * @return
      */
     public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();  // map<element, index>
 
         for (int i = 0; i < nums.length; i++) {
             int complement = target - nums[i];
@@ -308,8 +308,6 @@ public class ArrayQuestions {
      * @return
      */
     public int trapRainWater(int[] arr) {
-        if(arr.length == 0)
-            return 0;
         int n = arr.length;
 
         //Maintain two arrays left and right
@@ -327,7 +325,7 @@ public class ArrayQuestions {
             right[i] = Math.max(right[i + 1], arr[i]);
         }
 
-        for (int i = 0; i < n; i++) { //Scan the original array.
+        for (int i = 0; i < n; i++) { // Start a loop to store the result.
             // Subtract the minimum of left and right array’s elements with the current element
             water += Math.min(left[i], right[i]) - arr[i];
         }
@@ -368,7 +366,7 @@ public class ArrayQuestions {
     public int minSubArrayLen(int[] nums, int target) {
         int start = 0, end = 0;
         int sum = 0; //The sum at every window.
-        int minSubarrayLen = Integer.MAX_VALUE;  //A marker to store the shortest size.
+        int minLength = Integer.MAX_VALUE;  //A marker to store the shortest size.
 
         while (end < nums.length) {  //We move the end pointer until we find the required sum.
             sum += nums[end];
@@ -376,12 +374,12 @@ public class ArrayQuestions {
 
             while (sum >= target) {  //We found the sum greater or equal to target.
                 // Now we shrink the window we find the required the shortest size.
-                minSubarrayLen = Math.min(minSubarrayLen, end - start);
+                minLength = Math.min(minLength, end - start);
                 sum -= nums[start];
                 start += 1;
             }
         }
-        return minSubarrayLen == Integer.MAX_VALUE ? 0 : minSubarrayLen;
+        return minLength == Integer.MAX_VALUE ? 0 : minLength;
     }
 
     /**

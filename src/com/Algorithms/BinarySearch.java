@@ -1,5 +1,7 @@
 package com.Algorithms;
 
+import java.util.Arrays;
+
 public class BinarySearch {
     public int binarySearchIterative(int[] nums, int target) {
         int lo = 0;
@@ -24,7 +26,7 @@ public class BinarySearch {
      * @param target
      * @return
      */
-    public int searchRotatedSortedArrayWithoutDuplicates(int[] nums, int target) {
+    public int searchRotatedSortedArrayWithoutDuplicates(int[] nums, int target) {  //Runtime: O(log n)
         int lo = 0, hi = nums.length - 1;
 
         while (lo < hi) {
@@ -34,15 +36,21 @@ public class BinarySearch {
                 return mid;
 
             if (nums[lo] <= nums[mid]) { //the left side is sorted for sure.
-                if (target < nums[mid] && target >= nums[lo])
+                // This check is to see whether the left side of the array (from left to mid) is sorted.
+                // Now we need to search for the target here.
+                if (target < nums[mid] && target >= nums[lo]) {
                     hi = mid - 1;
-                else
+                }
+                else {
                     lo = mid + 1;
+                }
             } else { //the right side is sorted for sure.
-                if (target > nums[mid] && target <= nums[hi])
+                if (target > nums[mid] && target <= nums[hi]) {
                     lo = mid + 1;
-                else
+                }
+                else {
                     hi = mid - 1;
+                }
             }
         }
 
@@ -70,15 +78,16 @@ public class BinarySearch {
 
             int mid = lo + (hi - lo) / 2;
 
-            if (nums[mid] < nums[hi]) {  //The minimum is in the left half.
-                if (mid > lo && nums[mid] < nums[mid - 1])  //If the mid element is the minimum. Have a boundary check.
+            if (nums[mid] < nums[hi]) {  //The minimum is in the left half because the left half is sorted.
+                if (mid > lo && nums[mid] < nums[mid - 1]) {  //If the mid element is the minimum. Have a boundary check.
                     return nums[mid];
-                hi = mid - 1;
-            }
-            else {  //The minimum is in the right half.
-                if (mid < nums.length - 1 && nums[mid + 1] < nums[mid])  //If mid + 1 element is the minimum.
+                }
+                hi = mid - 1;  //Go left to find the minimum element.
+            } else {  //The minimum is in the right half.
+                if (mid < nums.length - 1 && nums[mid + 1] < nums[mid]) {  //If mid + 1 element is the minimum.
                     // Have a boundary check.
                     return nums[mid + 1];
+                }
                 lo = mid + 1;
             }
         }
@@ -114,8 +123,7 @@ public class BinarySearch {
                     lo = mid + 1;
                 else
                     hi = mid - 1;
-            }
-            else //if (nums[mid] == nums[hi]) is true,
+            } else //if (nums[mid] == nums[hi]) is true,
                 // either all elements between mid and hi are same or the target lies here.
                 hi -= 1;  //We need to consider every element one by one.
         }
@@ -147,13 +155,11 @@ public class BinarySearch {
                 if (mid > lo && nums[mid - 1] > nums[mid])
                     return nums[mid];
                 hi = mid - 1;
-            }
-            else if (nums[mid] > nums[hi]) {
+            } else if (nums[mid] > nums[hi]) {
                 if (mid < nums.length - 1 && nums[mid + 1] < nums[mid])
                     return nums[mid + 1];
                 lo = mid + 1;
-            }
-            else  //if (nums[mid] == nums[hi]) is true,
+            } else  //if (nums[mid] == nums[hi]) is true,
                 // either all elements between mid and hi are same or the minimum lies here.
                 hi -= 1;  //We need to consider every element one by one.
         }
@@ -179,8 +185,7 @@ public class BinarySearch {
             if (target == nums[mid]) {
                 firstIndex = mid;
                 hi = mid - 1;
-            }
-            else if (target < nums[mid])
+            } else if (target < nums[mid])
                 hi = mid - 1;
             else
                 lo = mid + 1;
@@ -194,14 +199,64 @@ public class BinarySearch {
             if (target == nums[mid]) {
                 lastIndex = mid;
                 lo = mid + 1;
-            }
-            else if (target < nums[mid])
+            } else if (target < nums[mid])
                 hi = mid - 1;
             else
                 lo = mid + 1;
         }
 
         return new int[]{firstIndex, lastIndex};
+    }
+
+    /**
+     * Determine the minimum eating speed for Koko so that she can eat all the bananas in h hours.
+     * Given an array piles where each element represents the number of bananas in a pile,
+     * find the minimum speed (bananas per hour) that Koko needs to eat all the bananas within h hours.
+     * piles = [3, 6, 7, 11]
+     * h = 8
+     *
+     * @param piles
+     * @param h
+     * @return
+     */
+    public int minEatingSpeed(int[] piles, int h) {
+        // Runtime: O(n×log(max(piles)))
+        // n is the number of piles.
+        // max(piles) is the size of the largest pile, which determines the range for the binary search.
+        int left = 1;
+        int right = Arrays.stream(piles).max().getAsInt();
+
+        while (left < right) { //We want to break the loop when left == right.
+            int mid = left + (right - left) / 2;
+            if (canFinish(piles, mid, h)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean canFinish(int[] piles, int rate, int h) {
+        // The rate here means the number of bananas Koko eats per hour.
+        int hours = 0;
+        for (int pile : piles) {
+            // Reverse Engineer. Calculate the hours and check if this within the expected hour given in the input.
+            hours += (pile + rate - 1) / rate;
+        }
+        return hours <= h;
+
+
+        //For that input above, if (speed) rate = 1,
+        // To eat 3 bananas from the first pile, it would take 3 hours.
+        // To eat 6 bananas from the second pile, it would take 6 hours... and so on.
+        // This is very slow. It will take 3 + 6 + 7 + 11 = 27 hours to finish all bananas. But the expected hour is 8.
+        // If speed = 2 (Koko eats 2 bananas per hour):
+        // To eat 3 bananas from the first pile, it would take 2 hours.
+        // To eat 6 bananas from the second pile, it would take 3 hours... and so on.
+        // This is also slow.
+        // The ideal speed is 4.
     }
 
     /**
@@ -221,11 +276,9 @@ public class BinarySearch {
             int sum = nums[lo] + nums[hi];
             if (sum == targetSum) {
                 return new int[]{lo, hi};
-            }
-            else if (sum < targetSum) {
+            } else if (sum < targetSum) {
                 lo = lo + 1;
-            }
-            else {
+            } else {
                 hi = hi - 1;
             }
         }
@@ -297,8 +350,8 @@ public class BinarySearch {
     public int findPeakElementIndex(int[] nums) {
         int lo = 0, hi = nums.length - 1;
 
-        while(lo <= hi){
-            if(lo == hi)
+        while (lo <= hi) {
+            if (lo == hi)
                 return lo;
 
             int mid = lo + (hi - lo) / 2;
@@ -316,9 +369,9 @@ public class BinarySearch {
      * Given an array nums with n objects colored red, white, or blue,
      * sort them in-place so that objects of the same color are adjacent,
      * with the colors in the order red, white, and blue.
-
+     * <p>
      * We will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
-
+     * <p>
      * Input: nums = [2,0,2,1,1,0]
      * Output: [0,0,1,1,2,2]
      *
@@ -332,12 +385,10 @@ public class BinarySearch {
                 swap(nums, lo, mid);
                 lo += 1;
                 mid += 1;
-            }
-            else if (nums[mid] == 2) {  //If it's 2, swap it with nums[hi]. decrement hi.
+            } else if (nums[mid] == 2) {  //If it's 2, swap it with nums[hi]. decrement hi.
                 swap(nums, hi, mid);
                 hi -= 1;
-            }
-            else {  //If it's 1, no swapping is required. increment mid.
+            } else {  //If it's 1, no swapping is required. increment mid.
                 mid += 1;
             }
         }
