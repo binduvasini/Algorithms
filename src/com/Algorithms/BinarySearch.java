@@ -260,6 +260,50 @@ public class BinarySearch {
     }
 
     /**
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int splitArray(int[] nums, int k) {
+        // Runtime: O(n log(sum - max)) where sum is the sum of all elements. max is the largest element in the array.
+        int left = Arrays.stream(nums).max().getAsInt();
+        int right = Arrays.stream(nums).sum();
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (canSplit(nums, k, mid)) {
+                right = mid;
+            }
+            else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean canSplit(int[] nums, int k, int maxSum) {
+        int currSum = 0;
+        int subArrays = 1;
+
+        for (int num : nums) {
+            currSum += num;
+
+            if (currSum > maxSum) {
+                subArrays += 1;
+                currSum = num;
+
+                if (subArrays > k) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Given a sorted array of integers nums and an integer targetSum,
      * return the indices of the two numbers such that they add up to target.
      * Input: nums = [2,7,11,15], target = 9

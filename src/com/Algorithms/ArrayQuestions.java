@@ -542,23 +542,27 @@ public class ArrayQuestions {
      * @return
      */
     public int longestOnesReplacingAtMostKZeros(int[] arr, int k) {
+        // Sliding window.
         int start = 0, end = 0;
-        int zeroCount = 0, longestOnesLength = 0;
+        int zeroCount = 0, longest = 0;
 
         while (end < arr.length) {
-            if (arr[end] == 0)
+            if (arr[end] == 0) {  //Expand the window
                 zeroCount += 1;
+            }
 
-            if (zeroCount > k) {
-                if (arr[start] == 0)
+            if (zeroCount > k) {  //Shrink the window.
+                if (arr[start] == 0) {  //Is the start element pointing at a zero?
+                    // Decrement the count as we are shrinking the window.
                     zeroCount -= 1;
+                }
                 start += 1;
             }
 
             end += 1;
-            longestOnesLength = Math.max(longestOnesLength, end - start);
+            longest = Math.max(longest, end - start);
         }
-        return longestOnesLength;
+        return longest;
     }
 
     /**

@@ -19,53 +19,80 @@ public class StringQuestions {
      * @param s
      * @return
      */
-    public int longestSubstringLengthWithoutRepeatingChars(String s) {
+    public int longestSubstringLengthWithoutRepeatingChars(String s) {  //Runtime: O(n)
         int start = 0, end = 0, longest = 0;
+//        int longestStart = 0;  // If we need the actual substring
         Set<Character> set = new HashSet<>();
         while (end < s.length()) {
             if (!set.contains(s.charAt(end))) {
-                set.add(s.charAt(end));  //If we add to the set without checking, it will replace the character
-                // as set contains only unique characters.
-                end += 1;
-            }
-            else {
+                //Check that this character is not a duplicate within the current window.
+                set.add(s.charAt(end));
+
+                // We are updating the longest here because this is the window that has unique characters.
+                if (end - start + 1 > longest) {
+                    longest = end - start + 1;
+//                    longestStart = start;
+                }
+            } else {  //Shrink the window.
                 set.remove(s.charAt(start));
                 start += 1;
             }
-            longest = Math.max(longest, (end - start));
+            end += 1;  // Increment the end pointer on each loop iteration as the window expands regularly.
         }
         return longest;
+//        return s.substring(longestStart, longestStart + longest);  //To return the actual substring.
     }
 
     /**
-     * Given two strings s and t, determine if they are isomorphic.
-     * Two strings s and t are isomorphic if the characters in s can be replaced to get t.
-     * All occurrences of a character must be replaced with another character while preserving the order of characters.
-     * No two characters may map to the same character, but a character may map to itself.
-     * Input: s = "foo", t = "bar"
-     * Output: false
+     * Given a string s that consists of only uppercase English letters,
+     * you can perform at most k operations on that string.
+     * <p>
+     * In one operation, you can choose any character of the string and
+     * change it to any other uppercase English character.
+     * <p>
+     * Find the length of the longest sub-string containing all repeating letters you can get
+     * after performing the above operations.
+     * Input:
+     * s = "AABABBA", k = 1
+     * Output:
+     * 4
      *
      * @param s
-     * @param t
+     * @param k
      * @return
      */
-    public boolean isIsomorphic(String s, String t) {
-        Map<Character, Character> map = new HashMap<>();
-        char[] sChar = s.toCharArray();
-        char[] tChar = t.toCharArray();
-        for (int i = 0; i < sChar.length; i++) {
-            if (map.containsKey(sChar[i])) {  //If the HashMap contains a character in s as key,
-                // the value should be the character in t.
-                if (map.get(sChar[i]) != tChar[i])
-                    return false;
-            } else {  //If the HashMap contains a character in t as value already,
-                // the key is not the character in s, so it is false.
-                if (map.containsValue(tChar[i]))
-                    return false;
-                map.put(sChar[i], tChar[i]);
+    public int longestSubstringLengthReplacingAtMostKChars(String s, int k) {
+        int start = 0, end = 0;
+
+        //We need to find the most occurring character so that we will replace its neighboring k characters.
+        Map<Character, Integer> frequencyMap = new HashMap<>();
+        int maxFreq = 0;
+        int longest = 0;
+
+        while (end < s.length()) {
+            //Expand the window.
+            char endChar = s.charAt(end);
+            frequencyMap.put(endChar, frequencyMap.getOrDefault(endChar, 0) + 1);
+
+            //Within the window, keep track of the frequency of the most frequently occurring character.
+            maxFreq = Math.max(maxFreq, frequencyMap.get(endChar));
+            end += 1;
+
+            // How many characters in the current window are different from the most frequent character.
+            int charsToReplace = end - start - maxFreq;
+
+            if (charsToReplace > k) {
+                // If the number of characters that need to be replaced exceeds k,
+                // we cannot make all characters in the window the same with just k replacements.
+                // So shrink the window.
+                char startChar = s.charAt(start);
+                frequencyMap.put(startChar, frequencyMap.get(startChar) - 1);
+                start += 1;
             }
+
+            longest = Math.max(longest, end - start);
         }
-        return true;
+        return longest;
     }
 
     /**
@@ -283,6 +310,7 @@ public class StringQuestions {
      * @return
      */
     int count = 0;
+
     public int findPalindromicSubstrings(String s) {
         for (int i = 0; i < s.length(); i++) {
             palindromes(s, i, i);   //Odd length palindromic substring.
@@ -299,7 +327,7 @@ public class StringQuestions {
             System.out.println(s.substring(left, right + 1));  //In case we need the substring
             count += 1;  //palindromic substring is found
             left -= 1;   //Expand to the left
-            right +=1;   //Expand to the right
+            right += 1;   //Expand to the right
         }
     }
 
@@ -311,6 +339,7 @@ public class StringQuestions {
      */
     int longestLen = Integer.MIN_VALUE;  //We need a variable to maintain the longest length at a given time.
     int start = 0;  //We will maintain another variable to hold the beginning position of the palindrome so that
+
     // we will update this start pointer when we update the longest length.
     // Because this position is going to be the starting point of the longest palindrome.
     public String longestPalindromicSubstring(String s) {
@@ -350,8 +379,7 @@ public class StringQuestions {
             if (set.contains(c)) {
                 len += 2;
                 set.remove(c);
-            }
-            else {
+            } else {
                 set.add(c);
             }
         }
@@ -361,6 +389,36 @@ public class StringQuestions {
         return len;
     }
 
+    /**
+     * Given two strings s and t, determine if they are isomorphic.
+     * Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+     * All occurrences of a character must be replaced with another character while preserving the order of characters.
+     * No two characters may map to the same character, but a character may map to itself.
+     * Input: s = "foo", t = "bar"
+     * Output: false
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        Map<Character, Character> map = new HashMap<>();
+        char[] sChar = s.toCharArray();
+        char[] tChar = t.toCharArray();
+        for (int i = 0; i < sChar.length; i++) {
+            if (map.containsKey(sChar[i])) {  //If the HashMap contains a character in s as key,
+                // the value should be the character in t.
+                if (map.get(sChar[i]) != tChar[i])
+                    return false;
+            } else {  //If the HashMap contains a character in t as value already,
+                // the key is not the character in s, so it is false.
+                if (map.containsValue(tChar[i]))
+                    return false;
+                map.put(sChar[i], tChar[i]);
+            }
+        }
+        return true;
+    }
 
     /**
      * Longest substring with at most k distinct characters.
@@ -401,74 +459,49 @@ public class StringQuestions {
     }
 
     /**
-     * Given a string s that consists of only uppercase English letters,
-     * you can perform at most k operations on that string.
-
-     * In one operation, you can choose any character of the string and
-     * change it to any other uppercase English character.
-
-     * Find the length of the longest sub-string containing all repeating letters you can get
-     * after performing the above operations.
-     * Input:
-     * s = "AABABBA", k = 1
-     * Output:
-     * 4
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-    public int LongestSubstringLengthReplacingAtMostKChars(String s, int k) {
-        int start = 0, end = 0;
-        int[] charFreq = new int[26];
-        int maxFreq = 0, longestLength = 0;
-
-        while (end < s.length()) {
-            int endChar = s.charAt(end) - 'A';
-            charFreq[endChar] += 1;
-            maxFreq = Math.max(maxFreq, charFreq[endChar]);
-            end += 1;
-
-            int windowSize = end - start - maxFreq;
-            if (windowSize > k) {
-                int startChar = s.charAt(start) - 'A';
-                charFreq[startChar] -= 1;
-                start += 1;
-            }
-
-            longestLength = Math.max(longestLength, end - start);
-        }
-        return longestLength;
-    }
-
-    /**
-     * Longest substring with at Least k repeating Characters
+     * Longest substring with at Least k repeating Characters.
+     * Return the length of the longest substring where every character appears at least k times.
      * Input: s = "ababbc", k = 2
      * Output: 5
      * The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
      *
-     * @param s
+     * @param str
      * @param k
      * @return
      */
-    public int longestSubstringAtLeastKRepeatingChars(String s, int k) {
-        return longest(s.toCharArray(), 0, s.length() - 1, k);
+    public int longestSubstringAtLeastKRepeatingChars(String str, int k) {
+        // This solution uses an entirely different approach.
+        // Divide and conquer.
+        return longest(str, 0, str.length() - 1, k);
     }
 
-    private int longest(char[] sChar, int start, int end, int k) {
-        int[] count = new int[26];
+    private int longest(String str, int start, int end, int k) {  //Recursion
+        // Traverse the string and count the frequency of each character.
+        // Split the string around characters that don't appear at least k times.
+        // These characters can never be part of a valid substring.
+        // For every character that doesn't meet the frequency requirement, split the string into smaller substrings.
+
+        if (end - start < k) {  // Base case: Substring too short to have a valid substring
+            return 0;
+        }
+
+        // Frequency map to count occurrences of each character in the current substring
+        Map<Character, Integer> count = new HashMap<>();
         for (int i = start; i <= end; i++) {
-            char c = sChar[i];
-            count[c - 'a'] += 1;
+            count.put(str.charAt(i), count.getOrDefault(str.charAt(i), 0) + 1);
         }
 
         for (int i = start; i <= end; i++) {
-            char c = sChar[i];
-            if (count[c - 'a'] > 0 && count[c - 'a'] < k) {  //Splitting criteria
-                return Math.max(longest(sChar, start, i - 1, k),
-                        longest(sChar, i + 1, end, k));
+            char c = str.charAt(i);
+            // Now, find a character that appears less than k times
+            if (count.get(c) > 0 && count.get(c) < k) {  //Splitting criteria
+                return Math.max(
+                        longest(str, start, i - 1, k),
+                        longest(str, i + 1, end, k)
+                );
             }
         }
+        // If all characters meet the condition, return the length of this substring
         return end - start + 1;
     }
 
@@ -639,8 +672,7 @@ public class StringQuestions {
         while (i < first.length()) {
             if (first.charAt(i) == last.charAt(i)) {
                 i += 1;
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -683,7 +715,7 @@ public class StringQuestions {
      */
     public String encode(List<String> words) {
         StringBuilder encoded = new StringBuilder();
-        for (String word: words) {
+        for (String word : words) {
             // For each string, calculate its length and create an encoding in the format length#string
             encoded.append(word.length()).append('#').append(word);
         }

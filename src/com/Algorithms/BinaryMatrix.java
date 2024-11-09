@@ -297,6 +297,46 @@ public class BinaryMatrix {
     }
 
     /**
+     * Change the color of a starting pixel and all connected pixels (up, down, left, right)
+     * that have the same initial color as the starting pixel to a new color.
+     *
+     * @param image
+     * @param sr
+     * @param sc
+     * @param color
+     * @return
+     */
+    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        //Both BFS and DFS have O(N) time complexity.
+        //BFS is more robust for large inputs because it avoids stack overflow issues common with deep recursion in DFS.
+        //DFS is preferred for simplicity in scenarios with limited image size, where stack overflow is not a concern.
+        int origColor = image[sr][sc];
+
+        if (origColor != color) {
+            dfs(image, sr, sc, origColor, color);
+        }
+
+        return image;
+    }
+
+    private void dfs(int[][] image, int r, int c, int origColor, int newColor) {
+        if (r < 0 || r >= image.length || c < 0 || c >= image[0].length) {
+            return;
+        }
+
+        if (image[r][c] != origColor) {
+            return;
+        }
+
+        image[r][c] = newColor;
+
+        dfs(image, r + 1, c, origColor, newColor);
+        dfs(image, r - 1, c, origColor, newColor);
+        dfs(image, r, c + 1, origColor, newColor);
+        dfs(image, r, c - 1, origColor, newColor);
+    }
+
+    /**
      * Given a 2D board containing 'X' and 'O' (the letter O), flip all 'O's to 'X's on the regions surrounded by 'X'.
      * You should ignore the boundaries (any 'O' on the border of the board must not be flipped to 'X').
      * Any 'O' that is connected to an 'O' on the border must not be flipped to 'X'.
