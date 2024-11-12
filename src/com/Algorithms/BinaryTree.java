@@ -845,31 +845,41 @@ public class BinaryTree {
      * Given a binary tree and a sum, find all root-to-leaf paths where each path's sum equals the given sum.
      *
      * @param root
-     * @param sum
+     * @param targetSum
      * @return
      */
-    List<List<Integer>> pathlist = new LinkedList<>();
 
-    public List<List<Integer>> pathSumRootToLeaf(TreeNode root, int sum) {
+    public List<List<Integer>> pathSumRootToLeaf(TreeNode root, int targetSum) {
+        // Do a DFS from root to all paths up to the leaves.
+        // Add the current node and check the sum when we reach the leaf.
+        // Backtrack.
+        // Backtracking is efficient and doesn’t require a restart from the root,
+        // as each recursive call manages the path to the current node independently.
+        // Runtime: O(n) where n is the number of nodes in the tree.
+        List<List<Integer>> result = new LinkedList<>();
         List<Integer> currentPath = new LinkedList<>();
-        findPathForSum(root, sum, currentPath);
-        return pathlist;
+        findPathForSum(root, targetSum, currentPath, result);
+        return result;
     }
 
-    public void findPathForSum(TreeNode node, int sum, List<Integer> currentPath) {
-        if (node == null)
+    public void findPathForSum(TreeNode node, int targetSum, List<Integer> currentPath, List<List<Integer>> result) {
+        if (node == null)  //Base case
             return;
 
+        // Add the current node to the path
         currentPath.add(node.data);
 
-        if (sum == 0 && isLeaf(node)) {  //If the sum becomes 0, and if it is a leaf node, then return
-            pathlist.add(new LinkedList<>(currentPath));
-            currentPath.remove(currentPath.size() - 1);
-            return;
+        // Checking targetSum == 0 would be incorrect as it does not account for the value of the final leaf node in the path.
+        // Therefore, we need to check whether the leaf node's value is equal to the targetSum
+        // because the targetSum gets reduced in each recursion.
+        if (root.left == null && root.right == null && root.data == targetSum) {
+            result.add(new LinkedList<>(currentPath));
         }
-        findPathForSum(node.left, sum - node.data, currentPath);
-        findPathForSum(node.right, sum - node.data, currentPath);
 
+        findPathForSum(node.left, targetSum - node.data, currentPath, result);
+        findPathForSum(node.right, targetSum - node.data, currentPath, result);
+
+        // Backtrack: remove the last element to explore other paths
         currentPath.remove(currentPath.size() - 1);
     }
 
@@ -879,31 +889,44 @@ public class BinaryTree {
      * but it must go downwards (traveling only from parent nodes to child nodes).
      *
      * @param root
-     * @param sum
+     * @param targetSum
      * @return
      */
-    int count = 0;
+    public int pathSum(TreeNode root, int targetSum) {
+        // Plain DFS considering each node as root and checking if the path contains the target sum.
+        // Backtracking is not ideal here because it leads to redundant recalculations,
+        // especially when paths can start from any node in the tree.
 
-    public void pathSumParentToChild(TreeNode root, int sum) {
-        if (root == null)
-            return;
+        // Runtime: O(N^2) in the worst case for an unbalanced tree,
+        // because for each node, findPaths could traverse the rest of the tree.
+        if (root == null) {
+            return 0;
+        }
 
-        countPath(root, sum);
+        // Total paths starting from the current root
+        int pathsFromRoot = countPath(root, targetSum);
 
-        pathSumParentToChild(root.left, sum);
-        pathSumParentToChild(root.right, sum);
+        // Paths starting from left and right children
+        int pathsOnLeft = pathSum(root.left, targetSum);
+        int pathsOnRight = pathSum(root.right, targetSum);
 
+        // Total paths is the sum of all three
+        return pathsFromRoot + pathsOnLeft + pathsOnRight;
     }
 
-    private void countPath(TreeNode node, int sum) {
-        if (node == null)
-            return;
+    private int countPath(TreeNode node, int targetSum) {
+        if (node == null) {
+            return 0;
+        }
 
-        if (sum == 0)
-            count += 1;
+        // Check if the current node completes the path with the target sum
+        int count = (node.data == targetSum) ? 1 : 0;
 
-        countPath(node.left, sum - node.data);
-        countPath(node.right, sum - node.data);
+        // Continue to find paths in the left and right subtrees with the updated sum
+        count += countPath(node.left, targetSum - node.data);
+        count += countPath(node.right, targetSum - node.data);
+
+        return count;
     }
 
     /**

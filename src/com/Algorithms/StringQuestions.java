@@ -46,16 +46,12 @@ public class StringQuestions {
     /**
      * Given a string s that consists of only uppercase English letters,
      * you can perform at most k operations on that string.
-     * <p>
      * In one operation, you can choose any character of the string and
      * change it to any other uppercase English character.
-     * <p>
      * Find the length of the longest sub-string containing all repeating letters you can get
      * after performing the above operations.
-     * Input:
      * s = "AABABBA", k = 1
-     * Output:
-     * 4
+     * Output: 4
      *
      * @param s
      * @param k
@@ -64,17 +60,17 @@ public class StringQuestions {
     public int longestSubstringLengthReplacingAtMostKChars(String s, int k) {
         int start = 0, end = 0;
 
-        //We need to find the most occurring character so that we will replace its neighboring k characters.
+        // We need to find the most occurring character so that we will replace its neighboring k characters.
         Map<Character, Integer> frequencyMap = new HashMap<>();
         int maxFreq = 0;
         int longest = 0;
 
         while (end < s.length()) {
-            //Expand the window.
+            // Expand the window.
             char endChar = s.charAt(end);
             frequencyMap.put(endChar, frequencyMap.getOrDefault(endChar, 0) + 1);
 
-            //Within the window, keep track of the frequency of the most frequently occurring character.
+            // Within the window, keep track of the frequency of the most frequently occurring character.
             maxFreq = Math.max(maxFreq, frequencyMap.get(endChar));
             end += 1;
 
@@ -92,6 +88,42 @@ public class StringQuestions {
 
             longest = Math.max(longest, end - start);
         }
+        return longest;
+    }
+
+    /**
+     * Find the length of the longest substring in a given string s that contains at most k distinct characters.
+     * s = "AABBCC", k = 2.
+     * Output: 4. (Either "AABB" or "BBCC")
+     *
+     * @param s
+     * @param k
+     * @return
+     */
+    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
+        int start = 0, end = 0;
+        Map<Character, Integer> frequencyMap = new HashMap<>();
+
+        int longest = 0;
+
+        while (end < s.length()) {
+            char endChar = s.charAt(end);
+            frequencyMap.put(endChar, frequencyMap.getOrDefault(endChar, 0) + 1);
+            end += 1;
+
+            // The size of the map represents the number of distinct characters in the current window.
+            // Has it exceeded k? Shrink the window.
+            if (frequencyMap.size() > k) {
+                char startChar = s.charAt(start);
+                frequencyMap.put(startChar, frequencyMap.get(startChar) - 1);
+                if (frequencyMap.get(startChar) == 0) {
+                    frequencyMap.remove(startChar);
+                }
+                start += 1;
+            }
+            longest = Math.max(longest, end - start);
+        }
+
         return longest;
     }
 
@@ -418,44 +450,6 @@ public class StringQuestions {
             }
         }
         return true;
-    }
-
-    /**
-     * Longest substring with at most k distinct characters.
-     * s = "AABBCC", k = 2.
-     * Output: 4. (Either "AABB" or "BBCC")
-     *
-     * @param s
-     * @param k
-     * @return
-     */
-    public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
-        int start = 0, end = 0;
-        int[] charFreq = new int[26];
-        int longestLength = 0;
-        Set<Integer> uniqueCharSet = new HashSet<>();
-
-        while (end < s.length()) {
-            int endChar = s.charAt(end) - 'A';
-            charFreq[endChar] += 1;
-            uniqueCharSet.add(endChar);
-
-            if (uniqueCharSet.size() > k) {
-                int startChar = s.charAt(start) - 'A';
-                int charToRemove = startChar;
-                while (startChar == charToRemove && charFreq[startChar] > 0) {
-                    //While loop because we need to decrement the char count that we are getting rid of.
-                    startChar = s.charAt(start) - 'A';
-                    charFreq[startChar] -= 1;
-                    start += 1;
-                }
-                uniqueCharSet.remove(charToRemove);
-            }
-            end += 1;
-            longestLength = Math.max(longestLength, end - start);
-        }
-
-        return longestLength;
     }
 
     /**
