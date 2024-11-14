@@ -128,57 +128,6 @@ public class StringQuestions {
     }
 
     /**
-     * Given two strings s and t, find the minimum window of t in s.
-     * Input: s = "ADOBECODEBANC", t = "ABC"
-     * Output: "BANC"
-     *
-     * @param s
-     * @param t
-     * @return
-     */
-    public String minimumWindowSubstring(String s, String t) {
-        int start = 0, end = 0;
-        int minWindStart = 0, minWindLen = Integer.MAX_VALUE;
-        int tCount = 0;  //window size
-
-        Map<Character, Integer> tMap = new HashMap<>();
-        for (char tChar : t.toCharArray()) {  //Count the characters of t and store it in the map
-            tMap.put(tChar, tMap.getOrDefault(tChar, 0) + 1);
-        }
-
-        while (end < s.length()) {
-            char endChar = s.charAt(end);
-            if (tMap.containsKey(endChar)) {
-                if (tMap.get(endChar) > 0) {  //Is this character present in t? Increment the window counter.
-                    tCount += 1;
-                }
-                tMap.put(endChar, tMap.get(endChar) - 1);  //We finished visiting this character.
-                // Reduce the count in the map.
-            }
-            end += 1;  //Move the end pointer until you find all the characters of t.
-
-            while (tCount == t.length()) {  //We formed the window.
-                char startChar = s.charAt(start);
-                if (tMap.containsKey(startChar)) {
-                    tMap.put(startChar, tMap.get(startChar) + 1);  //Now we are visiting this character.
-                    // Increase the count in the map.
-                    if (tMap.get(startChar) > 0) {
-                        tCount -= 1;  //make this substring window invalid
-                    }
-                }
-
-                if (minWindLen > end - start) {  //Update the minWindLen and the starting position of the substring.
-                    minWindLen = end - start;
-                    minWindStart = start;
-                }
-                start += 1;
-            }
-
-        }
-        return minWindLen == Integer.MAX_VALUE ? "" : s.substring(minWindStart, minWindStart + minWindLen);
-    }
-
-    /**
      * Given two strings s and t, find all the start indices of t's anagrams in s.
      * s: "abab" t: "ab"
      * Output: [0, 1, 2]
@@ -187,43 +136,56 @@ public class StringQuestions {
      * @param t
      * @return
      */
-    public List<Integer> findAnagrams(String s, String t) {
-        int start = 0, end = 0, tCount = 0;
-        List<Integer> anagramsList = new LinkedList<>();
+    public List<Integer> findAnagramIndices(String s, String t) {
+        int start = 0, end = 0;
+        List<Integer> result = new LinkedList<>();
 
-        Map<Character, Integer> tMap = new HashMap<>();
+        Map<Character, Integer> tFreqMap = new HashMap<>();
         for (char tc : t.toCharArray()) {
-            tMap.put(tc, tMap.getOrDefault(tc, 0) + 1);
+            tFreqMap.put(tc, tFreqMap.getOrDefault(tc, 0) + 1);
         }
 
+        int currentMatch = 0;
+        int requiredMatch = tFreqMap.size();
+
         while (end < s.length()) {
+            // Expand the window.
             char endChar = s.charAt(end);
-            if (tMap.containsKey(endChar)) {
-                if (tMap.get(endChar) > 0) {  //Is this character present in t? Increment the window counter.
-                    tCount += 1;
-                }
-                tMap.put(endChar, tMap.get(endChar) - 1);  //We finished visiting this character.
+            if (tFreqMap.containsKey(endChar)) {
+                tFreqMap.put(endChar, tFreqMap.get(endChar) - 1);  //We finished visiting this character.
                 // Reduce the count in the map.
+
+                // Check if this character's count has reached zero; if so, it's fully matched
+                if (tFreqMap.get(endChar) == 0) {
+                    currentMatch += 1;
+                }
             }
             end += 1;
 
-            while (tCount == t.length()) {
-                char startChar = s.charAt(start);
-                if (tMap.containsKey(startChar)) {
-                    tMap.put(startChar, tMap.get(startChar) + 1);  //Now we are visiting this character.
-                    // Increase the count.
-                    if (tMap.get(startChar) > 0) {
-                        tCount -= 1;  //make this substring window invalid
-                    }
+            // When the window size matches the length of t, we evaluate it
+            if (end - start == t.length()) {
+                // If `currentMatches` equals `requiredMatches`, we found an anagram
+                if (currentMatch == requiredMatch) {
+                    result.add(start);
                 }
 
-                if (end - start == t.length()) {
-                    anagramsList.add(start);
+                // As the window slides one character forward,
+                // update the character counts by adding the new character at the end of the window and
+                // removing the character at the beginning.
+                char startChar = s.charAt(start);
+                if (tFreqMap.containsKey(startChar)) {
+                    if (tFreqMap.get(startChar) == 0) {
+                        // If the character was fully matched (count was zero), decrement currentMatch
+                        currentMatch -= 1;
+                    }
+
+                    tFreqMap.put(startChar, tFreqMap.get(startChar) + 1);  //Now we are visiting this character.
+                    // Increase the count.
                 }
                 start += 1;
             }
         }
-        return anagramsList;
+        return result;
     }
 
     /**
@@ -235,17 +197,16 @@ public class StringQuestions {
      * @param t
      * @return
      */
-    public boolean isAnagram(String s, String t) {
-        Map<Character, Integer> sMap = new HashMap<>();
-        Map<Character, Integer> tMap = new HashMap<>();
+    public boolean isAnagram(String s, String t) {  // Runtime: O(n log n) due to the sorting operation.
+        // Convert strings to character arrays and sort them
+        char[] sArray = s.toCharArray();
+        char[] tArray = t.toCharArray();
 
-        for (char c : s.toCharArray())
-            sMap.put(c, sMap.getOrDefault(c, 0) + 1);
+        Arrays.sort(sArray);
+        Arrays.sort(tArray);
 
-        for (char c : t.toCharArray())
-            tMap.put(c, tMap.getOrDefault(c, 0) + 1);
-
-        return sMap.equals(tMap);
+        // Compare the sorted arrays
+        return Arrays.equals(sArray, tArray);
     }
 
     /**
@@ -267,6 +228,64 @@ public class StringQuestions {
         }
 
         return new ArrayList<>(map.values());
+    }
+
+    /**
+     * Given two strings s and t, find the minimum window of t in s.
+     * Input: s = "ADOBECODEBANC", t = "ABC"
+     * Output: "BANC"
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minimumWindowSubstring(String s, String t) {  // Runtime: O(s + t)
+        int start = 0, end = 0;
+
+        Map<Character, Integer> tFreqMap = new HashMap<>();
+        for (char tc : t.toCharArray()) {
+            tFreqMap.put(tc, tFreqMap.getOrDefault(tc, 0) + 1);
+        }
+
+        int currentMatch = 0;
+        int requiredMatch = tFreqMap.size();
+
+        int minWindLen = Integer.MAX_VALUE;  //This is crucial. Initialize to the maximum number possible.
+        int minWindStart = 0;
+
+        while (end < s.length()) {
+            char endChar = s.charAt(end);
+            if (tFreqMap.containsKey(endChar)) {
+                tFreqMap.put(endChar, tFreqMap.get(endChar) - 1);
+                if (tFreqMap.get(endChar) == 0) {
+                    currentMatch += 1;
+                }
+            }
+            end += 1;
+
+            while (currentMatch == requiredMatch) {
+                // While only works. Not an if. The while condition here checks if we have the required match.
+                // Using end - start == t.length() would restrict the solution to windows of a fixed length,
+                // which does not work for this problem.
+                // Instead, we need to maintain a flexible window size and
+                // focus on ensuring that all required characters are present in each candidate window.
+                if (end - start < minWindLen) {
+                    minWindLen = end - start;
+                    minWindStart = start;
+                }
+
+                char startChar = s.charAt(start);
+                if (tFreqMap.containsKey(startChar)) {
+                    if (tFreqMap.get(startChar) == 0) {
+                        currentMatch -= 1;
+                    }
+
+                    tFreqMap.put(startChar, tFreqMap.get(startChar) + 1);
+                }
+                start += 1;
+            }
+        }
+        return minWindLen == Integer.MAX_VALUE ? "" : s.substring(minWindStart, minWindStart + minWindLen);
     }
 
     /**

@@ -43,7 +43,7 @@ public class Heap {
      * @param k
      * @return
      */
-    public int kthLargestElementUsingMinHeap(int[] nums, int k) {
+    public int kthLargestElementUsingMinHeap(int[] nums, int k) {  // Runtime: O(n log k)
         Queue<Integer> minHeap = new PriorityQueue<>();
         for (int num : nums) {
             minHeap.add(num);
