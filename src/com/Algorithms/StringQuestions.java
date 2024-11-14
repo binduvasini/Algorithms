@@ -415,6 +415,38 @@ public class StringQuestions {
     }
 
     /**
+     * Given a string s. You can convert s to a palindrome by adding characters in front of it.
+     * Return the shortest palindrome you can find by performing this transformation.
+     * s = "abcd"
+     * Output: "dcbabcd"
+     *
+     * @param s
+     * @return
+     */
+    public String shortestPalindrome(String s) { // Runtime: O(n^2) due to substring comparisons.
+        // Kind of a two pointer approach.
+        // Reverse the string.
+        StringBuilder rev = new StringBuilder(s).reverse();
+
+        int n = s.length();
+
+        for (int i = 0; i < n; i++) {
+            // Compare each prefix of s with the corresponding suffix in rev.
+            String prefixOfS = s.substring(0, n - i);
+            String suffixOfRev = rev.substring(i);
+
+            // If the prefix of s matches the suffix of rev, it means the middle portion is a palindrome
+            if (prefixOfS.equals(suffixOfRev)) {
+                String unmatched = rev.substring(0, i);
+                // Add the missing portion (the first part of rev) to the front of s to make it a palindrome.
+                return unmatched + s;
+            }
+        }
+
+        return "";
+    }
+
+    /**
      * Given a string s which consists of lowercase or uppercase letters,
      * return the length of the longest palindrome that can be built with those letters.
      * Not a substring. Something like a subsequence.

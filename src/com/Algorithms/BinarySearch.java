@@ -220,7 +220,7 @@ public class BinarySearch {
      * @return
      */
     public int minEatingSpeed(int[] piles, int h) {
-        // Runtime: O(n×log(max(piles)))
+        // Runtime: O(n log(max(piles)))
         // n is the number of piles.
         // max(piles) is the size of the largest pile, which determines the range for the binary search.
         int left = 1;
@@ -242,13 +242,13 @@ public class BinarySearch {
         // The rate here means the number of bananas Koko eats per hour.
         int hours = 0;
         for (int pile : piles) {
-            // Reverse Engineer. Calculate the hours and check if this within the expected hour given in the input.
+            // Calculate the hours and check if it's within the expected hour given in the input.
             hours += (pile + rate - 1) / rate;
         }
         return hours <= h;
 
 
-        //For that input above, if (speed) rate = 1,
+        // For that input above, if (speed) rate = 1,
         // To eat 3 bananas from the first pile, it would take 3 hours.
         // To eat 6 bananas from the second pile, it would take 6 hours... and so on.
         // This is very slow. It will take 3 + 6 + 7 + 11 = 27 hours to finish all bananas. But the expected hour is 8.
@@ -260,6 +260,12 @@ public class BinarySearch {
     }
 
     /**
+     * Given an integer array nums and an integer k,
+     * split nums into k non-empty sub-arrays such that the largest sum of any subarray is minimized.
+     * nums = [7,2,5,10,8], k = 2
+     * Output: 18
+     * There are four ways to split nums into two sub-arrays.
+     * The best way is to split it into [7,2,5] and [10,8], where the largest sum among the two sub-arrays is only 18.
      *
      * @param nums
      * @param k
@@ -267,6 +273,12 @@ public class BinarySearch {
      */
     public int splitArray(int[] nums, int k) {
         // Runtime: O(n log(sum - max)) where sum is the sum of all elements. max is the largest element in the array.
+
+        // Set lower bound to the maximum value in the array
+        // (since at least one subarray will need that much).
+        // Set the upper bound to the sum of all elements (one subarray with all the elements).
+        // For each midpoint in this range,
+        // check if it’s possible to split the array into k sub-arrays with a sum not exceeding mid.
         int left = Arrays.stream(nums).max().getAsInt();
         int right = Arrays.stream(nums).sum();
 
@@ -281,6 +293,8 @@ public class BinarySearch {
         }
 
         return left;
+        // When low meets high, the binary search stops,
+        // and low is the minimum possible maximum sum that meets the requirements.
     }
 
     private boolean canSplit(int[] nums, int k, int maxSum) {
@@ -291,15 +305,18 @@ public class BinarySearch {
             currSum += num;
 
             if (currSum > maxSum) {
+                // When the running sum of the current subarray exceeds maxSum,
+                // it means the current subarray cannot hold any more values without exceeding the limit.
                 subArrays += 1;
-                currSum = num;
+                currSum = num;  // Start a new subarray with the current number
 
                 if (subArrays > k) {
+                    // If we exceed the allowed number of sub-arrays k,
+                    // the maxSum is too small to divide the array as required.
                     return false;
                 }
             }
         }
-
         return true;
     }
 
