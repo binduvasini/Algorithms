@@ -1,20 +1,20 @@
 package com.Algorithms;
 
-class RopeNode {
-    String data;
-    int weight;
-    RopeNode left;
-    RopeNode right;
-
-    public RopeNode(String data) {
-        this.data = data;
-        this.weight = data.length();
-        this.left = null;
-        this.right = null;
-    }
-}
-
 public class Rope {
+
+    static class RopeNode {
+        String data;
+        int weight;
+        RopeNode left;
+        RopeNode right;
+
+        public RopeNode(String data) {
+            this.data = data;
+            this.weight = data.length();
+            this.left = null;
+            this.right = null;
+        }
+    }
 
     RopeNode root;
 

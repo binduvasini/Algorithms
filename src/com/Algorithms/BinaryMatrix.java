@@ -4,75 +4,82 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class BinaryMatrix {
-    static class Node {
-        int row;
-        int col;
-        int dist;
 
-        public Node(int r, int c, int dist) {
-            this.row = r;
-            this.col = c;
-            this.dist = dist;
-        }
-    }
-
-    static int shortestPathInABinaryMatrixUsingNodeClass(int[][] matrix, int[] source, int[] dest) {
-        LinkedList<Node> queue = new LinkedList<>();
-
-        int m = matrix.length;
-        int n = matrix[0].length;
-
-        boolean[][] visited = new boolean[m][n];
-
-        queue.add(new Node(source[0], source[1], 0));
-        visited[source[0]][source[1]] = true;
-
-        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        while (!queue.isEmpty()) {
-            Node node = queue.remove();
-
-            if (node.row == dest[0] && node.col == dest[1])
-                return node.dist;
-
-            for (int[] d : directions) {
-                int r = node.row + d[0];
-                int c = node.col + d[1];
-
-                if (r < 0 || r >= m || c < 0 || c >= n)
-                    continue;
-
-                if (matrix[r][c] == 1 && !visited[r][c]) {
-                    queue.add(new Node(r, c, node.dist + 1));
-                    visited[r][c] = true;
+    /**
+     * Given an n x m 2D binary grid which represents a map of '1's (land) and '0's (water),
+     * return the number of islands.
+     *
+     * @param grid
+     * @return
+     */
+    public int numberOfIslands(char[][] grid) {  // Runtime: O(n•m) n is the no. of rows and m is the no. of columns
+        int count = 0;
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                if (grid[row][col] == '1') {
+                    dfs(grid, row, col);
+                    count += 1;
                 }
             }
         }
-
-        return -1;
+        return count;
     }
 
-    public static void main(String[] args) {
-//        int[][] mat = {{1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
-//                {1, 0, 1, 0, 1, 1, 1, 0, 1, 1},
-//                {1, 1, 1, 0, 1, 1, 0, 1, 0, 1},
-//                {0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-//                {1, 1, 1, 0, 1, 1, 1, 0, 1, 0},
-//                {1, 0, 1, 1, 1, 1, 0, 1, 0, 0},
-//                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-//                {1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
-//                {1, 1, 0, 0, 0, 0, 1, 0, 0, 1}};
+    private void dfs(char[][] grid, int row, int col) {
+        if (row < 0 || col < 0 || row >= grid.length || col >= grid[row].length) {
+            return;
+        }
 
-//        System.out.println(shortestPathInABinaryMatrixUsingNodeClass(mat, new int[]{0, 0}, new int[]{3, 4}));
+        if (grid[row][col] == '0') {  //Base case
+            return;
+        }
 
-//        int[][] island = {{0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-//                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
-//                {0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-//                {0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0},
-//                {0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0},
-//                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
-//                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
-//                {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0}};
-//        System.out.println(maxSizeOfIsland(island));
+        grid[row][col] = '0';
+
+        dfs(grid, row - 1, col);
+        dfs(grid, row, col - 1);
+        dfs(grid, row + 1, col);
+        dfs(grid, row, col + 1);
+
+    }
+
+    /**
+     * Find the largest region of connected 1s in a given binary matrix.
+     * (Without direction array).
+     *
+     * @param grid
+     * @return
+     */
+    public int maxAreaOfIsland(int[][] grid) {
+        int maxArea = 0;
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                maxArea = Math.max(maxArea, dfs(grid, row, col));
+            }
+        }
+        return maxArea;
+    }
+
+    private int dfs(int[][] grid, int row, int col) {
+        if (row < 0 || col < 0 || row >= grid.length || col >= grid[0].length) {
+            return 0;
+        }
+        if (grid[row][col] == 0) {
+            return 0;
+        }
+
+        grid[row][col] = 0;
+
+        // Initialize area for this piece of land
+        int area = 1;
+
+        // Explore all 4 directions and add their area
+        area += dfs(grid, row - 1, col);
+        area += dfs(grid, row + 1, col);
+        area += dfs(grid, row, col - 1);
+        area += dfs(grid, row, col + 1);
+
+        return area;
     }
 
     /**
@@ -189,151 +196,6 @@ public class BinaryMatrix {
         }
 
         return -1;
-    }
-
-    /**
-     * Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water),
-     * return the number of islands.
-     *
-     * @param grid
-     * @return
-     */
-    public int numberOfIslands(char[][] grid) {
-        int count = 0;
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[row].length; col++) {
-                if (grid[row][col] == '1') {
-                    dfs(grid, row, col);
-                    count += 1;
-                }
-            }
-        }
-        return count;
-    }
-
-    private void dfs(char[][] grid, int row, int col) {
-        if (row < 0 || col < 0 || row >= grid.length || col >= grid[row].length) {
-            return;
-        }
-
-        if (grid[row][col] == '0') {  //Base case
-            return;
-        }
-
-        grid[row][col] = '0';
-
-        dfs(grid, row - 1, col);
-        dfs(grid, row, col - 1);
-        dfs(grid, row + 1, col);
-        dfs(grid, row, col + 1);
-
-    }
-
-    /**
-     * Find the largest region of connected 1s in a given binary matrix.
-     * (Without direction array).
-     *
-     * @param grid
-     * @return
-     */
-    public int maxSizeOfIsland1(int[][] grid) {
-        int maxSize = Integer.MIN_VALUE;
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[row].length; col++) {
-                int size = dfs(grid, row, col);
-                maxSize = Math.max(maxSize, size);
-            }
-        }
-        return maxSize;
-    }
-
-    private int dfs(int[][] grid, int row, int col) {
-        if (row < 0 || col < 0 || row >= grid.length || col >= grid[0].length) {
-            return 0;
-        }
-        if (grid[row][col] == 0) {
-            return 0;
-        }
-
-        grid[row][col] = 0;
-
-        return 1 + dfs(grid, row + 1, col) +
-                dfs(grid, row, col + 1) +
-                dfs(grid, row - 1, col) +
-                dfs(grid, row, col - 1);
-    }
-
-    /**
-     * Find the largest region of connected 1s in a given binary matrix.
-     * (Use directions array).
-     *
-     * @param grid
-     * @return
-     */
-    public int maxSizeOfIsland2(int[][] grid) {
-        int maxsize = 0;
-        for (int row = 0; row < grid.length; row++) {
-            for (int col = 0; col < grid[row].length; col++) {
-                if (grid[row][col] == 1) {
-                    int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-                    int size = dfsUtil(grid, row, col, directions);
-                    maxsize = Math.max(size, maxsize);
-                }
-            }
-        }
-        return maxsize;
-    }
-
-    private int dfsUtil(int[][] grid, int row, int col, int[][] directions) {
-        grid[row][col] = 0;  //Mark this cell as visited
-        int size = 1;
-        for (int[] dir : directions) {
-            int r = row + dir[0];
-            int c = col + dir[1];
-            if (r >= 0 && c >= 0 && r < grid.length && c < grid[r].length && grid[r][c] == 1)
-                size += dfsUtil(grid, r, c, directions);
-        }
-        return size;
-    }
-
-    /**
-     * Change the color of a starting pixel and all connected pixels (up, down, left, right)
-     * that have the same initial color as the starting pixel to a new color.
-     *
-     * @param image
-     * @param sr
-     * @param sc
-     * @param color
-     * @return
-     */
-    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
-        //Both BFS and DFS have O(N) time complexity.
-        //BFS is more robust for large inputs because it avoids stack overflow issues common with deep recursion in DFS.
-        //DFS is preferred for simplicity in scenarios with limited image size, where stack overflow is not a concern.
-        int origColor = image[sr][sc];
-
-        if (origColor != color) {
-            dfs(image, sr, sc, origColor, color);
-        }
-
-        return image;
-    }
-
-    private void dfs(int[][] image, int r, int c, int origColor, int newColor) {
-        if (r < 0 || r >= image.length || c < 0 || c >= image[0].length) {
-            return;
-        }
-
-        if (image[r][c] != origColor) {
-            return;
-        }
-
-        image[r][c] = newColor;
-
-        dfs(image, r + 1, c, origColor, newColor);
-        dfs(image, r - 1, c, origColor, newColor);
-        dfs(image, r, c + 1, origColor, newColor);
-        dfs(image, r, c - 1, origColor, newColor);
     }
 
     /**

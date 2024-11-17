@@ -14,26 +14,34 @@ public class GraphQuestions {
      * @return
      */
     public int bfsShortestPath(Integer source, Integer destination) {
+        // Initialize a queue for BFS and add the starting node (source)
         Queue<Integer> queue = new LinkedList<>();
         queue.add(source);
 
+        // Maintain a Set to keep track of visited nodes to avoid cycles
         Set<Integer> visited = new HashSet<>();
         visited.add(source);
 
         int distance = 0;
 
         while (!queue.isEmpty()) {
-            int levelSize = queue.size();
+            // distance represents the shortest path length,
+            // incrementing by 1 at each level to measure how far we've traversed from the source.
             distance += 1;
 
-            for (int i = 0; i < levelSize; i++) {
+            // Number of nodes at the current level
+            int nodesAtCurrentLevel = queue.size();
+            // processes all nodes at the same distance level.
+            for (int i = 0; i < nodesAtCurrentLevel; i++) {
                 Integer node = queue.remove();
 
                 if (graph.containsKey(node)) {
+                    // Iterate through each neighbor of the current node
                     for (Integer neighbor : graph.get(node)) {
                         if (neighbor.equals(destination)) {
                             return distance;
                         }
+                        // If the neighbor hasn't been visited, add it to the queue and mark as visited
                         if (!visited.contains(neighbor)) {
                             queue.add(neighbor);
                             visited.add(neighbor);
@@ -41,14 +49,12 @@ public class GraphQuestions {
                     }
                 }
             }
-
         }
         return -1;
     }
 
     /**
-     * There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
-     * Some courses may have prerequisites,
+     * There are a total of numCourses courses you have to take. Some courses may have prerequisites,
      * for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
      * Given the total number of courses and a list of prerequisite pairs,
      * is it possible for you to finish all courses?
@@ -64,6 +70,10 @@ public class GraphQuestions {
         // We go through each course and its prerequisites once.
         for (int[] course : courses) {
             graph.putIfAbsent(course[1], new ArrayList<>());
+            // [1, 0] means that course 1 depends on course 0.
+            // This is represented as an edge in the graph where 0 -> 1.
+            // We want the prerequisite to point to dependent courses.
+            // prerequisites = [[1, 0], [2, 1], [3, 2]] means 0 → 1 → 2 → 3
             graph.get(course[1]).add(course[0]);
         }
 
@@ -119,13 +129,15 @@ public class GraphQuestions {
      * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
      */
 //    graph = new HashMap<>();
-    Deque<Integer> courseOrder = new ArrayDeque<>(); // Stack
     public int[] findOrderOfCourses(int numCourses, int[][] courses) {
-        for (int i = 0; i < numCourses; i++) {  //This is to cover test case: numCourses = 2, []. Output: [1,0]
-            graph.putIfAbsent(i, new ArrayList<>());
-        }
+        Deque<Integer> courseOrder = new ArrayDeque<>(); // Stack
+
         for (int[] course : courses) {
             graph.putIfAbsent(course[1], new ArrayList<>());
+            // [1, 0] means that course 1 depends on course 0.
+            // This is represented as an edge in the graph where 0 -> 1.
+            // We want the prerequisite to point to dependent courses.
+            // prerequisites = [[1, 0], [2, 1], [3, 2]] means 0 → 1 → 2 → 3
             graph.get(course[1]).add(course[0]);
         }
 
@@ -133,7 +145,7 @@ public class GraphQuestions {
         Set<Integer> visited = new HashSet<>();
         Set<Integer> visiting = new HashSet<>();
         for (Integer course : graph.keySet()) {
-            if (!visited.contains(course) && hasCycle1(course, visited, visiting)) {
+            if (!visited.contains(course) && dfsCycleCheck(course, visited, visiting, courseOrder)) {
                 return new int[0];  //return an empty array because there is a cycle.
             }
         }
@@ -141,13 +153,13 @@ public class GraphQuestions {
         return courseOrder.stream().mapToInt(i -> i).toArray();
     }
 
-    private boolean hasCycle1(Integer course, Set<Integer> visited, Set<Integer> visiting) {
+    private boolean dfsCycleCheck(Integer course, Set<Integer> visited, Set<Integer> visiting, Deque<Integer> courseOrder) {
         visited.add(course);
         visiting.add(course); //To detect a cycle
         if (graph.containsKey(course)) {
             //We need to check this cuz we come back here during recursion with the actual course of prerequisites
             for (Integer prereq : graph.get(course)) {
-                if (!visited.contains(prereq) && hasCycle1(prereq, visited, visiting)) {
+                if (!visited.contains(prereq) && dfsCycleCheck(prereq, visited, visiting, courseOrder)) {
                     return true;
                 } else if (visiting.contains(prereq)) {
                     return true;
@@ -157,6 +169,112 @@ public class GraphQuestions {
         visiting.remove(course);
         courseOrder.push(course); //Store the sorted elements
         return false;
+    }
+
+
+    /**
+     * Change the color of a starting pixel and all connected pixels (up, down, left, right)
+     * that have the same initial color as the starting pixel to a new color.
+     * Input:
+     * [
+     *   [1,1,1],
+     *   [1,1,0],
+     *   [1,0,1]
+     * ]
+     * sr = 1, sc = 1, newColor = 2
+     * Output:
+     * [
+     *   [2,2,2],
+     *   [2,2,0],
+     *   [2,0,1]
+     * ]
+     *
+     * @param image
+     * @param startRow
+     * @param startCol
+     * @param newColor
+     * @return
+     */
+    public int[][] floodFill(int[][] image, int startRow, int startCol, int newColor) {
+        int origColor = image[startRow][startCol];
+
+        if (origColor != newColor) {
+            dfs(image, startRow, startCol, origColor, newColor);
+        }
+
+        return image;
+    }
+
+    private void dfs(int[][] image, int r, int c, int origColor, int newColor) {
+        if (r < 0 || r >= image.length || c < 0 || c >= image[0].length) {
+            return;
+        }
+
+        if (image[r][c] != origColor) {
+            return;
+        }
+
+        image[r][c] = newColor;
+
+        dfs(image, r + 1, c, origColor, newColor);
+        dfs(image, r - 1, c, origColor, newColor);
+        dfs(image, r, c + 1, origColor, newColor);
+        dfs(image, r, c - 1, origColor, newColor);
+    }
+
+    /**
+     * Given a 2D grid of integers where:
+     * -1 represents a wall or obstacle.
+     * 0 represents a gate.
+     * INF represents an empty room.
+     * Fill each empty room with the distance to its nearest gate.
+     * If it is impossible to reach a gate, leave the cell as INF.
+     *
+     * @param rooms
+     */
+    private static final int INF = Integer.MAX_VALUE;
+    public void wallsAndGates(int[][] rooms) {
+        // Run BFS from the gates.
+        int rows = rooms.length;
+        int cols = rooms[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+
+        // Step 1: Add all gates to the queue
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (rooms[row][col] == 0) {
+                    queue.add(new int[]{row, col});
+                }
+            }
+        }
+
+        // Step 2: BFS from each gate
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        while (!queue.isEmpty()) {
+            int[] point = queue.poll();
+            int row = point[0];
+            int col = point[1];
+
+            // Explore neighbors
+            for (int[] direction : directions) {
+                int r = row + direction[0];
+                int c = col + direction[1];
+
+                // Skip out-of-bounds
+                if (r < 0 || r >= rows || c < 0 || c >= cols) {
+                    continue;
+                }
+
+                // A room is considered "visited" if its value has been updated to something other than INF.
+                if (rooms[r][c] != INF) {
+                    continue;
+                }
+
+                // Update distance and add neighbor room to the queue
+                rooms[r][c] = rooms[row][col] + 1;
+                queue.add(new int[]{r, c});
+            }
+        }
     }
 
     /**
@@ -353,64 +471,6 @@ public class GraphQuestions {
             }
         }
         orderedItinerary.addFirst(flight);
-    }
-
-
-    /**
-     * An image is represented by a 2-D array of integers,
-     * each integer representing the pixel value of the image (from 0 to 65535).
-     * Given a coordinate (sr, sc) representing the starting pixel (row and column) of the flood fill,
-     * and a pixel value newColor, "flood fill" the image.
-     * To perform a "flood fill",
-     * consider the starting pixel,
-     * plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel,
-     * plus any pixels connected 4-directionally to those pixels (also with the same color as the starting pixel),
-     * and so on.
-     * Replace the color of all the aforementioned pixels with the newColor. At the end, return the modified image.
-     * Input:
-     * [
-     *   [1,1,1],
-     *   [1,1,0],
-     *   [1,0,1]
-     * ]
-     * sr = 1, sc = 1, newColor = 2
-     * Output:
-     * [
-     *   [2,2,2],
-     *   [2,2,0],
-     *   [2,0,1]
-     * ]
-     *
-     * @param image
-     * @param startRow
-     * @param startCol
-     * @param newColor
-     * @return
-     */
-    public int[][] floodFill(int[][] image, int startRow, int startCol, int newColor) {
-        LinkedList<int[]> queue = new LinkedList<>();
-        int rows = image.length, cols = image[0].length;
-        int color = image[startRow][startCol];
-        queue.add(new int[]{startRow, startCol});
-
-        image[startRow][startCol] = newColor;
-        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        while (!queue.isEmpty()) {
-            int[] cellPosition = queue.remove();
-
-            for (int[] dir : directions) {
-                int r = cellPosition[0] + dir[0];
-                int c = cellPosition[1] + dir[1];
-                int[] newCellPosition = new int[]{r, c};
-
-                if (r < 0 || r >= rows || c < 0 || c >= cols || image[r][c] == newColor || image[r][c] != color)
-                    continue;
-
-                image[r][c] = newColor;
-                queue.add(newCellPosition);
-            }
-        }
-        return image;
     }
 
     /**

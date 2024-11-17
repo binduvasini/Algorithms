@@ -1,5 +1,6 @@
 package com.Algorithms;
 
+import java.util.Stack;
 import java.util.*;
 
 public class StackApproaches {
@@ -74,7 +75,6 @@ public class StackApproaches {
     /**
      * Given a string s containing just the characters '(', ')', '{', '}', '[' and ']',
      * determine if the input string is valid.
-     * <p>
      * An input string is valid if:
      * Open brackets are closed by the same type of brackets.
      * Open brackets are closed in the correct order.
@@ -164,6 +164,50 @@ public class StackApproaches {
             stack.push(new int[]{i, currTemp});
         }
         return output;
+    }
+
+    /**
+     * Given string num representing a non-negative integer num, and an integer k,
+     * return the smallest possible integer after removing k digits from num.
+     * num = "1432219", k = 3
+     * Output: "1219"
+     *
+     * @param num
+     * @param k
+     * @return
+     */
+    public String removeKdigits(String num, int k) {
+        // To minimize the number, remove the larger digits if a smaller digit follows them.
+        // The stack helps us maintain the digits of the number in increasing order as we traverse num.
+        Stack<Character> stack = new Stack<>();
+
+        // Whenever a larger digit appears at the top of the stack,
+        // and a smaller digit is encountered in the input, remove the larger digit from the stack
+        for (char digit : num.toCharArray()) {
+            while (!stack.isEmpty() && stack.peek() > digit && k != 0) {
+                stack.pop();
+                k -= 1;
+            }
+            stack.push(digit);
+        }
+
+        // If there are still digits to remove, remove them.
+        while (k != 0) {
+            stack.pop();
+            k -= 1;
+        }
+
+        StringBuilder result = new StringBuilder();
+        while (!stack.isEmpty()) {
+            result.append(stack.pop());
+        }
+
+        result.reverse();
+
+        return result.toString();
+
+        // After removing digits, the stack contains the smallest possible number but may have leading zeros.
+        // Remove them before returning the result.
     }
 
     /**
@@ -278,6 +322,52 @@ public class StackApproaches {
             result += sign * number;
         }
         return result;
+    }
+
+    /**
+     * Evaluate Reverse Polish Notation.
+     * tokens = ["2", "1", "+", "3", "*"]
+     * Evaluate the expression: (2 + 1) * 3 = 9.
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        // Push numbers onto the stack.
+        // For operators, pop the top two numbers, perform the operation, and push the result back into the stack.
+        Stack<Integer> stack = new Stack<>();
+
+        for (String token : tokens) {
+            if (isOperator(token)) {
+                // Pop the top two elements for operation
+                int b = stack.pop();
+                int a = stack.pop();
+
+                // Perform the operation and push the result back onto the stack
+                int result = applyOperation(a, b, token);
+                stack.push(result);
+            } else {
+                // Push numbers onto the stack
+                stack.push(Integer.parseInt(token));
+            }
+        }
+
+        // The final result will be at the top of the stack
+        return stack.pop();
+    }
+
+    private boolean isOperator(String token) {
+        return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/");
+    }
+
+    private int applyOperation(int a, int b, String operator) {
+        return switch (operator) {
+            case "+" -> a + b;
+            case "-" -> a - b;
+            case "*" -> a * b;
+            case "/" -> a / b; // Integer division
+            default -> throw new IllegalArgumentException("Invalid operator: " + operator);
+        };
     }
 
     /**

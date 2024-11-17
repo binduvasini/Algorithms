@@ -268,8 +268,8 @@ public class BinaryTree {
                 }
                 successor = node.data;
             }
-        } else if (data < root.data) {  //The value is in the LST.
-            //During the recursion, the value will match the root, so the predecessor will be set.
+        } else if (data < root.data) {  // The value is in the LST.
+            // During the recursion, the value will match the root, so the predecessor will be set.
             // this node might not have RST, so the successor might not be set.
             // So, here we are setting it first and then calling the recursion.
             successor = root.data;

@@ -46,6 +46,7 @@ public class Intervals {
      * @return
      */
     public int meetingRooms(int[][] meetings) {
+        // Sort the meetings based on the start times of meetings
         Arrays.sort(meetings, Comparator.comparingInt(o -> o[0]));
 
         // MinHeap represents the rooms.
@@ -57,7 +58,7 @@ public class Intervals {
             // Compare it with the current meeting's start time.
             // Are we good to start the current meeting in this meeting room?
             if (!minHeap.isEmpty() && minHeap.peek() <= meeting[0]) {
-                // The meeting has finished before the current meeting starts. So free up the room.
+                // This meeting has finished before the current meeting starts. So free up the room.
                 minHeap.poll();
             }
             minHeap.offer(meeting[1]);

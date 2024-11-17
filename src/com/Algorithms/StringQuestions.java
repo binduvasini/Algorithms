@@ -14,18 +14,21 @@ public class StringQuestions {
 
     /**
      * Given a string s, find the length of the longest substring without repeating characters.
-     * Input: “abbcdb”. Output: 3. “bcd” is the longest substring without repeating characters.
+     * Input: “abbcdb”.
+     * Output: 3.
+     * “bcd” is the longest substring without repeating characters.
      *
      * @param s
      * @return
      */
     public int longestSubstringLengthWithoutRepeatingChars(String s) {  //Runtime: O(n)
-        int start = 0, end = 0, longest = 0;
+        int start = 0, end = 0;
+        int longest = 0;
 //        int longestStart = 0;  // If we need the actual substring
         Set<Character> set = new HashSet<>();
         while (end < s.length()) {
             if (!set.contains(s.charAt(end))) {
-                //Check that this character is not a duplicate within the current window.
+                // Check that this character is not a duplicate within the current window.
                 set.add(s.charAt(end));
 
                 // We are updating the longest here because this is the window that has unique characters.
@@ -33,7 +36,7 @@ public class StringQuestions {
                     longest = end - start + 1;
 //                    longestStart = start;
                 }
-            } else {  //Shrink the window.
+            } else {  // Shrink the window.
                 set.remove(s.charAt(start));
                 start += 1;
             }
@@ -85,7 +88,6 @@ public class StringQuestions {
                 frequencyMap.put(startChar, frequencyMap.get(startChar) - 1);
                 start += 1;
             }
-
             longest = Math.max(longest, end - start);
         }
         return longest;
@@ -123,7 +125,6 @@ public class StringQuestions {
             }
             longest = Math.max(longest, end - start);
         }
-
         return longest;
     }
 
@@ -578,37 +579,6 @@ public class StringQuestions {
             }
         }
         return builder.toString();
-    }
-
-    /**
-     * Given a non-negative integer num represented as a string,
-     * remove k digits from the number so that the new number is the smallest possible.
-     * Input: num = "1432219", k = 3
-     * Output: "1219"
-     *
-     * @param num
-     * @param k
-     * @return
-     */
-    public String removeKdigits(String num, int k) {  //There is a stack solution for this question.
-        StringBuilder builder = new StringBuilder(num);
-
-        while (k > 0) {
-            int i = 1;
-            while (builder.charAt(i - 1) <= builder.charAt(i) && i < builder.length()) {
-                i++;
-            }
-            builder.deleteCharAt(i);
-            k -= 1;
-        }
-
-        for (int i = 0; i < builder.length(); ) {
-            if (builder.charAt(i) == '0')
-                builder.deleteCharAt(i);
-            else
-                break;
-        }
-        return builder.toString().isBlank() ? "0" : builder.toString();
     }
 
     /**

@@ -459,28 +459,30 @@ public class DynamicProgramming {
      */
     public int longestIncreasingSubsequenceLength(int[] nums) {
         int n = nums.length;
+        // dp[i] represents the length of the longest increasing subsequence that ends at index i.
         int[] dp = new int[n];
 
-        int longest = Integer.MIN_VALUE;
-
+        // Initialize each element in dp to 1. The minimum length of LIS ending at any index is 1 (the element itself).
         Arrays.fill(dp, 1);
 
         for (int i = 1; i < n; i++) {
+            // To build the LIS ending at nums[i], check all the previous elements
             for (int j = 0; j < i; j++) {
-                if (nums[i] > nums[j] && dp[i] < dp[j] + 1) {
-                    dp[i] = dp[j] + 1;
+                // If the current element is greater than previous elements, we can append the current element.
+                if (nums[i] > nums[j]) {
+                    // If we can append nums[i] to an increasing subsequence ending at nums[j],
+                    // then the length of the LIS ending at nums[i] would be dp[j] + 1.
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }
         }
 
         // Pick maximum of all LIS values
-        for (int i = 0; i < n; i++) {
-            if (longest < dp[i]) {
-                longest = dp[i];
-            }
+        int longestLIS = 0;
+        for (int len : dp) {
+            longestLIS = Math.max(longestLIS, len);
         }
-
-        return longest;
+        return longestLIS;
     }
 
     /**

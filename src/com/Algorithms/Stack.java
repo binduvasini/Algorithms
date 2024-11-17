@@ -1,15 +1,15 @@
 package com.Algorithms;
 
-class StackNode {
-    int data;
-    StackNode next;
-
-    public StackNode(int data) {
-        this.data = data;
-    }
-}
-
 public class Stack {
+    static class StackNode {
+        int data;
+        StackNode next;
+
+        public StackNode(int data) {
+            this.data = data;
+        }
+    }
+
     StackNode top = null;
     int size = 0;
 
