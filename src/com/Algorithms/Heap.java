@@ -11,39 +11,18 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Heap {
-
-    /**
-     * Find kth largest element in an array.
-     * The array may contain duplicates.
-     * Solve using max heap.
-     *
-     * @param nums
-     * @param k
-     * @return
-     */
-    public int kthLargestElementUsingMaxHeap(int[] nums, int k) {
-        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        for (int num : nums) {
-            maxHeap.add(num);
-        }
-
-        for (int i = 0; i < k - 1; i++) {
-            maxHeap.remove();
-        }
-
-        return maxHeap.remove();
-    }
-
     /**
      * Find k-th largest element in an array.
      * The array may contain duplicates.
-     * Solve using min heap.
      *
      * @param nums
      * @param k
      * @return
      */
     public int kthLargestElementUsingMinHeap(int[] nums, int k) {  // Runtime: O(n log k)
+        // A min-heap allows us to keep the smallest of the top k elements at the root.
+        // We insert elements into the heap. If the heap size exceeds k, we remove the smallest element (root).
+        // This ensures that the root of the heap will be the kth largest element in the array.
         Queue<Integer> minHeap = new PriorityQueue<>();
         for (int num : nums) {
             minHeap.add(num);
@@ -65,16 +44,20 @@ public class Heap {
      * @param k
      * @return
      */
-    public int[] topKFrequentElements(int[] nums, int k) {
+    public int[] topKFrequentElements(int[] nums, int k) {  // Runtime: O(n log n)
+        // Use a hash map to count the frequency of each element in the array.
         Map<Integer, Integer> map = new HashMap<>();
-        int[] result = new int[k];
         for (int num : nums) {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
 
+        // The comparator is used to make the heap a max-heap based on the frequency of elements.
         Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
         maxHeap.addAll(map.keySet());
 
+        int[] result = new int[k];
+
+        // Extract the top k frequent elements from the heap
         for (int i = 0; i < k; i++) {
             result[i] = maxHeap.remove();
         }
@@ -85,14 +68,15 @@ public class Heap {
     /**
      * Given an array, there is a sliding window of size k which is moving from left to right.
      * Return the max in each sliding window.
-     * input [1,3,-1,-3,5,3,6,7], and k = 3
-     * output [3,3,5,5,6,7]
+     * input: [1,3,-1,-3,5,3,6,7], and k = 3
+     * output: [3,3,5,5,6,7]
      *
      * @param nums
      * @param k
      * @return
      */
     public int[] maxInSlidingWindow(int[] nums, int k) {
+        // Maintain two pointers for the sliding window of size k.
         int start = 0, end = k - 1;
         List<Integer> result = new ArrayList<>();
 
@@ -159,24 +143,30 @@ public class Heap {
      * @param k
      * @return
      */
-    public int[][] kClosestPoints(int[][] points, int k) {
-        //Remember the comparator needs to return an int 0 or 1 or -1.
-        //Directly subtracting two doubles and returning as it is, will throw compile time error.
-        Queue<int[]> minHeap = new PriorityQueue<>((o1, o2) -> {
-            double o1Distance = Math.sqrt(o1[0] * o1[0] + o1[1] * o1[1]);
-            double o2Distance = Math.sqrt(o2[0] * o2[0] + o2[1] * o2[1]);
-            return Double.compare(o1Distance, o2Distance);
-        });
+    public int[][] kClosest(int[][] points, int k) {
+        // Create a max heap based on the distance to origin
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>((a, b) ->
+                (b[0] * b[0] + b[1] * b[1]) - (a[0] * a[0] + a[1] * a[1])
+        );
 
-        minHeap.addAll(Arrays.asList(points));
+        // Iterate through all points
+        for (int[] point : points) {
+            // Add the point to the heap
+            maxHeap.offer(point);
 
-        List<int[]> list = new LinkedList<>();
-
-        for (int i = 0; i < k; i++) {
-            list.add(minHeap.remove());
+            // If the heap size exceeds k, remove the farthest point
+            if (maxHeap.size() > k) {
+                maxHeap.poll();
+            }
         }
 
-        return list.toArray(new int[list.size()][]);
+        // Prepare the result array
+        int[][] result = new int[k][2];
+        for (int i = 0; i < k; i++) {
+            result[i] = maxHeap.poll();
+        }
+
+        return result;
     }
 
     /**
@@ -220,14 +210,21 @@ public class Heap {
      *
      */
     static class RunningMedian {
+        // A Min Heap to store the larger half of the numbers.
         Queue<Integer> minHeap = new PriorityQueue<>();
+
+        // A Max Heap to store the smaller half of the numbers.
         Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
 
-        void addNum(int num) {
-            if (minHeap.size() == 0 || num > minHeap.peek())
+        // By balancing these heaps, the median can be found efficiently.
+
+        void addNum(int num) {  // Runtime: O(log n)
+            if (minHeap.isEmpty() || num > minHeap.peek()) {
                 minHeap.add(num);
-            else
+            }
+            else {
                 maxHeap.add(num);
+            }
             balanceHeaps();
         }
 
@@ -239,15 +236,19 @@ public class Heap {
             }
         }
 
-        public double findMedianInADataStream() {
+        public double findMedian() {  // Runtime: O(1)
             if (minHeap.size() == maxHeap.size()) {
+                // If even number of elements, median is the average of two middle elements
                 return (double) (minHeap.element() + maxHeap.element()) / 2;  //element() works like peek()
-            } else if (minHeap.size() > maxHeap.size()) {
-                return (double) minHeap.peek();
             }
-            return (double) maxHeap.peek();
+            // If odd, median is the top of the larger heap.
+            // maxHeap always contains the smaller half of numbers,
+            // including the median when the count is odd.
+            // This is ensured during the balancing step.
+            return (double) maxHeap.element();
         }
     }
+
     /**
      * You have a set which contains all positive integers [1, 2, 3, 4, 5, ...].
      * Implement the SmallestInfiniteSet class.
@@ -392,39 +393,57 @@ public class Heap {
 
     /**
      * Given a string, rearrange it such that the characters adjacent to each other are not the same.
+     * input: "aabbcc"
+     * output: "abcabc"
      *
      * @param s
      * @return
      */
-    String reorganizeString(String s) {
-        StringBuilder builder = new StringBuilder();
+    public String reorganizeString(String s) {
+        // Count the frequencies of characters.
         Map<Character, Integer> map = new HashMap<>();
-        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
 
         for (char c : s.toCharArray()) {
             int count = map.getOrDefault(c, 0) + 1;
             map.put(c, count);
-            if (count > (s.length() + 1) / 2)
-                //If the given string contains a character that occurs more than half of its length,
+
+            if (count > (s.length() + 1) / 2) {
+                // If the given string contains a character that occurs more than half of its length,
                 // we cannot rearrange it.
                 return "";
+            }
         }
 
+        // We are using Max Heap to always retrieve the character with the highest frequency,
+        // ensuring that we place the most frequent character in the result first.
+        Queue<Character> maxHeap = new PriorityQueue<>((o1, o2) -> map.get(o2) - map.get(o1));
         maxHeap.addAll(map.keySet());
 
+        StringBuilder result = new StringBuilder();
+
+        // Keep track of the last used character to avoid placing the same character consecutively.
         char prev = '#';
 
         while (!maxHeap.isEmpty()) {
-            char mostOccurChar = maxHeap.poll();
-            builder.append(mostOccurChar);
-            map.put(mostOccurChar, map.getOrDefault(mostOccurChar, 1) - 1);
+            char current = maxHeap.poll();
+            result.append(current);
+            // Decrement the frequency in the map because we have added this character to the result.
+            map.put(current, map.get(current) - 1);
 
-            if (map.containsKey(prev) && map.get(prev) >= 1)
+            // Add the previously used character to the heap.
+            // We should make sure that the prev character is only added back to the heap
+            // when it is no longer in the heap after it has been used.
+            // The previous character is nothing but the current character in the previous iteration.
+            // We cannot add the current character in the same iteration
+            // because this character might have more frequencies than the other characters.
+            // So add it in the next iteration.
+            if (prev != '#' && map.get(prev) > 0) {
                 maxHeap.add(prev);
+            }
 
-            prev = mostOccurChar;
+            prev = current;
         }
 
-        return builder.toString();
+        return result.toString();
     }
 }

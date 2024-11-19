@@ -106,39 +106,67 @@ public class BinaryMatrix {
 
     /**
      * Given a binary matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
+     * Input:
+     *  [
+     *    [1,1,1],
+     *    [1,0,1],
+     *    [1,1,1]
+     *  ]
+     * Output:
+     *  [
+     *    [1,0,1],
+     *    [0,0,0],
+     *    [1,0,1]
+     *  ]
      *
      * @param matrix
      */
-    public void setZeroes(int[][] matrix) {
+    public void setZeroes(int[][] matrix) {  // Runtime: O(n•m)
+        // Flags to indicate whether the first row and first column need to be set to zero
         boolean firstRow = false, firstCol = false;
 
-        for (int r = 0; r < matrix.length; r++) {
-            for (int c = 0; c < matrix[r].length; c++) {
+        int rows = matrix.length, cols = matrix[0].length;
+
+        // Check if first row contains zero.
+        for (int c = 0; c < cols; c++) {
+            if (matrix[0][c] == 0) {
+                firstRow = true;
+            }
+        }
+
+        // Check if first column contains zero.
+        for (int r = 0; r < rows; r++) {
+            if (matrix[r][0] == 0) {
+                firstCol = true;
+            }
+        }
+
+        for (int r = 1; r < rows; r++) {
+            for (int c = 1; c < cols; c++) {
                 if (matrix[r][c] == 0) {
-                    if (r == 0)
-                        firstRow = true;
-                    if (c == 0)
-                        firstCol = true;
+                    // Use the first cell in the respective row and column as markers
                     matrix[0][c] = 0;
                     matrix[r][0] = 0;
                 }
             }
         }
 
-        for (int r = 1; r < matrix.length; r++) {
-            for (int c = 1; c < matrix[r].length; c++) {
+        // Set zeroes based on markers
+        for (int r = 1; r < rows; r++) {
+            for (int c = 1; c < cols; c++) {
                 if (matrix[0][c] == 0 || matrix[r][0] == 0)
                     matrix[r][c] = 0;
             }
         }
 
+        // Handle first row and column
         if (firstRow) {
-            for (int c = 0; c < matrix[0].length; c++) {
+            for (int c = 0; c < cols; c++) {
                 matrix[0][c] = 0;
             }
         }
         if (firstCol) {
-            for (int r = 0; r < matrix.length; r++) {
+            for (int r = 0; r < rows; r++) {
                 matrix[r][0] = 0;
             }
         }
@@ -241,7 +269,6 @@ public class BinaryMatrix {
                     board[row][col] = 'O';
             }
         }
-
     }
 
     private void dfsUtil(char[][] board, int r, int c) {

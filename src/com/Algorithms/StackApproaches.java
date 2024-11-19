@@ -40,7 +40,6 @@ public class StackApproaches {
      * The Next Greater Number of a number x is the first greater number to its traversing-order next in the array,
      * which means you could search circularly to find its next greater number.
      * If it doesn't exist, output -1 for this number.
-     * <p>
      * Example 1:
      * Input: [1,2,1]
      * Output: [2,-1,2]
@@ -108,6 +107,7 @@ public class StackApproaches {
      * 4. '*'could be treated as a single right parenthesis')'
      * or a single left parenthesis'('or an empty string.
      * 5. An empty string is also valid.
+     *
      */
     public boolean checkValidParenthesesWithWildcard(String s) {
         Deque<Integer> openStack = new ArrayDeque<>();
@@ -138,30 +138,38 @@ public class StackApproaches {
     }
 
     /**
-     * Given a list of daily temperatures T,
-     * return a list such that,
+     * Given a list of daily temperatures T, return a list such that,
      * for each day in the input, tells you how many days you would have to wait until a warmer temperature.
      * If there is no future day for which this is possible, put 0.
      * Input: T = [73, 74, 75, 71, 69, 72, 76, 73]
      * Output: [1, 1, 4, 2, 1, 1, 0, 0].
      *
-     * @param T
+     * @param temperatures
      * @return
      */
-    public int[] dailyTemperatures(int[] T) {
-        int[] output = new int[T.length];
-        Deque<int[]> stack = new ArrayDeque<>();  //store the index and value as a pair.
+    public int[] dailyTemperatures(int[] temperatures) {
+        int[] output = new int[temperatures.length];
 
-        for (int i = 0; i < T.length; i++) {
-            int currTemp = T[i];
+        // Initialize a stack to store the index, where the index is the day index.
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        // Loop through the array of temperatures
+        for (int i = 0; i < temperatures.length; i++) {
+            int currTemp = temperatures[i];
+
             //Dig into the stack only when the current temperature is warmer than the immediate previous temperature
-            while (!stack.isEmpty() && currTemp > stack.peek()[1]) {
-                int[] prevTemp = stack.pop();
-                //From the current index, the immediate previous index just needs to wait for 1 day.
-                // Going further down, we will have to wait current index - the popped index.
-                output[prevTemp[0]] += i - prevTemp[0];
+            while (!stack.isEmpty() && currTemp > temperatures[stack.peek()]) {
+                // Pop the previous day's indices.
+                int prevIndex = stack.pop();
+
+                // The number of days to wait is the current index - the popped index.
+                // We store this value in the output array at the index prevIndex,
+                // because prevIndex is the day that needs to wait for a warmer temperature.
+                output[prevIndex] = i - prevIndex;
             }
-            stack.push(new int[]{i, currTemp});
+
+            // Push the current day's index onto the stack
+            stack.push(i);
         }
         return output;
     }
@@ -213,11 +221,9 @@ public class StackApproaches {
     /**
      * StockSpanner collects the daily price quotes for a stock and
      * returns the span of that stock's price for the current day.
-     * <p>
      * The span of the stock's price in one day is the maximum number of consecutive days
      * (starting from that day and going backward)
      * for which the stock price was less than or equal to the price of that day.
-     * <p>
      * Example: If the prices of the stock in the last four days is [7,34,1,2] and the price of the stock today is 8,
      * then the span of today is 3
      * because starting from today, the price of the stock was less than or equal 8 for 3 consecutive days.
@@ -371,10 +377,15 @@ public class StackApproaches {
     }
 
     /**
-     * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+     * Design a stack that supports push, pop, top like a regular stack.
+     * getMin(): Retrieve the minimum element in the stack.
+     *
      */
     static class MinStack {
+        // Main stack to store all elements.
         Deque<Integer> stack;
+
+        // Auxiliary stack to keep track of the minimum elements.
         Deque<Integer> minStack;
 
         public MinStack() {
@@ -394,8 +405,8 @@ public class StackApproaches {
         }
 
         public void pop() {
-            // We are going to pop the element from the main stack.
-            // If the popped element is the same as the top of the minStack, pop this element from here as well.
+            // Check if the top element of the main stack is the same as the top of the minStack.
+            // If yes, it means we are removing the current minimum, so remove it from minStack too.
             if (stack.peek().equals(minStack.peek())) {
                 minStack.pop();
             }

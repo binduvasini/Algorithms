@@ -197,28 +197,6 @@ public class ArrayPrefixSum {
     }
 
     /**
-     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
-     * The subarray with maximum sum is 6: [4, -1, 2, 1].
-     * Return the maximum sum.
-     *
-     * @param nums
-     * @return
-     */
-    public int subarrayWithMaxSum(int[] nums) {
-        int maxSum = Integer.MIN_VALUE, prefixSum = 0;
-        for (int num : nums) {
-            prefixSum += num;
-            maxSum = Math.max(maxSum, prefixSum);
-
-            if (prefixSum < 0) {
-                prefixSum = 0;
-            }
-        }
-
-        return maxSum;
-    }
-
-    /**
      * A circular array means the end of the array connects to the beginning of the array.
      * Given a circular array, find the subarray with maximum sum. Return the maximum sum.
      * Input: [5,-3,5]

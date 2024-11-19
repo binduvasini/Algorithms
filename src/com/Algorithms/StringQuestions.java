@@ -775,4 +775,51 @@ public class StringQuestions {
         }
         return result.toString();
     }
+
+    /**
+     * Given a string s, partition the string into as many parts as possible so that
+     * each letter appears in only one part, and return a list of integers representing the size of these parts.
+     * s = "ababcbacadefegdehijhklij"
+     * Output: [9,7,8]
+     *
+     * @param s
+     * @return
+     */
+    public List<Integer> partitionLabels(String s) {
+        // Step 1: Create a HashMap to store the last occurrence of each character
+        Map<Character, Integer> lastIndex = new HashMap<>();
+
+        // Populate the map with the last index of each character in the string
+        for (int i = 0; i < s.length(); i++) {
+            // Update the map with the latest (rightmost) index of this character
+            lastIndex.put(s.charAt(i), i);
+        }
+
+        // Step 2: Use two pointers to track partitions
+        int start = 0; // Start of the current partition
+        int end = 0;   // End of the current partition
+
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < s.length(); i++) {
+            // Update the end of the partition to be the farthest last occurrence
+            // of the current character we are examining.
+            // At i = 0 (character a), the last occurrence of a is 8, so end = 8.
+            // At i = 1 (character b), the last occurrence of b is 5, so end = max(8, 5) = 8.
+            // At i = 4 (character c), the last occurrence of c is 7, so end = max(8, 7) = 8.
+            end = Math.max(end, lastIndex.get(s.charAt(i)));
+
+            // If the current index reaches the 'end', we found a partition
+            if (i == end) {
+                // Calculate the size of the current partition
+                int partitionSize = end - start + 1;
+
+                // Add the size of the partition to the result list
+                result.add(partitionSize);
+
+                // Move the start pointer to the next partition
+                start = i + 1;
+            }
+        }
+        return result;
+    }
 }

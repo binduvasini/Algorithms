@@ -15,18 +15,25 @@ public class ArrayQuestions {
      * @return
      */
     public int[] twoSum(int[] nums, int target) {
+        // Create a HashMap to store the numbers and their indices as we iterate through the array
         Map<Integer, Integer> map = new HashMap<>();  // map<element, index>
 
+        // Loop through the array
         for (int i = 0; i < nums.length; i++) {
+            // Calculate the complement (the number needed to reach the target)
             int complement = target - nums[i];
+
+            // Check if the complement exists in the map
             if (map.containsKey(complement)) {
+                // If found, return the indices of the current number and the complement
                 return new int[]{map.get(complement), i};
-            }
-            else {
+            } else {
+                // If not found, add the current number and its index to the map
                 map.put(nums[i], i);
             }
         }
 
+        // Return an empty array if no solution is found (this should not happen as per the problem constraint)
         return new int[]{};
     }
 
@@ -45,19 +52,28 @@ public class ArrayQuestions {
      * @return
      */
     public int wholeMinuteDilemma(int[] time) {
+        // Create a HashMap to store the frequency of remainders when divided by 60
         Map<Integer, Integer> map = new HashMap<>();
-        int count = 0;
+        int count = 0; // Initialize a counter to count valid pairs
 
+        // Loop through each time duration in the array
         for (int t : time) {
+            // Calculate the remainder when the time is divided by 60
             int remainder = t % 60;
+
+            // Calculate the complement such that (remainder + complement) is a multiple of 60
             int complement = (60 - remainder) % 60;
 
+            // If the complement exists in the map, it means we can form valid pairs with previous times
             if (map.containsKey(complement)) {
-                count += map.get(complement);
+                count += map.get(complement); // Add the frequency of the complement to the count
             }
+
+            // Update the map with the current remainder, incrementing its frequency
             map.put(remainder, map.getOrDefault(remainder, 0) + 1);
         }
 
+        // Return the total count of valid pairs
         return count;
     }
 
@@ -80,8 +96,7 @@ public class ArrayQuestions {
                     list.add(nums[i]);
                     list.add(nums[j]);
                     list.add(-(nums[i] + nums[j]));
-                }
-                else {
+                } else {
                     set.add(nums[j]);
                 }
 
@@ -93,6 +108,33 @@ public class ArrayQuestions {
         }
 
         return new ArrayList<>(resultSet);
+    }
+
+    /**
+     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
+     * The subarray with maximum sum is 6: [4, -1, 2, 1].
+     * Return the maximum sum.
+     *
+     * @param nums
+     * @return
+     */
+    public int subarrayWithMaxSum(int[] nums) {
+        // Use a running sum.
+        int currentSum = 0;
+
+        int maxSum = Integer.MIN_VALUE;
+
+        for (int num : nums) {
+            // Update currentSum:
+            // - Either start a new subarray with 'num' (if currentSum + num is less than num)
+            // - Or extend the current subarray by adding 'num' to currentSum
+            currentSum = Math.max(num, currentSum + num);
+
+            // Update maxSum to hold the maximum sum encountered so far
+            maxSum = Math.max(maxSum, currentSum);
+        }
+
+        return maxSum;
     }
 
     /**
@@ -108,9 +150,10 @@ public class ArrayQuestions {
         for (int num : nums) {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
-        for (int num : map.keySet()){
-            if (map.get(num) > nums.length / 2)
+        for (int num : map.keySet()) {
+            if (map.get(num) > nums.length / 2) {
                 return num;
+            }
         }
         return -1;
     }
@@ -151,19 +194,25 @@ public class ArrayQuestions {
      * @return
      */
     public int maxProfitSellOnce(int[] prices) {
-        if (prices.length == 0)
-            return 0;
+        // Keep track of the maximum profit found so far
+        int maxProfit = 0;
+        // Keep track of the least price encountered so far (initialized to a very high value)
+        int leastPrice = Integer.MAX_VALUE;
 
-        int maxProfit = Integer.MIN_VALUE;
-        int minimum = Integer.MAX_VALUE;
-
+        // Iterate through the array of prices
         for (int price : prices) {
-            minimum = Math.min(minimum, price);
-            maxProfit = Math.max(maxProfit, price - minimum);
+            // Update the least price if the current price is lower
+            leastPrice = Math.min(leastPrice, price);
+
+            // Calculate the potential profit by selling at the current price
+            // and update the maximum profit if this profit is higher
+            maxProfit = Math.max(maxProfit, price - leastPrice);
         }
 
+        // Return the maximum profit calculated
         return maxProfit;
     }
+
 
     /**
      * Best day to buy stock and the best day to sell it. You can only hold at most one share of the stock at any time.
@@ -174,8 +223,12 @@ public class ArrayQuestions {
      */
     public int maxProfitSellMultipleTimes(int[] prices) {
         int profit = 0;
+
+        // Loop through the array starting from the second day
         for (int i = 1; i < prices.length; i++) {
+            // Check if the price on this day is higher than the price on the previous day
             if (prices[i] > prices[i - 1]) {
+                // Add the profit from the transaction (difference between prices) to the total profit
                 profit += prices[i] - prices[i - 1];
             }
         }
@@ -233,8 +286,7 @@ public class ArrayQuestions {
         for (int num : set) {
             if (set.contains(num + 1)) {
                 currentLongest += 1;
-            }
-            else {  //if the TreeSet DOES NOT contain the next number, a new sequence begins.
+            } else {  //if the TreeSet DOES NOT contain the next number, a new sequence begins.
                 longest = Math.max(longest, currentLongest);
                 currentLongest = 1;
             }
@@ -403,8 +455,9 @@ public class ArrayQuestions {
                 sum -= nums[start];
                 start += 1;  //Shrink the window until the sum is equal to target.
 
-                if (sum == target)  //Update the length only when the window sum is equal to target.
+                if (sum == target) {  //Update the length only when the window sum is equal to target.
                     minSubarrayLen = Math.min(minSubarrayLen, end - start);
+                }
             }
         }
         return minSubarrayLen == Integer.MAX_VALUE ? 0 : minSubarrayLen;
@@ -416,7 +469,6 @@ public class ArrayQuestions {
      * In one step, you can take one card from the beginning or from the end of the array. Take exactly k cards.
      * Your score is the sum of the points of the cards you have taken.
      * Given the integer array cardPoints and the integer k, return the maximum score you can obtain.
-
      * cardPoints = [1,2,3,4,5,6,1], k = 3
      * Output: 12 (last three cards).
      *
@@ -451,25 +503,98 @@ public class ArrayQuestions {
      * Given an array, rotate the array to the right by k steps.
      * Input: nums = [1,2,3,4,5,6,7], k = 3
      * Output: [5,6,7,1,2,3,4]
+     * rotate 1 step  to the right: [7,1,2,3,4,5,6]
+     * rotate 2 steps to the right: [6,7,1,2,3,4,5]
+     * rotate 3 steps to the right: [5,6,7,1,2,3,4]
      *
      * @param nums
      * @param k
      */
     public void rotate(int[] nums, int k) {
-        //If k is greater than nums.length,
-        // rotating the array (k % nums.length) times gives the same result as it is for k times.
+        // Normalize k:
+        // If k is greater than the length of the array (n), rotating by k is equivalent to rotating by k % n
+        // because rotating the array by its length results in the same array.
         k %= nums.length;
+
+        // reverse the whole array to prepare it for rotation.
         reverse(nums, 0, nums.length - 1);
+        // After reversing the entire array, reverse the first k elements to correctly position the
+        // last k elements at the beginning of the array.
         reverse(nums, 0, k - 1);
+        // Finally,
+        // reverse the remaining n - k elements (which are now in the last positions) to restore the correct order.
         reverse(nums, k, nums.length - 1);
     }
 
     private void reverse(int[] nums, int start, int end) {
-        for (int i = start; i < end; i++, end--) {
-            int tmp = nums[i];
-            nums[i] = nums[end];
-            nums[end] = tmp;
+        while (start < end) {
+            // Swap elements at start and end
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+
+            // Move towards the middle
+            start += 1;
+            end -= 1;
         }
+    }
+
+    /**
+     * There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
+     * You have a car and it costs cost[i] of gas to travel from the ith station to its next (i + 1)th station.
+     * You begin the journey with an empty tank at one of the gas stations.
+     * Given two integer arrays gas and cost,
+     * return the starting gas station's index if you can travel around the circuit once in the clockwise direction.
+     * gas =  [1,2,3,4,5]
+     * cost = [3,4,5,1,2]
+     * Output: 3
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        // At each gas station, you gain gas[i] amount of gas but spend cost[i] to travel to the next station.
+        // If the total gas available across all stations is less than the total cost,
+        // it's impossible to complete the circuit. This is why we calculate totalGas and totalCost.
+        // Use totalGas and totalCost to verify if the journey is feasible at all.
+
+        int totalGas = 0;
+        int totalCost = 0;
+
+        // Keep track of the current tank balance
+        int tank = 0;
+
+        // Variable to store the starting gas station index
+        int start = 0;
+
+        // Loop through all gas stations
+        for (int i = 0; i < gas.length; i++) {
+            // Add the current station's gas to the total gas
+            totalGas += gas[i];
+
+            // Add the current station's cost to the total cost
+            totalCost += cost[i];
+
+            // Update the current tank balance (gas[i] - cost[i])
+            tank += gas[i] - cost[i];
+
+            // If the tank balance becomes negative, it means we cannot reach the next station.
+            // If tank is negative at station i,
+            // it implies the sum of all stations between the current start and i is negative.
+            // Hence, it can be a valid starting point.
+            if (tank < 0) {
+                // Reset the starting point to the next station
+                start = i + 1;
+
+                // Reset the tank to 0 because we are starting fresh
+                tank = 0;
+            }
+        }
+
+        // After looping, check if total gas is at least equal to total cost
+        // If not, it's impossible to complete the circuit
+        return totalGas >= totalCost ? start : -1;
     }
 
     /**
@@ -658,11 +783,11 @@ public class ArrayQuestions {
      * Input: 5
      * Output:
      * [
-     *       [1],
-     *      [1,1],
-     *     [1,2,1],
-     *    [1,3,3,1],
-     *   [1,4,6,4,1]
+     * [1],
+     * [1,1],
+     * [1,2,1],
+     * [1,3,3,1],
+     * [1,4,6,4,1]
      * ]
      *
      * @param numRows
