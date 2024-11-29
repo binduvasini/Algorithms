@@ -15,7 +15,7 @@ public class QueueApproaches {
      * Implement a hit counter that records and returns the number of hits in the last 5 minutes.
      */
     static class HitCounter {
-        private Queue<Integer> queue;
+        Queue<Integer> queue;
 
         public HitCounter() {
             queue = new LinkedList<>();
@@ -24,8 +24,8 @@ public class QueueApproaches {
         /**
          * Record a hit.
          *
-         * @param timestamp - The current timestamp (in seconds granularity) and
-         *                  is strictly increasing, each new call to hit() will have a timestamp greater than or equal to previous calls
+         * @param timestamp - The current timestamp (in seconds granularity) and is strictly increasing.
+         *                    each new call to hit() will have a timestamp greater than or equal to previous calls
          */
         public void hit(int timestamp) {  //Runtime: O(1)
             queue.add(timestamp);
@@ -36,7 +36,8 @@ public class QueueApproaches {
          *
          * @param timestamp - The current timestamp (in seconds granularity).
          */
-        public int getHits(int timestamp) {//Runtime: O(n) where n is the number of hits we are removing from the queue.
+        public int getHits(int timestamp) {
+            // Runtime: O(n) where n is the number of hits we are removing from the queue.
             // Remove hits that are older than 5 minutes
             int oldTimestamp = timestamp - 300;  // 300 because 5 minutes means 300 seconds.
             while (!queue.isEmpty() && queue.peek() <= oldTimestamp) {
@@ -67,8 +68,8 @@ public class QueueApproaches {
         record Data(double value, long timestamp) {
         }
 
-        private final Queue<Data> queue;
-        private final long windowSizeInMillis;
+        Queue<Data> queue;
+        long windowSizeInMillis;
 
         public TimeBasedMovingAverage(long windowSizeInMillis) {
             this.queue = new LinkedList<>();
@@ -115,7 +116,6 @@ public class QueueApproaches {
             movingAverage.add(30);  // Adds 30 at a later timestamp
 
             System.out.println(movingAverage.getAverage()); // Calculates average of data points within the window
-
         */
     }
 

@@ -66,34 +66,6 @@ public class Heap {
     }
 
     /**
-     * Given an array, there is a sliding window of size k which is moving from left to right.
-     * Return the max in each sliding window.
-     * input: [1,3,-1,-3,5,3,6,7], and k = 3
-     * output: [3,3,5,5,6,7]
-     *
-     * @param nums
-     * @param k
-     * @return
-     */
-    public int[] maxInSlidingWindow(int[] nums, int k) {
-        // Maintain two pointers for the sliding window of size k.
-        int start = 0, end = k - 1;
-        List<Integer> result = new ArrayList<>();
-
-        while (end < nums.length) {
-            Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
-            for (int i = start; i <= end; i++) {
-                maxHeap.add(nums[i]);
-            }
-            result.add(maxHeap.remove());
-            start += 1;
-            end += 1;
-        }
-
-        return result.stream().mapToInt(i -> i).toArray();
-    }
-
-    /**
      * You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k.
      * Define a pair (u,v) which consists of one element from the first array and one element from the second array.
      * Find the k pairs (u1,v1),(u2,v2) ...(uk,vk) with the smallest sums.
@@ -110,8 +82,6 @@ public class Heap {
      * @return
      */
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
-        if (nums1.length == 0 || nums2.length == 0)
-            return new LinkedList<>();
         // The below declaration is equivalent to
         // new PriorityQueue<>((o1, o2) -> (o1.get(0) + o1.get(1)) - (o2.get(0) + o2.get(1)));
         Queue<List<Integer>> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> (o.get(0) + o.get(1))));

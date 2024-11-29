@@ -273,26 +273,36 @@ public class ArrayQuestions {
      * @param nums
      * @return
      */
-    public int longestConsecutiveSequence(int[] nums) {
-        // TreeSet automatically handles duplicates and sorts elements
-        Set<Integer> set = new TreeSet<>();
+    public int longestConsecutive(int[] nums) {  // Runtime: O(n).
+        // Use a HashSet to process only unique numbers from the input array.
+        // It also allows O(1) average time complexity for insertion and lookup.
+        Set<Integer> set = new HashSet<>();
 
-        for (int num : nums) {  //Populate the TreeSet with all the elements
+        // Add all elements to the HashSet.
+        for (int num : nums) {
             set.add(num);
         }
 
-        int currentLongest = 1, longest = 0;
+        int longest = 0;
 
         for (int num : set) {
-            if (set.contains(num + 1)) {
-                currentLongest += 1;
-            } else {  //if the TreeSet DOES NOT contain the next number, a new sequence begins.
+            // For each number in the set, we check if it is the start of a consecutive sequence.
+            if (!set.contains(num - 1)) {
+                int currentLongest = 1;  // This is the beginning of a sequence. So assign it to 1.
+                int currentNum = num;  // Need a temp variable to increment this current number.
+
+                // Check the next consecutive numbers until we can't find the next number in the sequence.
+                while (set.contains(currentNum + 1)) {
+                    currentLongest += 1;
+                    currentNum += 1;
+                }
+
+                // After processing the current sequence, update the overall longest.
                 longest = Math.max(longest, currentLongest);
-                currentLongest = 1;
             }
         }
+
         return longest;
-        // O(n log n), where n is the number of elements in nums. O(log n) complexity is for each insertion in TreeSet.
     }
 
     /**

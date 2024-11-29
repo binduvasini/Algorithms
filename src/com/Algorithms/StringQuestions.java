@@ -1,14 +1,6 @@
 package com.Algorithms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class StringQuestions {
 
@@ -22,21 +14,28 @@ public class StringQuestions {
      * @return
      */
     public int longestSubstringLengthWithoutRepeatingChars(String s) {  //Runtime: O(n)
+        // Sliding window with HashSet.
         int start = 0, end = 0;
-        int longest = 0;
-//        int longestStart = 0;  // If we need the actual substring
+
         Set<Character> set = new HashSet<>();
+
+        int longest = 0;
+        // int longestStart = 0;  // If we need the actual substring
+
         while (end < s.length()) {
+            // Expand the window.
+
             if (!set.contains(s.charAt(end))) {
                 // Check that this character is not a duplicate within the current window.
                 set.add(s.charAt(end));
 
-                // We are updating the longest here because this is the window that has unique characters.
+                // Update the longest here because this is the window that has unique characters.
                 if (end - start + 1 > longest) {
                     longest = end - start + 1;
-//                    longestStart = start;
+                    // longestStart = start;
                 }
-            } else {  // Shrink the window.
+            } else {
+                // Shrink the window.
                 set.remove(s.charAt(start));
                 start += 1;
             }
@@ -61,16 +60,19 @@ public class StringQuestions {
      * @return
      */
     public int longestSubstringLengthReplacingAtMostKChars(String s, int k) {
+        // Sliding window with frequency map.
         int start = 0, end = 0;
 
         // We need to find the most occurring character so that we will replace its neighboring k characters.
         Map<Character, Integer> frequencyMap = new HashMap<>();
+
         int maxFreq = 0;
         int longest = 0;
 
         while (end < s.length()) {
             // Expand the window.
             char endChar = s.charAt(end);
+            // Add the character at the 'end' pointer to the frequency map.
             frequencyMap.put(endChar, frequencyMap.getOrDefault(endChar, 0) + 1);
 
             // Within the window, keep track of the frequency of the most frequently occurring character.
@@ -79,12 +81,12 @@ public class StringQuestions {
 
             // How many characters in the current window are different from the most frequent character.
             int charsToReplace = end - start - maxFreq;
-
             if (charsToReplace > k) {
                 // If the number of characters that need to be replaced exceeds k,
                 // we cannot make all characters in the window the same with just k replacements.
                 // So shrink the window.
                 char startChar = s.charAt(start);
+                // Decrement the frequency of the character at the 'start' pointer.
                 frequencyMap.put(startChar, frequencyMap.get(startChar) - 1);
                 start += 1;
             }
@@ -103,26 +105,34 @@ public class StringQuestions {
      * @return
      */
     public int longestSubstringWithAtMostKDistinctChars(String s, int k) {
+        // Sliding window with frequency map.
         int start = 0, end = 0;
+
         Map<Character, Integer> frequencyMap = new HashMap<>();
 
         int longest = 0;
 
         while (end < s.length()) {
+            // Expand the window.
             char endChar = s.charAt(end);
+            // Add the character at the 'end' pointer to the frequency map.
             frequencyMap.put(endChar, frequencyMap.getOrDefault(endChar, 0) + 1);
             end += 1;
 
             // The size of the map represents the number of distinct characters in the current window.
-            // Has it exceeded k? Shrink the window.
+            // Has the distinct characters exceeded k?
             if (frequencyMap.size() > k) {
+                // Shrink the window.
                 char startChar = s.charAt(start);
+                // Decrement the frequency of the character at the 'start' pointer.
                 frequencyMap.put(startChar, frequencyMap.get(startChar) - 1);
+                // If the frequency becomes zero, remove the character from the map.
                 if (frequencyMap.get(startChar) == 0) {
                     frequencyMap.remove(startChar);
                 }
                 start += 1;
             }
+            // Update the longest.
             longest = Math.max(longest, end - start);
         }
         return longest;
@@ -138,23 +148,30 @@ public class StringQuestions {
      * @return
      */
     public List<Integer> findAnagramIndices(String s, String t) {
+        // Sliding window with frequency map for t.
         int start = 0, end = 0;
-        List<Integer> result = new LinkedList<>();
 
         Map<Character, Integer> tFreqMap = new HashMap<>();
+
+        // Populate the frequency map for 't' before starting the sliding window.
+        // This ensures that we have a reference to compare the window in 's' against.
         for (char tc : t.toCharArray()) {
             tFreqMap.put(tc, tFreqMap.getOrDefault(tc, 0) + 1);
         }
 
+        // Track the number of distinct characters in 't' that have been fully matched in the current window.
         int currentMatch = 0;
+        // The number of distinct characters in 't' we need to match fully.
         int requiredMatch = tFreqMap.size();
+
+        List<Integer> result = new LinkedList<>();
 
         while (end < s.length()) {
             // Expand the window.
             char endChar = s.charAt(end);
             if (tFreqMap.containsKey(endChar)) {
-                tFreqMap.put(endChar, tFreqMap.get(endChar) - 1);  //We finished visiting this character.
-                // Reduce the count in the map.
+                // Decrement the frequency of the character in the map as it is included in the current window.
+                tFreqMap.put(endChar, tFreqMap.get(endChar) - 1);
 
                 // Check if this character's count has reached zero; if so, it's fully matched
                 if (tFreqMap.get(endChar) == 0) {
@@ -296,20 +313,23 @@ public class StringQuestions {
      * @return
      */
     public boolean isPalindrome(String str) {
-        str = str.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        // Use two pointers: one starting from the beginning and one from the end.
+        int left = 0, right = str.length() - 1;
 
-        if (str.trim().equals(""))
-            return true;
+        // Continue checking while the pointers have not crossed each other.
+        while (left < right) {
+            // Compare characters at the current pointers.
+            if (str.charAt(left) != str.charAt(right)) {
+                // If characters do not match, it is not a palindrome.
+                return false;
+            }
+            // Move the pointers inward.
+            left++;
+            right--;
+        }
 
-        return isPalindrome(str, 0, str.length() - 1);
-    }
-
-    private boolean isPalindrome(String str, int start, int end) {
-        if (start >= end)
-            return true;
-        if (str.charAt(start) != str.charAt(end))
-            return false;
-        return isPalindrome(str, start + 1, end - 1);
+        // If all characters matched, it is a palindrome.
+        return true;
     }
 
     /**
@@ -678,21 +698,29 @@ public class StringQuestions {
      * @return
      */
     public String longestCommonPrefix(String[] strs) {
+        // Sort the array of strings.
+        // After sorting, the first and last strings will have the least and greatest lexicographical values.
         Arrays.sort(strs);
+
+        // The first string in the sorted array (smallest lexicographically).
         String first = strs[0];
+        // The last string in the sorted array (largest lexicographically).
         String last = strs[strs.length - 1];
 
+        // A pointer to track the length of the common prefix.
         int i = 0;
 
+        // Compare characters between the first and last strings.
+        // Stop when a mismatch is found.
         while (i < first.length()) {
             if (first.charAt(i) == last.charAt(i)) {
                 i += 1;
             } else {
-                break;
+                return first.substring(0, i);
             }
         }
 
-        return first.substring(0, i);
+        return "";
     }
 
     /**

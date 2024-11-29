@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ArrayPrefixSum {
+
     /**
      * Given an array of integers nums and a target,
      * find the total number of continuous subarray whose sum equals to target.
@@ -13,9 +14,9 @@ public class ArrayPrefixSum {
      * @return
      */
     public int totalNumberOfSubarrayWhoseSumEqualsTarget(int[] nums, int target) {
-        Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, frequency of this sum>
+        Map<Integer, Integer> map = new HashMap<>();  // map<prefixSum, frequency of this sum>
 
-        map.put(0, 1);  //To handle the prefixSum 0.
+        map.put(0, 1);  // To handle the prefixSum 0.
         // When we keep adding the elements, we may get the prefixSum of exact target value.
         // When we subtract this prefixSum with target, we will get 0. So there needs to be a key 0.
         // For eg, nums = [1, 2, 1, 3], target = 3.
@@ -48,8 +49,8 @@ public class ArrayPrefixSum {
      */
     public boolean isSubarrayDivisibleByK(int[] nums, int k) {
         int prefixSum = 0;
-        Map<Integer, Integer> map = new HashMap<>();  //map<remainder, index>
-        map.put(0, -1);  //To handle the remainder 0
+        Map<Integer, Integer> map = new HashMap<>();  // map<remainder, index>
+        map.put(0, -1);  // To handle the remainder 0
 
         for (int i = 0; i < nums.length; i++) {
             prefixSum += nums[i];
@@ -57,8 +58,9 @@ public class ArrayPrefixSum {
 
             if (map.containsKey(remainder)) {
                 int prefixIndex = map.get(remainder);
-                if (i - prefixIndex >= 2)  //As the question suggests, check if the subarray size is at least 2.
+                if (i - prefixIndex >= 2) {  // As the question suggests, check if the subarray size is at least 2.
                     return true;
+                }
             } else {
                 map.put(remainder, i);
             }
@@ -78,15 +80,15 @@ public class ArrayPrefixSum {
     public int subarrayCountDivisibleByK(int[] nums, int k) {
         int prefixSum = 0;
         int count = 0;
-        Map<Integer, Integer> map = new HashMap<>();  //map<remainder, frequency of this remainder>
-        map.put(0, 1);  //To handle the remainder 0
+        Map<Integer, Integer> map = new HashMap<>();  // map<remainder, frequency of this remainder>
+        map.put(0, 1);  // To handle the remainder 0
 
         for (int num : nums) {
             prefixSum += num;
             int remainder = prefixSum % k;
 
             remainder = (remainder < 0) ? remainder + k : remainder;
-            //When the array contains negative elements.
+            // When the array contains negative elements.
             // Dividing negative will yield a negative remainder. To fix that, add k to make it positive.
             // All the remainders will repeat as a cycle up to a number less than k.
 
@@ -111,11 +113,11 @@ public class ArrayPrefixSum {
         // To achieve this, we add 1 for every 1 in the array, we subtract 1 for every 0 in the array.
         int prefixSum = 0;
         int maxLen = 0;
-        Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, index>
+        Map<Integer, Integer> map = new HashMap<>();  // map<prefixSum, index>
         map.put(0, -1);
 
         for (int i = 0; i < nums.length; i++) {
-            int num = nums[i] == 0 ? -1 : 1;  //Replace every 0 in the array with -1
+            int num = nums[i] == 0 ? -1 : 1;  // Replace every 0 in the array with -1
             prefixSum += num;
 
             if (map.containsKey(prefixSum)) {
@@ -139,7 +141,7 @@ public class ArrayPrefixSum {
      * @return
      */
     public int longestWPI(int[] hours) {
-        //This is similar to the above problem. We transform this problem to finding the cumulative sum.
+        // This is similar to the above problem. We transform this problem to finding the cumulative sum.
         int prefixSum = 0;
         int maxLen = 0;
 
@@ -163,7 +165,7 @@ public class ArrayPrefixSum {
                     int prefixIndex = map.get(prefixSum - 1);
                     maxLen = Math.max(maxLen, i - prefixIndex);
                 }
-                map.putIfAbsent(prefixSum, i);  //We are populating the map with prefixSum.
+                map.putIfAbsent(prefixSum, i);  // We are populating the map with prefixSum.
                 // So do it without the else condition.
             }
         }
@@ -221,6 +223,6 @@ public class ArrayPrefixSum {
             sum += num;
         }
 
-        return maxSum > 0 ? Math.max(maxSum, sum - minSum) : maxSum;  //Total sum - minimum subarray sum in the middle.
+        return maxSum > 0 ? Math.max(maxSum, sum - minSum) : maxSum;  // Total sum - minimum subarray sum in the middle.
     }
 }

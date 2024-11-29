@@ -6,72 +6,6 @@ import java.util.*;
 public class StackApproaches {
 
     /**
-     * For every element in the array, find its next greater element print it in this value’s position or print -1.
-     * The Next greater element of a number is the first greater number to its right.
-     * Input: [4, 1, 6, 5, 9, 3, 2, 7]
-     * Output: [6, 6, 9, 9, -1, 7, 7, -1]
-     *
-     * @param nums
-     * @return
-     */
-    public int[] nextGreaterElementsWithoutDuplicates(int[] nums) {
-        int[] nextGreaterElements = new int[nums.length];
-        Deque<Integer> stack = new ArrayDeque<>();  //Use ArrayDeque class which will
-        // restrict the access to one of the ends, instead of Stack (that offers search & elementAt)
-        Map<Integer, Integer> map = new HashMap<>();
-
-        for (int num : nums) {
-            while (!stack.isEmpty() && num >= stack.peek()) {
-                map.put(stack.pop(), num);
-            }
-            stack.push(num);
-        }
-
-        for (int i = 0; i < nums.length; i++) {
-            nextGreaterElements[i] = map.getOrDefault(nums[i], -1);
-        }
-
-        return nextGreaterElements;
-    }
-
-    /**
-     * Given a circular array (the next element of the last element is the first element of the array),
-     * print the Next Greater Number for every element.
-     * The Next Greater Number of a number x is the first greater number to its traversing-order next in the array,
-     * which means you could search circularly to find its next greater number.
-     * If it doesn't exist, output -1 for this number.
-     * Example 1:
-     * Input: [1,2,1]
-     * Output: [2,-1,2]
-     * Explanation: The first 1's next greater number is 2;
-     * The number 2 can't find next greater number;
-     * The second 1's next greater number needs to search circularly, which is also 2.
-     *
-     * @param nums
-     * @return
-     */
-    public int[] nextGreaterElementsWithDuplicates(int[] nums) {
-        int[] nextGreaterElements = new int[nums.length];
-        Deque<int[]> stack = new ArrayDeque<>();  //[index, number]
-        Map<Integer, Integer> map = new HashMap<>();
-        int n = nums.length;
-
-        for (int i = 0; i < 2 * n; i++) {
-            int num = nums[i % n];
-            while (!stack.isEmpty() && num > stack.peek()[1]) {
-                map.put(stack.pop()[0], num);
-            }
-            stack.push(new int[]{i, num});
-        }
-
-        for (int i = 0; i < n; i++) {
-            nextGreaterElements[i] = map.getOrDefault(i, -1);
-        }
-
-        return nextGreaterElements;
-    }
-
-    /**
      * Given a string s containing just the characters '(', ')', '{', '}', '[' and ']',
      * determine if the input string is valid.
      * An input string is valid if:
@@ -83,8 +17,12 @@ public class StackApproaches {
      * @return
      */
     public boolean isValidParentheses(String s) {
+        // Use a stack to keep track of the expected closing parentheses
         Deque<Character> stack = new ArrayDeque<>();
+
+        // Iterate through each character in the string
         for (char c : s.toCharArray()) {
+            // If the character is an opening bracket, push the corresponding closing bracket onto the stack
             if (c == '(')
                 stack.push(')');
             else if (c == '{')
@@ -92,10 +30,17 @@ public class StackApproaches {
             else if (c == '[')
                 stack.push(']');
             else if (stack.isEmpty() || stack.pop() != c)
+                // If the character is a closing bracket, check:
+                // 1. Stack should not be empty (ensures matching opening bracket exists).
+                // 2. The top of the stack must match the current closing bracket.
+                // If either condition fails, the parentheses are invalid.
                 return false;
         }
+
+        // After processing all characters, the stack should be empty for the parentheses to be valid.
         return stack.isEmpty();
     }
+
 
     /**
      * Given a string containing only three types of characters: '(', ')'
@@ -110,31 +55,80 @@ public class StackApproaches {
      *
      */
     public boolean checkValidParenthesesWithWildcard(String s) {
+        // A Stack to keep track of indices of '(' (opening parentheses)
         Deque<Integer> openStack = new ArrayDeque<>();
+        // A Stack to keep track of indices of '*' (wildcards)
         Deque<Integer> starStack = new ArrayDeque<>();
 
+        // Iterate through the string character by character
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (c == '(')
+                // Push the index of '(' onto the openStack
                 openStack.push(i);
             else if (c == '*')
+                // Push the index of '*' onto the starStack
                 starStack.push(i);
             else {
+                // If the current character is ')', try to match it:
                 if (!openStack.isEmpty())
+                    // Prefer matching with the nearest '('
                     openStack.pop();
                 else if (!starStack.isEmpty())
+                    // Otherwise, match with the nearest '*' (treated as '(')
                     starStack.pop();
                 else
+                    // If neither '(' nor '*' is available to match, the string is invalid
                     return false;
             }
         }
 
+        // Handle any unmatched '(' after the main loop
         while (!openStack.isEmpty() && !starStack.isEmpty()) {
+            // Ensure that each unmatched '(' has a corresponding '*' after it in the string
+            // If the index of '(' is greater than the index of '*', it can't be matched
             if (openStack.pop() > starStack.pop())
                 return false;
         }
 
+        // If there are still unmatched '(', the string is invalid
         return openStack.isEmpty();
+    }
+
+    public int longestValidParentheses(String s) {
+        // The stack stores indices of unmatched '(' characters. Each '(' index is pushed onto the stack.
+        // For ), the top of the stack is popped, and
+        // the length of the valid substring is calculated using the
+        // difference between the current index and the index at the top of the stack.
+        Stack<Integer> stack = new Stack<>();
+        stack.push(-1); // Initialize with -1 as a base index
+        // Push -1 initially to handle cases where the valid substring starts at the beginning of the string.
+        // For example, in the string "()", stack.peek will give -1, and the length will be: 1−(−1)=2
+
+        int longest = 0;
+
+        // Examine each character in the string.
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (c == '(') {
+                // Push index of '('. This keeps track of where potential valid substrings might start.
+                stack.push(i);
+            } else {
+                stack.pop(); // Pop the top
+
+                if (stack.isEmpty()) {
+                    // If stack is empty, push current index as the new base
+                    stack.push(i);
+                } else {
+                    // Calculate the length of the valid substring
+                    longest = Math.max(longest, i - stack.peek());
+                    // The stack is not empty. It already has the base reference for the next valid substring.
+                }
+            }
+        }
+
+        return longest;
     }
 
     /**
@@ -148,16 +142,16 @@ public class StackApproaches {
      * @return
      */
     public int[] dailyTemperatures(int[] temperatures) {
-        int[] output = new int[temperatures.length];
-
         // Initialize a stack to store the index, where the index is the day index.
         Deque<Integer> stack = new ArrayDeque<>();
+
+        int[] output = new int[temperatures.length];
 
         // Loop through the array of temperatures
         for (int i = 0; i < temperatures.length; i++) {
             int currTemp = temperatures[i];
 
-            //Dig into the stack only when the current temperature is warmer than the immediate previous temperature
+            // When the current temperature is warmer than the immediate previous temperature
             while (!stack.isEmpty() && currTemp > temperatures[stack.peek()]) {
                 // Pop the previous day's indices.
                 int prevIndex = stack.pop();
@@ -421,5 +415,63 @@ public class StackApproaches {
         public int getMin() {
             return minStack.peek();
         }
+    }
+
+    /**
+     * Decode an encoded string.
+     * The encoding rule is: k[encoded_string],
+     * where the encoded_string inside the square brackets is repeated exactly k times.
+     * Input: "3[a]2[bc]"
+     * Output: "aaabcbc"
+     *
+     * @param s
+     * @return
+     */
+    public String decodeString(String s) {
+        // Stack to store the strings
+        Stack<String> strStack = new Stack<>();
+        // Stack to store the repeat counts
+        Stack<Integer> numStack = new Stack<>();
+        // StringBuilder to build the current substring
+        StringBuilder currentStr = new StringBuilder();
+        // Variable to build the current number
+        int currentNum = 0;
+
+        // Traverse each character in the input string
+        for (char c : s.toCharArray()) {
+            if (Character.isDigit(c)) {
+                // If the character is a digit, update the currentNum
+                // This handles multi-digit numbers by shifting digits left (e.g., "23" -> 23)
+                currentNum = currentNum * 10 + (c - '0');
+            } else if (c == '[') {
+                // When encountering '[', push the currentNum and currentStr to their stacks
+                // Save state before processing the nested/inner string
+                numStack.push(currentNum); // Push repeat count
+                strStack.push(currentStr.toString()); // Push the string built so far
+
+                // Reset currentNum and currentStr for the new block
+                currentNum = 0;
+                currentStr = new StringBuilder();
+            } else if (c == ']') {
+                // When encountering ']', finish processing the current block
+                // Pop the repeat count and the previous string from their stacks
+                int repeatTimes = numStack.pop(); // Get the multiplier
+                StringBuilder temp = new StringBuilder(strStack.pop()); // Get the string built before this block
+
+                // Append the currentStr repeated 'repeatTimes' to the previous string
+                for (int i = 0; i < repeatTimes; i++) {
+                    temp.append(currentStr);
+                }
+
+                // Update currentStr to the decoded string for this block
+                currentStr = temp;
+            } else {
+                // If the character is a letter, append it to the currentStr
+                currentStr.append(c);
+            }
+        }
+
+        // Return the fully decoded string
+        return currentStr.toString();
     }
 }

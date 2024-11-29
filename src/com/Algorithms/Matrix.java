@@ -65,8 +65,9 @@ public class Matrix {
         for (int[] rows : matrix) {
             for (int value : rows) {
                 maxHeap.add(value);
-                if (maxHeap.size() > k)
+                if (maxHeap.size() > k) {
                     maxHeap.remove();
+                }
             }
         }
         return maxHeap.remove();
@@ -74,28 +75,45 @@ public class Matrix {
 
     /**
      * Given an integer target, return true if target is in matrix or false otherwise.
+     * Each row is sorted.
+     * The first integer of each row is greater than the last integer of the previous row.
      * Binary search.
      *
      * @param matrix
      * @param target
      * @return
      */
-    public boolean searchMatrix(int[][] matrix, int target) {  //Runtime: O(n + m)
-        if (matrix.length == 0)
-            return false;
+    public boolean searchMatrix(int[][] matrix, int target) {  //Runtime: O(log(n•m))
+        int n = matrix.length;      // Number of rows
+        int m = matrix[0].length;   // Number of columns
 
-        int row = 0;
-        int col = matrix[0].length - 1;  //Start from the top right corner
+        // Consider this problem as a flattened sorted list.
+        int lo = 0;
+        int hi = n * m - 1;
 
-        while (row < matrix.length && col >= 0) {
-            if (target == matrix[row][col])
+        // Perform binary search
+        while (lo <= hi) {
+            // Calculate the middle index in the "flattened" 1D array
+            int mid = lo + (hi - lo) / 2;
+
+            // Convert the "flattened" mid index to 2D matrix row and column
+            int midValue = matrix[mid / m][mid % m];
+
+            // If the middle element equals the target, return true
+            if (midValue == target) {
                 return true;
-            else if (target < matrix[row][col])
-                col -= 1;  //Go left
-            else
-                row += 1;  //Go down
+            }
+            // If the target is smaller than the middle value, adjust the search space to the left half
+            else if (target < midValue) {
+                hi = mid - 1;
+            }
+            // If the target is larger than the middle value, adjust the search space to the right half
+            else {
+                lo = mid + 1;
+            }
         }
 
+        // If the target is not found, return false
         return false;
     }
 
