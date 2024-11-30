@@ -23,28 +23,39 @@ public class Backtracking {
      * @param nums
      * @return
      */
-    public List<List<Integer>> subsetsWithoutDup(int[] nums) {
-        List<Integer> tmp = new ArrayList<>();
-        List<List<Integer>> resultList = new ArrayList<>();
-        Arrays.sort(nums);
-        subsetsWithoutDup(resultList, tmp, nums, 0);
-        return resultList;
+    public List<List<Integer>> subsetsUniqueElements(int[] nums) {  // Runtime: O(n • 2^n)
+        // We are copying the subset to a new list object. The runtime for that step is O(n)
+
+        List<Integer> currentSubset = new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        subsets(result, currentSubset, nums, 0);
+        return result;
     }
 
-    private void subsetsWithoutDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int pointer) {
-        resultList.add(new ArrayList<>(tmp));
+    private void subsets(List<List<Integer>> result, List<Integer> currentSubset, int[] nums, int pointer) {
+        // Start with an empty subset.
+        // Add the current subset to the result.
+        result.add(new ArrayList<>(currentSubset));
 
+        // For each number, decide whether to include it in the current subset.
         for (int i = pointer; i < nums.length; i++) {
-            tmp.add(nums[i]); //include the current element
-            subsetsWithoutDup(resultList, tmp, nums, i + 1);  //the pointer increases to the size of
-            // the input array and then comes down to 0.
-            tmp.remove(tmp.size() - 1); //when recursion comes back (pointer decrementing one by one),
-            // we are backtracking. don't include the current element.
+
+            // Include the current element
+            currentSubset.add(nums[i]);
+
+            // The pointer defines the current position in the array and
+            // ensures that the subsequent numbers explored step by step.
+            // So now, move to the next element.
+            subsets(result, currentSubset, nums, i + 1);
+            // The pointer increases to the size of the input array and then comes down to 0 in recursion.
+
+            // Remove the last added element (backtrack) to try another subset.
+            currentSubset.remove(currentSubset.size() - 1);
         }
     }
 
     /**
-     * Given a collection of integers that might contain duplicates, nums, return all possible subsets (the power set).
+     * Given a collection of integers that contain duplicates, return all possible subsets (the power set).
      * Input: [1,2,2]
      * Output:
      * [
@@ -59,24 +70,33 @@ public class Backtracking {
      * @param nums
      * @return
      */
-    public List<List<Integer>> subsetsWithDup(int[] nums) {
-        List<Integer> tmp = new ArrayList<>();
-        List<List<Integer>> resultList = new ArrayList<>();
+    public List<List<Integer>> subsetsWithDup(int[] nums) {  // Runtime: O(n • 2^n + n log n)
+        List<Integer> currentSubset = new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+
+        // Sorting is required to group duplicate elements together.
+        // This ensures we can skip duplicates easily during backtracking.
         Arrays.sort(nums);
-        subsetsWithDup(resultList, tmp, nums, 0);
-        return resultList;
+
+        subsetsWithDup(result, currentSubset, nums, 0);
+        return result;
     }
 
-    private void subsetsWithDup(List<List<Integer>> resultList, List<Integer> tmp, int[] nums, int pointer) {
-        resultList.add(new ArrayList<>(tmp));
+    private void subsetsWithDup(List<List<Integer>> result, List<Integer> currentSubset, int[] nums, int pointer) {
+        // Add the current subset to the result
+        result.add(new ArrayList<>(currentSubset));
 
         for (int i = pointer; i < nums.length; i++) {
+            // Skip duplicates: only process the first occurrence of each number in this position
             if (i > pointer && nums[i] == nums[i - 1])
                 continue;
 
-            tmp.add(nums[i]);
-            subsetsWithDup(resultList, tmp, nums, i + 1);
-            tmp.remove(tmp.size() - 1);
+            // Include the current element
+            currentSubset.add(nums[i]);
+            // Move to the next element
+            subsetsWithDup(result, currentSubset, nums, i + 1);
+            // Remove the last added element (backtrack)
+            currentSubset.remove(currentSubset.size() - 1);
         }
     }
 
@@ -181,8 +201,8 @@ public class Backtracking {
     }
 
     private void parentheses(int n, String str, int open, int close, List<String> result) {
+        // When the length of the current string reaches 2*n (which means it's complete), add it to the result list.
         if (str.length() == 2 * n) {
-            //When the length of the current string reaches 2*n (which means it's complete), add it to the result list.
             result.add(str);
             return;
         }
@@ -193,6 +213,64 @@ public class Backtracking {
 
         if (close < open) {
             parentheses(n, str + ")", open, close + 1, result);
+        }
+    }
+
+    /**
+     * Given a string containing digits from 2-9 inclusive,
+     * return all possible letter combinations that the number could represent.
+     * digits = "23"
+     * Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+     *
+     * @param digits
+     * @return
+     */
+    public List<String> letterCombinations(String digits) {
+        // Mapping of digits to corresponding letters using a HashMap
+        Map<Character, String> digitToLetters = new HashMap<>();
+        digitToLetters.put('2', "abc");
+        digitToLetters.put('3', "def");
+        digitToLetters.put('4', "ghi");
+        digitToLetters.put('5', "jkl");
+        digitToLetters.put('6', "mno");
+        digitToLetters.put('7', "pqrs");
+        digitToLetters.put('8', "tuv");
+        digitToLetters.put('9', "wxyz");
+
+        // List to store the result
+        List<String> result = new ArrayList<>();
+
+        // Start the backtracking process
+        backtrack(result, digits, digitToLetters, new StringBuilder(), 0);
+
+        return result;
+    }
+
+    private void backtrack(
+            List<String> result, String digits, Map<Character, String> digitToLetters, StringBuilder current, int index)
+    {
+        // Base case: if the current combination is complete
+        if (index == digits.length()) {
+            result.add(current.toString());
+            return;
+        }
+
+        // Get the current digit
+        char digit = digits.charAt(index);
+
+        // Get the letters corresponding to the current digit
+        String letters = digitToLetters.get(digit);
+
+        // Explore each letter
+        for (char letter : letters.toCharArray()) {
+            // Add the letter to the current combination
+            current.append(letter);
+
+            // Recursively process the next digit
+            backtrack(result, digits, digitToLetters, current, index + 1);
+
+            // Backtrack: remove the last letter to try the next option
+            current.deleteCharAt(current.length() - 1);
         }
     }
 
@@ -343,66 +421,34 @@ public class Backtracking {
      * @param nums
      * @return
      */
-    public List<List<Integer>> permute(int[] nums) {
-        //Runtime: O(n!)
+    public List<List<Integer>> permute(int[] nums) {  // Runtime: O(n•n!)
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> permutation = new ArrayList<>();
-        Set<Integer> visited = new HashSet<>();
 
-        permute(nums, visited, permutation, result);
+        // We want to try every number in every position.
+        // Instead of an index, track whether a number has been used by checking if it's already in the permutation list
+        permute(nums, permutation, result);
         return result;
     }
 
-    private void permute(int[] nums, Set<Integer> visited, List<Integer> permutation, List<List<Integer>> result) {
+    private void permute(int[] nums, List<Integer> permutation, List<List<Integer>> result) {
+        // If the permutation size is equal to the array length, we have formed a valid permutation.
         if (permutation.size() == nums.length) {
             result.add(new ArrayList<>(permutation));
             return;
         }
 
         for (int num : nums) {
-            if (visited.contains(num)) {
+            // Skip numbers that are already in the permutation list to avoid duplicates
+            if (permutation.contains(num)) {
                 continue;
             }
+            // Choose the current element.
             permutation.add(num);
-            visited.add(num);
-            permute(nums, visited, permutation, result);
-            visited.remove(num);
+            // Recur and continue building the permutation
+            permute(nums, permutation, result);
+            // Remove the last added element.
             permutation.remove(permutation.size() - 1);
-        }
-    }
-
-    /**
-     * Given a collection of distinct integers, return all possible permutations.
-     * Input: [1,2,3]
-     * Output:
-     * [
-     * [1,2,3],
-     * [1,3,2],
-     * [2,1,3],
-     * [2,3,1],
-     * [3,1,2],
-     * [3,2,1]
-     * ]
-     *
-     * @param nums
-     * @return
-     */
-    public List<List<Integer>> permuteDistinctNumbers(int[] nums) {
-        List<Integer> tmp = new ArrayList<>();
-        List<List<Integer>> resultList = new ArrayList<>();
-        permuteUtil(nums, tmp, resultList);
-        return resultList;
-    }
-
-    private void permuteUtil(int[] nums, List<Integer> tmp, List<List<Integer>> resultList) {
-        if (tmp.size() == nums.length)
-            resultList.add(new ArrayList<>(tmp));
-        for (int num : nums) {
-            if (tmp.contains(num))
-                continue;
-            tmp.add(num);
-            permuteUtil(nums, tmp, resultList);
-            tmp.remove(tmp.size() - 1);
         }
     }
 
@@ -415,6 +461,7 @@ public class Backtracking {
      *   [1,2,1],
      *   [2,1,1]
      * ]
+     *
      * @param nums
      * @return
      */
