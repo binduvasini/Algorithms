@@ -113,76 +113,52 @@ public class Backtracking {
      * @param s
      * @return
      */
-    public List<List<String>> palindromePartition(String s) {
-        List<String> tmp = new ArrayList<>();
-        List<List<String>> resultList = new ArrayList<>();
-        char[] sChar = s.toCharArray();  //Do not sort the array for this question.
-        partitionWithoutDup(resultList, tmp, sChar, 0);
-        return resultList;
+    public List<List<String>> palindromePartition(String s) {  // Runtime: O(n•2^n)
+        // Backtrack to explore all possible ways to split the string and check whether each substring is a palindrome.
+        // At each step, we try all possible substrings starting from the current index and check if it's a palindrome.
+        List<String> partition = new ArrayList<>();
+        List<List<String>> result = new ArrayList<>();
+        partition(s, 0, partition, result);
+        return result;
     }
 
-    private void partitionWithoutDup(List<List<String>> resultList, List<String> tmp, char[] sChar, int pointer) {
-        if (pointer == sChar.length)  //Add the list only when we consider all the characters in the given string
-            resultList.add(new ArrayList<>(tmp));
+    private void partition(String s, int start, List<String> partition, List<List<String>> result) {
+        // If we've reached the end of the string, add the current partition to the result
+        if (start == s.length()) {
+            // Add the current partition to the result
+            result.add(new ArrayList<>(partition));
+            return;
+        }
 
-        StringBuilder builder = new StringBuilder();
+        // Try all possible substrings starting from the index 'start'
+        for (int end = start; end < s.length(); end++) {
+            // Check if the substring s[start...end] is a palindrome
+            if (isPalindrome(s, start, end)) {
+                // If it's a palindrome, add it to the current partition
+                partition.add(s.substring(start, end + 1));
 
-        for (int i = pointer; i < sChar.length; i++) {
-            builder.append(sChar[i]);
-            if (isPalindrome(builder.toString(), 0, builder.length() - 1)) {
-                tmp.add(builder.toString());
-                //At some point i + 1 will be the length of sChar.
-                partitionWithoutDup(resultList, tmp, sChar, i + 1);
-                tmp.remove(tmp.size() - 1);
+                // Recursively partition the remaining substring after this palindrome
+                partition(s, end + 1, partition, result);
+
+                // Remove the last added palindrome
+                partition.remove(partition.size() - 1);
             }
         }
     }
 
-    private boolean isPalindrome(String str, int start, int end) {
-        if (start >= end)
-            return true;
-        if (str.charAt(start) != str.charAt(end))
-            return false;
-        return isPalindrome(str, start + 1, end - 1);
-    }
-
-    /**
-     * Given a string S,
-     * we can transform every letter individually to be lowercase or uppercase to create another string.
-     * Return a list of all possible strings we could create.
-
-     * Examples:
-     * Input: S = "a1b2"
-     * Output: ["a1b2", "a1B2", "A1b2", "A1B2"]
-
-     * Input: S = "3z4"
-     * Output: ["3z4", "3Z4"]
-
-     * Input: S = "12345"
-     * Output: ["12345"]
-     *
-     * @param S
-     * @return
-     */
-    List<String> permutations = new ArrayList<>();
-    public List<String> letterCasePermutation(String S) {
-        char[] sChar = S.toCharArray();
-        permuteUtil(sChar, 0);
-        return permutations;
-    }
-
-    private void permuteUtil(char[] sChar, int pointer) {
-        if (pointer == sChar.length) {
-            permutations.add(String.valueOf(sChar));
-        }
-        else {
-            if (Character.isLetter(sChar[pointer])) {
-                sChar[pointer] = Character.toLowerCase(sChar[pointer]);
-                permuteUtil(sChar, pointer + 1);
-                sChar[pointer] = Character.toUpperCase(sChar[pointer]);
+    private boolean isPalindrome(String s, int left, int right) {
+        // Check characters from both ends towards the center
+        while (left < right) {
+            // If characters don't match, it's not a palindrome
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
             }
-            permuteUtil(sChar, pointer + 1);
+
+            // Move the pointers inward
+            left++;
+            right--;
         }
+        return true;
     }
 
     /**
@@ -193,24 +169,33 @@ public class Backtracking {
      * @param n
      * @return
      */
-    public List<String> generateParentheses(int n) {
+    public List<String> generateParentheses(int n) {  // Runtime: O(4^n)
         // Not a backtrack problem. More of a recursion.
         List<String> result = new ArrayList<>();
+
+        // We maintain two counts:
+        // open: The number of opening parentheses ( added so far.
+        // close: The number of closing parentheses ) added so far.
+
+        // Start recursion with an empty string, 0 open parentheses, and 0 close parentheses
         parentheses(n, "", 0, 0, result);
         return result;
     }
 
     private void parentheses(int n, String str, int open, int close, List<String> result) {
-        // When the length of the current string reaches 2*n (which means it's complete), add it to the result list.
+        // When the length of the current string reaches 2*n,
+        // we have a complete valid combination of parentheses. Add it to the result list.
         if (str.length() == 2 * n) {
             result.add(str);
             return;
         }
 
+        // If we can still add an opening parenthesis, do so
         if (open < n) {
             parentheses(n, str + "(", open + 1, close, result);
         }
 
+        // Add a closing parenthesis if there are more opening parentheses than closing parentheses so far.
         if (close < open) {
             parentheses(n, str + ")", open, close + 1, result);
         }
@@ -292,7 +277,7 @@ public class Backtracking {
      * @return
      */
     public List<List<Integer>> combinationSumRepeatAllowed(int[] nums, int target) {
-        // Runtime: O(2^target)
+        // Runtime: O(2^n)
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> combination = new ArrayList<>();
         combinationSumRepeatAllowed(nums, target, combination, 0, result);
@@ -309,14 +294,16 @@ public class Backtracking {
         }
 
         for (int i = pointer; i < nums.length; i++) {
-            // If the candidate exceeds the target, skip it (not necessary for combinations)
+            // If the candidate exceeds the remaining target, skip it (not necessary for combinations)
             if (nums[i] > target) {
                 continue;
             }
             combination.add(nums[i]);  // Choose the candidate
-            combinationSumRepeatAllowed(nums, target - nums[i], combination, i, result);
+
             // We consider the same element over and over.
             // That's why we pass the same index to the recursion.
+            combinationSumRepeatAllowed(nums, target - nums[i], combination, i, result);
+
             combination.remove(combination.size() - 1);
         }
     }
@@ -341,6 +328,8 @@ public class Backtracking {
     public List<List<Integer>> combinationSumRepeatNotAllowed(int[] nums, int target) {
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> combination = new ArrayList<>();
+
+        // Sorting is required to group duplicate elements together.
         Arrays.sort(nums);
         combinationSumRepeatNotAllowed(nums, target, 0, combination, result);
         return result;
@@ -349,15 +338,23 @@ public class Backtracking {
     private void combinationSumRepeatNotAllowed(
             int[] nums, int target, int pointer, List<Integer> combination, List<List<Integer>> result
     ) {
-        if (target < 0)
-            return;
-
-        if (target == 0)
+        if (target == 0) {
             result.add(new ArrayList<>(combination));
+            return;
+        }
 
         for (int i = pointer; i < nums.length; i++) {
-            if (i > pointer && nums[i] == nums[i - 1])
+            // Skip duplicates: if the current number is the same as the previous one, skip it
+            if (i > pointer && nums[i] == nums[i - 1]) {
                 continue;
+            }
+
+            // No need to continue if the current number is greater than the remaining target.
+            // Exit the loop early. No further valid candidates exist once the current candidate exceeds the target.
+            // The array is sorted already.
+            if (nums[i] > target) {
+                break;
+            }
 
             combination.add(nums[i]);
             combinationSumRepeatNotAllowed(nums, target - nums[i], i + 1, combination, result);
@@ -450,91 +447,5 @@ public class Backtracking {
             // Remove the last added element.
             permutation.remove(permutation.size() - 1);
         }
-    }
-
-    /**
-     * Given a collection of numbers that might contain duplicates, return all possible unique permutations.
-     * Input: [1,1,2]
-     * Output:
-     * [
-     *   [1,1,2],
-     *   [1,2,1],
-     *   [2,1,1]
-     * ]
-     *
-     * @param nums
-     * @return
-     */
-    public List<List<Integer>> permuteDuplicateNumbers(int[] nums) {
-        List<Integer> tmp = new ArrayList<>();
-        List<List<Integer>> resultList = new ArrayList<>();
-        boolean[] visited = new boolean[nums.length];
-        permuteUtil(nums, tmp, resultList, visited);
-        return resultList;
-    }
-
-    private void permuteUtil(int[] nums, List<Integer> tmp, List<List<Integer>> resultList, boolean[] visited) {
-        if (tmp.size() == nums.length && !resultList.contains(tmp))
-            resultList.add(new ArrayList<>(tmp));
-
-        for (int i = 0; i < nums.length; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                tmp.add(nums[i]);
-                permuteUtil(nums, tmp, resultList, visited);
-                tmp.remove(tmp.size() - 1);
-                visited[i] = false;
-            }
-        }
-    }
-
-    /**
-     * The set [1,2,3,...,n] contains a total of n! unique permutations.
-     * By listing and labeling all the permutations in order, we get the following sequence for n = 3:
-     * "123"
-     * "132"
-     * "213"
-     * "231"
-     * "312"
-     * "321"
-     * Given n and k, return the kth permutation sequence.
-
-     * Note:
-     * Given n will be between 1 and 9 inclusive.
-     * Given k will be between 1 and n! inclusive.
-
-     * Input: n = 3, k = 3
-     * Output: "213"
-     *
-     * @param n
-     * @param k
-     * @return
-     */
-    public String getPermutation(int n, int k) {
-        StringBuilder builder = new StringBuilder();
-        boolean[] visited = new boolean[n + 1];
-        return permuteUtil(n, builder, visited, k);
-    }
-    int count = 0;
-    private String permuteUtil(int n, StringBuilder builder, boolean[] visited, int k) {
-        if (builder.length() == n) {
-            count += 1;
-            if (count == k) {
-                return builder.toString();
-            }
-        }
-        for (int num = 1; num <= n; num++) {
-            if (!visited[num]) {
-                visited[num] = true;
-
-                String ss = permuteUtil(n, builder.append(num), visited, k);
-                if (ss != null)
-                    return ss;
-
-                builder.setLength(builder.length() - 1);
-                visited[num] = false;
-            }
-        }
-        return null;
     }
 }
