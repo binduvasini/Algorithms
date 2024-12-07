@@ -153,7 +153,9 @@ public class GraphQuestions {
         return courseOrder.stream().mapToInt(i -> i).toArray();
     }
 
-    private boolean dfsCycleCheck(Integer course, Set<Integer> visited, Set<Integer> visiting, Deque<Integer> courseOrder) {
+    private boolean dfsCycleCheck(
+            Integer course, Set<Integer> visited, Set<Integer> visiting, Deque<Integer> courseOrder
+    ) {
         visited.add(course);
         visiting.add(course); //To detect a cycle
         if (graph.containsKey(course)) {
@@ -196,9 +198,11 @@ public class GraphQuestions {
      * @return
      */
     public int[][] floodFill(int[][] image, int startRow, int startCol, int newColor) {
+        // Store the original color of the starting pixel
         int origColor = image[startRow][startCol];
 
         if (origColor != newColor) {
+            // Start the DFS to fill the region
             dfs(image, startRow, startCol, origColor, newColor);
         }
 
@@ -206,16 +210,20 @@ public class GraphQuestions {
     }
 
     private void dfs(int[][] image, int r, int c, int origColor, int newColor) {
+        // Check if the current pixel is out of bounds
         if (r < 0 || r >= image.length || c < 0 || c >= image[0].length) {
             return;
         }
 
+        // If the current pixel's color is not the original color, stop recursion
         if (image[r][c] != origColor) {
             return;
         }
 
+        // Change the current pixel's color to the new color
         image[r][c] = newColor;
 
+        // Recursively apply the flood fill to the surrounding pixels
         dfs(image, r + 1, c, origColor, newColor);
         dfs(image, r - 1, c, origColor, newColor);
         dfs(image, r, c + 1, origColor, newColor);

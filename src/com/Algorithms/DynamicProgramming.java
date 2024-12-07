@@ -15,17 +15,25 @@ public class DynamicProgramming {
      * @param amount
      * @return
      */
+    // Runtime: O(n•m), where n is the amount and m is the number of coin denominations.
     public int coinChangeFewestCoins(int[] coins, int amount) {
         // Define a DP array dp where dp[i] represents the minimum number of coins needed to make an amount i.
         int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1);  //Integer.MAX_VALUE doesn't work. So use amount + 1.
-        dp[0] = 0;  //zero coins are needed to make an amount of zero.
+        // Initialize dp array with a value larger than the maximum possible answer
+        Arrays.fill(dp, amount + 1);  // Integer.MAX_VALUE doesn't work. So use amount + 1.
 
+        // Base case: 0 coins are needed to make an amount of 0.
+        dp[0] = 0;
+
+        // Iterate through all amounts from 1 to `amount`
         for (int i = 1; i < dp.length; i++) {
+            // Check all coin denominations
             for (int coin : coins) {
-                if (i - coin >= 0)  // Check if it's possible to use this coin.
+                // Check if it's possible to use this coin.
+                if (i - coin >= 0) {
                     // Is the current amount minus the coin is a valid number?
                     dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
             }
         }
 
@@ -35,297 +43,34 @@ public class DynamicProgramming {
     }
 
     /**
-     * You are given coins of different denominations and a total amount.
-     * Return the number of combinations that make up that amount.
-     * You may assume that you have infinite number of each kind of coin.
-     * Input: amount = 5, coins = [1, 2, 5]
-     * Output: 4
-     * There are four ways to make up the amount:
-     * 5=5
-     * 5=2+2+1
-     * 5=2+1+1+1
-     * 5=1+1+1+1+1
+     * Max sum in an array such that no two elements are adjacent.
+     * nums = [2, 7, 9, 3, 1]
+     * Output: 2 + 9 + 1 = 12
      *
-     * @param amount
-     * @param coins
+     * @param nums
      * @return
      */
-    public int coinChangeCombinations(int amount, int[] coins) {
-        int[] dp = new int[amount + 1];
-        dp[0] = 1;
-        //The outer loop is for coins because we need all possible combinations and not permutations.
-        // If the outer loop is amount, the same combination will count multiple times.
-        // The coins can come in different orders.
-        // By keeping coins as the outer loop, we restrict the order.
-        for (int coin : coins) {
-            for (int i = 1; i < dp.length; i++) {
-                if (coin <= i)
-                    dp[i] += dp[i - coin];
-            }
-        }
-        return dp[amount];
-    }
+    public int houseRobbery(int[] nums) {
+        // Create a DP table to store the maximum sum we can rob up to each house
+        // To determine the value of dp[i], we either skip the house i or rob the house i.
+        int[] dp = new int[nums.length];
 
-
-    /**
-     * Two lists A and B are written on two separate horizontal lines.
-     * If we draw a connecting line from A to B, the two numbers must be equal A[i] == B[j].
-     * The connecting lines must not intersect.
-     * Return the maximum number of connecting lines we can draw this way.
-     * A = [2,5,1,2,5]
-     * B = [10,5,2,1,5,2]
-     * Output: 3
-     *
-     * @param A
-     * @param B
-     * @return
-     */
-    public int maxUncrossedLines(int[] A, int[] B) {
-        int[][] dp = new int[A.length + 1][B.length + 1];
-        for (int i = 1; i <= A.length; i++) {
-            for (int j = 1; j <= B.length; j++) {
-                if (A[i - 1] == B[j - 1])
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                else
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-        return dp[A.length][B.length];
-    }
-
-    public int rob(int[] nums) {
-        int n = nums.length;
-        int[] dp = new int[n];
+        // Base cases:
+        // If we rob only the first house, the max sum is just nums[0]
         dp[0] = nums[0];
+        // If we rob up to the second house, we take the maximum of robbing the first or second house
         dp[1] = Math.max(nums[0], nums[1]);
 
-        for (int i = 2; i < n; i++){
-            dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+        // Fill the DP table for the rest of the houses
+        for (int i = 2; i < nums.length; i++) {
+            // For each house i, we have two choices:
+            // 1. Skip the current house: In this case, the max sum is the same as dp[i-1].
+            // 2. Rob the current house: Add nums[i] to dp[i-2] (because we can't rob adjacent houses).
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
         }
 
-        return dp[n - 1];
-    }
-
-    /**
-     * Given an integer n, return the number of structurally unique BSTs
-     * which has exactly n nodes of unique values from 1 to n.
-     * Input: n = 3
-     * Output: 5
-     * @param n
-     * @return
-     */
-    public int numTrees(int n) {
-        if (n == 0 || n == 1)
-            return 1;
-        int[] dp = new int[n + 1];
-        dp[0] = 1;
-        dp[1] = 1;
-        for (int i = 2; i <= n; i++) {  // At the position i, we need to try out every element from 1 to i keeping it as root
-            for (int root = 1; root <= i; root++) { //When root is 1, the elements 0 to 1 becomes LST. The difference between i and root becomes the RST
-                dp[i] += dp[root - 1] * dp[i - root];
-            }
-        }
-        return dp[n];
-    }
-
-    public String longestPalindromicSubstring(String s) {
-        int n = s.length();
-        boolean[][] dp = new boolean[n][n];
-
-        String longestPalSubstring = "";
-        int longestPalLength = 0;
-
-        //The diagonal top to bottom cells are true because the length of the palindrome is 1.
-        // The starting and ending characters are the same.
-        for (int i = 0; i < n; i++) {
-            dp[i][i] = true;
-            longestPalLength = 1;
-            longestPalSubstring = s.substring(i, i + 1);
-        }
-
-        for (int i = 0; i < n - 1; i++) {
-            if (s.charAt(i) == s.charAt(i + 1)) {
-                dp[i][i + 1] = true;
-                longestPalLength = 2; //length of palindrome is 2.
-                longestPalSubstring = s.substring(i, i + 2);
-            }
-        }
-
-        int j;
-        for (int k = 2; k < n; k++) {
-            //This is the window. j must always be greater than i. Having a for loop after i with j=i+2 does not work.
-            for (int i = 0; i < n; i++) {
-                j = i + k;
-                if (j < n && s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1]) {
-                    dp[i][j] = true;
-
-                    if (j - i + 1 > longestPalLength) {
-                        longestPalLength = j - i + 1;
-                        longestPalSubstring = s.substring(i, j + 1);
-                    }
-                }
-            }
-        }
-        return longestPalSubstring;
-    }
-
-    /**
-     * A frog is crossing a river.
-     * The river is divided into some number of units,
-     * and at each unit, there may or may not exist a stone.
-     * The frog can jump on a stone, but it must not jump into the water.
-     * Given a list of stones positions (in units) in sorted order,
-     * determine if the frog can cross the river by landing on the last stone.
-     * Initially, the frog is on the first stone and assumes the first jump must be 1 unit.
-     * The frog's next jump must be either k - 1, k, or k + 1 units. The frog can only jump in the forward direction.
-     * Input: stones = [0,1,3,5,6,8,12,17]
-     * Output: true
-     * Explanation: The frog can jump to the last stone by jumping 1 unit to the 2nd stone,
-     * then 2 units to the 3rd stone, then 2 units to the 4th stone, then 3 units to the 6th stone,
-     * 4 units to the 7th stone, and 5 units to the 8th stone.
-     *
-     * @param stones
-     * @return
-     */
-    public boolean canCross(int[] stones) {
-        Map<Integer, Set<Integer>> dp = new HashMap<>();
-        for (int stone : stones) {
-            dp.put(stone, new HashSet<>());
-        }
-        dp.get(stones[0]).add(1);
-
-        for (int stone : stones) {
-            for (int jump : dp.get(stone)) {
-                int position = stone + jump;
-                if (jump != 0 && dp.containsKey(position)){
-                    dp.get(position).add(jump - 1);
-                    dp.get(position).add(jump);
-                    dp.get(position).add(jump + 1);
-                }
-            }
-        }
-
-        return !dp.get(stones[stones.length - 1]).isEmpty();
-    }
-
-    public int LCSLength(String x, String y) {
-        int[][] dp = new int[x.length() + 1][y.length() + 1];
-        for (int i = 1; i <= x.length(); i++) {
-            for (int j = 1; j <= y.length(); j++) {
-                if (x.charAt(i - 1) == y.charAt(j - 1))
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                else
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-        return dp[x.length()][y.length()];
-    }
-
-    public boolean isWildcardMatching(String s, String p) {
-        int n = s.length(), m = p.length();
-
-        //the first row and column will be dedicated to empty string and pattern respectively.
-        boolean[][] dp = new boolean[n + 1][m + 1];
-
-        //both the pattern and string are empty
-        dp[0][0] = true;
-
-        //string is empty. the pattern is * so we look at the prev column value.
-        for (int j = 1; j <= m; j++) {
-            if (p.charAt(j - 1) == '*') {
-                dp[0][j] = dp[0][j - 1];
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                //The following are the two main cases we need to work on.
-                // If we remove ith character and jth character from s and p,
-                // we check if the other characters are a match or not, comes from the prev row and col.
-                if (p.charAt(j - 1) == '?' || s.charAt(i - 1) == p.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-                } else {
-                    dp[i][j] = false;
-                }
-            }
-        }
-        return dp[n][m];
-    }
-
-    public boolean isRegexMatching(String s, String p) {
-        int n = s.length(), m = p.length();
-
-        //the first row and column will be dedicated to empty string and pattern respectively.
-        boolean[][] dp = new boolean[n + 1][m + 1];
-
-        //both the pattern and string are empty
-        dp[0][0] = true;
-
-        //string is empty. the pattern is * so we look at the prev column value.
-        for (int j = 1; j <= m; j++) {
-            if (p.charAt(j - 1) == '*') {
-                dp[0][j] = dp[0][j - 2];
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (p.charAt(j - 1) == '.' || s.charAt(i - 1) == p.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else if (p.charAt(j - 1) == '*') {
-                    if (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') {
-                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1] || dp[i][j - 2];
-                    } else {
-                        dp[i][j] = dp[i][j - 2];
-                    }
-                } else {
-                    dp[i][j] = false;
-                }
-            }
-        }
-        return dp[n][m];
-    }
-
-    /**
-     * Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
-     * You have the following 3 operations permitted on a word:
-     * 1) Insert a character
-     * 2) Delete a character
-     * 3) Replace a character
-     * Input: word1 = "intention", word2 = "execution"
-     * Output: 5
-     * intention -> inention (remove 't')
-     * inention -> enention (replace 'i' with 'e')
-     * enention -> exention (replace 'n' with 'x')
-     * exention -> exection (replace 'n' with 'c')
-     * exection -> execution (insert 'u')
-     *
-     * @param word1
-     * @param word2
-     * @return
-     */
-    public int editMinDistance(String word1, String word2) {
-        int[][] dp = new int[word1.length() + 1][word2.length() + 1];  //matrix of indices
-
-        for (int r = 0; r <= word1.length(); r++) {  //Initialize the first column
-            dp[r][0] = r;
-        }
-
-        for (int c = 0; c <= word2.length(); c++) {  //Initialize the first row
-            dp[0][c] = c;
-        }
-
-        for (int i = 1; i <= word1.length(); i++) {
-            for (int j = 1; j <= word2.length(); j++) {
-                if (word1.charAt(i - 1) == word2.charAt(j - 1))
-                    dp[i][j] = dp[i - 1][j - 1];
-                else
-                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1])) + 1;
-            }
-        }
-        return dp[word1.length()][word2.length()];
+        // The last entry in the DP table represents the maximum sum we can rob
+        return dp[nums.length - 1];
     }
 
     /**
@@ -335,6 +80,7 @@ public class DynamicProgramming {
      * Output: true
      * Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
      * Note that you are allowed to reuse a dictionary word.
+     *
      * @param s
      * @param wordDict
      * @return
@@ -388,6 +134,7 @@ public class DynamicProgramming {
      * Output: 2
      * Explanation: The minimum number of jumps to reach the last index is 2.
      * Jump 1 step from index 0 to 1, then 3 steps to the last index.
+     *
      * @param nums
      * @return
      */
@@ -405,47 +152,6 @@ public class DynamicProgramming {
             }
         }
         return dp[nums.length - 1];
-    }
-
-    /**
-     * Given an integer n, return the least number of perfect square numbers that sum to n.
-     * A perfect square is an integer that is the square of an integer;
-     * it is the product of some integer with itself.
-     * For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
-     * Input: n = 12
-     * Output: 3
-     * Explanation: 12 = 4 + 4 + 4.
-     * @param n
-     * @return
-     */
-    public int numSquares(int n) {
-        int[] dp = new int[n + 1];
-        dp[0] = 0;
-        if(n == 0)
-            return dp[0];
-
-        dp[1] = 1;
-        if(n == 1)
-            return dp[1];
-
-        dp[2] = 2;
-        if(n == 2)
-            return dp[2];
-
-        dp[3] = 3;
-        if(n == 3)
-            return dp[3];
-
-        for (int i = 4; i <= n; i++) {
-            dp[i] = i;
-            for (int j = 1; j <= i; j++) {
-                if ((j * j) > i)
-                    break;
-                else
-                    dp[i] = Math.min(dp[i], 1 + dp[i - (j * j)]);
-            }
-        }
-        return dp[n];
     }
 
     /**
@@ -483,51 +189,6 @@ public class DynamicProgramming {
             longestLIS = Math.max(longestLIS, len);
         }
         return longestLIS;
-    }
-
-    /**
-     * We have n jobs, where every job is scheduled to be done from startTime[i] to endTime[i],
-     * obtaining a profit of profit[i].
-     * You're given the startTime, endTime and profit arrays,
-     * return the maximum profit you can take such that there are no two jobs in the subset with overlapping time range.
-     * If you choose a job that ends at time X you will be able to start another job that starts at time X.
-     *
-     * @param startTime
-     * @param endTime
-     * @param profit
-     * @return
-     */
-    public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
-        int n = startTime.length;
-        int[][] jobs = new int[n][3];
-        for (int i = 0; i < n; i++){
-            jobs[i] = new int[] {startTime[i], endTime[i], profit[i]};
-        }
-
-        Arrays.sort(jobs, Comparator.comparingInt(o -> o[1]));
-
-        int[] dp = new int[n]; //profit array
-        dp[0] = jobs[0][2];
-
-        for (int i = 1; i < n; i++){
-            dp[i] = dp[i - 1];
-            int lo = 0, hi = i - 1;
-            int prev = 0;
-
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (jobs[mid][1] <= jobs[i][0]) {
-                    prev = dp[mid];
-                    lo = mid + 1;
-                }
-                else {
-                    hi = mid - 1;
-                }
-            }
-            dp[i] = Math.max(dp[i], jobs[i][2] + prev);  //max of dp[i] and current profit + profit until now.
-        }
-
-        return dp[n - 1];
     }
 
     /**
@@ -590,42 +251,5 @@ public class DynamicProgramming {
             }
         }
         return count;
-    }
-
-    /**
-     * Given a binary array that has exactly one island (i.e., one or more connected land cells).
-     * One cell is a square with side length 1. Determine the perimeter of the island.
-     * Input:
-     * [
-     *  [0,1,0,0],
-     *  [1,1,1,0],
-     *  [0,1,0,0],
-     *  [1,1,0,0]
-     * ]
-     * Output: 16
-     *
-     * @param grid
-     * @return
-     */
-    public int islandPerimeter(int[][] grid) {
-        int rows = grid.length, cols = grid[0].length;
-        int perimeter = 0;
-        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                if (grid[row][col] == 1) {
-                    for (int[] dir : directions) {
-                        int r = row + dir[0];
-                        int c = col + dir[1];
-
-                        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
-                            perimeter += 1;
-                        }
-                    }
-                }
-            }
-        }
-        return perimeter;
     }
 }

@@ -38,76 +38,50 @@ public class ArrayQuestions {
     }
 
     /**
-     * You are given a list of songs where the ith song has a duration of time[i] seconds.
-     * Return the number of pairs of songs for which their total duration in seconds is divisible by 60.
-     * Formally, we want the number of indices i, j such that i < j with (time[i] + time[j]) % 60 == 0.
-     * Input: time = [30,20,150,100,40]
-     * Output: 3
-     * Explanation: Three pairs have a total duration divisible by 60:
-     * (time[0] = 30, time[2] = 150): total duration 180
-     * (time[1] = 20, time[3] = 100): total duration 120
-     * (time[1] = 20, time[4] = 40): total duration 60
-     *
-     * @param time
-     * @return
-     */
-    public int wholeMinuteDilemma(int[] time) {
-        // Create a HashMap to store the frequency of remainders when divided by 60
-        Map<Integer, Integer> map = new HashMap<>();
-        int count = 0; // Initialize a counter to count valid pairs
-
-        // Loop through each time duration in the array
-        for (int t : time) {
-            // Calculate the remainder when the time is divided by 60
-            int remainder = t % 60;
-
-            // Calculate the complement such that (remainder + complement) is a multiple of 60
-            int complement = (60 - remainder) % 60;
-
-            // If the complement exists in the map, it means we can form valid pairs with previous times
-            if (map.containsKey(complement)) {
-                count += map.get(complement); // Add the frequency of the complement to the count
-            }
-
-            // Update the map with the current remainder, incrementing its frequency
-            map.put(remainder, map.getOrDefault(remainder, 0) + 1);
-        }
-
-        // Return the total count of valid pairs
-        return count;
-    }
-
-    /**
      * Given an integer array nums, return all the triplets that sum up to 0.
+     * The solution set must not contain duplicate triplets.
+     * For example, [−1,0,1] and [0,−1,1] are considered duplicates even if they appear in a different order
      *
      * @param nums
      * @return
      */
-    public List<List<Integer>> tripletSum(int[] nums) {
-        Set<List<Integer>> resultSet = new HashSet<>();
+    public List<List<Integer>> threeSum(int[] nums) {  // Runtime: O(n^2)
+        // Sort the array to process numbers in a consistent order.
+        Arrays.sort(nums);
 
+        // A Set to store unique triplets.
+        Set<List<Integer>> result = new HashSet<>();
+
+        // Iterate over the array with the first number of the triplet.
         for (int i = 0; i < nums.length - 2; i++) {
-            Set<Integer> set = new HashSet<>();
+            // Fix `nums[i]` as the first number in the triplet.
+            // Avoid duplicates for the first number by skipping if it's the same as the previous.
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
 
+            int target = -nums[i]; // The sum we need to find from the remaining two numbers.
+            // Use a Set to find pairs that sum up to `-nums[i]`.
+            Set<Integer> seen = new HashSet<>(); // Store numbers we have processed.
+
+            // Iterate through the remaining part of the array to find pairs.
             for (int j = i + 1; j < nums.length; j++) {
-                List<Integer> list = new ArrayList<>();
+                int complement = target - nums[j]; // The number needed to complete the triplet.
 
-                if (set.contains(-(nums[i] + nums[j]))) {
-                    list.add(nums[i]);
-                    list.add(nums[j]);
-                    list.add(-(nums[i] + nums[j]));
-                } else {
-                    set.add(nums[j]);
+                // Check if `complement` exists in the set.
+                if (seen.contains(complement)) {
+                    // If found, we have a valid triplet: `nums[i], nums[j], complement`.
+                    // Add the triplet to the result set. Sorting ensures uniqueness.
+                    result.add(Arrays.asList(nums[i], nums[j], complement));
                 }
 
-                if (list.size() > 0) {  //If we don't have this check, an empty list gets added to the result.
-                    Collections.sort(list);
-                    resultSet.add(list);
-                }
+                // Add `nums[j]` to the set to process it for future pairs.
+                seen.add(nums[j]);
             }
         }
 
-        return new ArrayList<>(resultSet);
+        // Convert the Set of triplets to a List and return.
+        return new ArrayList<>(result);
     }
 
     /**
@@ -213,7 +187,6 @@ public class ArrayQuestions {
         return maxProfit;
     }
 
-
     /**
      * Best day to buy stock and the best day to sell it. You can only hold at most one share of the stock at any time.
      * However, you can buy it then immediately sell it on the same day. You should sell before you buy another stock.
@@ -244,20 +217,40 @@ public class ArrayQuestions {
      * @return
      */
     public int maxProduct(int[] nums) {
-        int currentMax = 0, currentMin = 0;
-        int maxProd = 0;
+        // Initialize the variables to the first element.
+        // - currentMax: The maximum product of the subarray ending at the current index.
+        // - currentMin: The minimum product of the subarray ending at the current index.
+        // - maxProd: Tracks the overall maximum product found so far.
+        int currentMax = nums[0];
+        int currentMin = nums[0];
+        int maxProd = nums[0];
 
-        if (nums.length == 1)
-            return nums[0];
+        // Iterate through the array starting from the second element.
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
 
-        for (int num : nums) {
-            int tempMax = currentMax;  //Store the current max in temp variable
-            // because we need it to find the current min
+            // Store the current maximum value in a temporary variable
+            // This is necessary because the currentMax value will be updated
+            // and we still need its previous value to calculate currentMin.
+            int tempMax = currentMax;
 
-            currentMax = Math.max(num, Math.max(num * currentMin, num * currentMax));
+            // Update currentMax:
+            // - Take the maximum of:
+            //   1. The current number (num) alone (starting a new subarray),
+            //   2. The product of num and the previous currentMax (extending the subarray),
+            //   3. The product of num and the previous currentMin (extending the subarray
+            currentMax = Math.max(num, Math.max(num * currentMax, num * currentMin));
+
+            // Update currentMin:
+            // - Take the minimum of:
+            //   1. The current number (num) alone,
+            //   2. The product of num and the previous currentMax (stored in tempMax),
+            //   3. The product of num and the previous currentMin.
+            // This ensures that we keep track of the smallest product at this index, which is
+            // useful for handling negative numbers in subsequent iterations.
+            currentMin = Math.min(num, Math.min(num * tempMax, num * currentMin));
+
             maxProd = Math.max(maxProd, currentMax);
-
-            currentMin = Math.min(num, Math.min(num * currentMin, num * tempMax));
         }
 
         return maxProd;
@@ -303,29 +296,6 @@ public class ArrayQuestions {
         }
 
         return longest;
-    }
-
-    /**
-     * Given an unsorted array. Return whether an increasing subsequence of length 3 exists or not in the array.
-     * Input: [1,2,3,4,5]
-     * Output: true
-     * Input: [5,4,3,2,1]
-     * Output: false
-     *
-     * @param nums
-     * @return
-     */
-    public boolean increasingTriplet(int[] nums) {
-        int firstNum = Integer.MAX_VALUE, secondNum = Integer.MAX_VALUE;
-        for (int num : nums) {
-            if (num <= firstNum)
-                firstNum = num;
-            else if (num <= secondNum)
-                secondNum = num;
-            else
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -487,8 +457,8 @@ public class ArrayQuestions {
      * @return
      */
     public int maxScore(int[] cardPoints, int k) {
-        //Sliding window technique - need to think differently.
-        //Use a sliding window of size length - k. And calculate the sum that is outside the window.
+        // Sliding window technique - need to think differently.
+        // Use a sliding window of size length - k. And calculate the sum that is outside the window.
         int start = 0, end = cardPoints.length - k, sum = 0;
 
         for (int i = end; i < cardPoints.length; i++) {
@@ -605,6 +575,49 @@ public class ArrayQuestions {
         // After looping, check if total gas is at least equal to total cost
         // If not, it's impossible to complete the circuit
         return totalGas >= totalCost ? start : -1;
+    }
+
+
+    /**
+     * Given an array nums with n objects colored red, white, or blue,
+     * sort them in-place so that objects of the same color are adjacent,
+     * with the colors in the order red, white, and blue.
+     * We will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+     * Input: nums = [2,0,2,1,1,0]
+     * Output: [0,0,1,1,2,2]
+     *
+     * @param nums
+     */
+    // Dutch national flag problem
+    public void sortColors(int[] nums) {
+        // Use two pointers to partition the array.
+        // The left pointer ensures all elements to its left are 0s.
+        int left = 0;
+        // The right pointer ensures all elements to its right are 2s.
+        int right = nums.length - 1;
+        // Pointer to iterate through the array
+        int current = 0;
+
+        while (current <= right) {
+            // If the current element is 0, swap it to the 'left' position
+            if (nums[current] == 0) {
+                swap(nums, left, current);
+                left += 1;  // Move the left pointer forward
+                current += 1;  // Move the current pointer forward
+            }
+            // If the current element is 2, swap it to the 'right' position
+            else if (nums[current] == 2) {
+                swap(nums, right, current);
+                right -= 1;  // Move the right pointer inward.
+                // Don't increment 'current' immediately here because the swapped element
+                // at 'current' still needs to be checked.
+            }
+            // If the current element is 1, it's already in the correct region
+            // Simply move the current pointer forward
+            else {
+                current += 1;
+            }
+        }
     }
 
     /**
@@ -767,22 +780,22 @@ public class ArrayQuestions {
      * @return
      */
     public List<Integer> findDisappearedNumbers(int[] nums) {
-        List<Integer> list = new LinkedList<>();
         for (int i = 0; i < nums.length; i++) {
             while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
                 swap(nums, nums[i] - 1, i);
             }
         }
 
+        List<Integer> result = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] != i + 1) {
-                list.add(i + 1);
+                result.add(i + 1);
             }
         }
-        return list;
+        return result;
     }
 
-    private static void swap(int[] nums, int i, int j) {
+    private void swap(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;
@@ -880,36 +893,5 @@ public class ArrayQuestions {
             }
         }
         return ind == -1 ? "NONE" : cities[ind];
-    }
-
-    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
-        int n = nums.length;
-        List<String> output = new ArrayList<>();
-
-        if (n == 0) {
-            output.add(format(lower, upper));
-            return output;
-        }
-
-        if (nums[0] > lower) {  //Handle lower bound
-            output.add(format(lower, nums[0] - 1));
-        }
-
-        for (int i = 1; i < n; i++) {  //Handle the missing ranges in the rest of the elements in the array
-            int prev = nums[i - 1], curr = nums[i];
-            if (curr - prev > 1) {
-                output.add(format(prev + 1, curr - 1));
-            }
-        }
-
-        if (nums[n - 1] < upper) {  //Handle upper bound
-            output.add(format(nums[n - 1] + 1, upper));
-        }
-
-        return output;
-    }
-
-    private String format(int a, int b) {
-        return a == b ? String.valueOf(a) : a + "->" + b;
     }
 }

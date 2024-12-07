@@ -1,29 +1,20 @@
 package com.Algorithms;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.TreeMap;
-
-class TreeNode {
-    int data;
-    TreeNode left;
-    TreeNode right;
-    TreeNode next;  //This field is required for only one question.
-
-    public TreeNode(int data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
-}
+import java.util.*;
 
 public class BinaryTree {
+    static class TreeNode {
+        int data;
+        TreeNode left;
+        TreeNode right;
+        TreeNode next;  //This field is required for only one question.
+
+        public TreeNode(int data) {
+            this.data = data;
+            this.left = null;
+            this.right = null;
+        }
+    }
 
     TreeNode root = null;
 
@@ -145,21 +136,6 @@ public class BinaryTree {
         }
     }
 
-    void inOrderIterative(TreeNode node) {
-        ArrayDeque<TreeNode> stack = new ArrayDeque<>();
-
-        while (!stack.isEmpty() || node != null) {
-            if (node != null) {
-                stack.push(node);
-                node = node.left;
-            } else {
-                node = stack.pop();
-                System.out.println(node.data);
-                node = node.right;
-            }
-        }
-    }
-
     void levelOrder(TreeNode node) {
         Queue<TreeNode> queue = new LinkedList<>();
         queue.add(node);
@@ -176,72 +152,6 @@ public class BinaryTree {
                 queue.add(treeNode.right);
             }
         }
-    }
-
-    void printLeafNodes(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        if (node.left != null) {
-            printLeafNodes(node.left);
-        }
-        if (node.right != null) {
-            printLeafNodes(node.right);
-        }
-        if (node.left == null && node.right == null) {
-            System.out.println(node.data);
-        }
-    }
-
-    void printLeafNodesIteratively(TreeNode root) {
-        if (root == null) {
-            return;
-        }
-        Deque<TreeNode> stack = new ArrayDeque<>();
-        stack.push(root);
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.pop();
-            if (node.left != null) {
-                stack.add(node.left);
-            }
-            if (node.right != null) {
-                stack.add(node.right);
-            }
-            if (node.left == null && node.right == null) {
-                System.out.printf("%d ", node.data);
-            }
-        }
-    }
-
-    public List<List<Integer>> verticalTraversal(TreeNode root) {
-        Map<Integer, List<Integer>> positions = new TreeMap<>();
-        Queue<TreeNode> qNodes = new LinkedList<>();
-        Queue<Integer> qIndices = new LinkedList<>();
-
-        qNodes.add(root);
-        qIndices.add(0);
-        positions.putIfAbsent(0, new LinkedList<>());
-        positions.get(0).add(root.data);
-
-        while (!qNodes.isEmpty()) {
-            TreeNode treeNode = qNodes.remove();
-            int nodeIndex = qIndices.remove();
-            if (treeNode.left != null) {
-                int leftPosition = nodeIndex - 1;
-                positions.putIfAbsent(leftPosition, new LinkedList<>());
-                positions.get(leftPosition).add(treeNode.left.data);
-                qNodes.add(treeNode.left);
-                qIndices.add(leftPosition);
-            }
-            if (treeNode.right != null) {
-                int rightPosition = nodeIndex + 1;
-                positions.putIfAbsent(rightPosition, new LinkedList<>());
-                positions.get(rightPosition).add(treeNode.right.data);
-                qNodes.add(treeNode.right);
-                qIndices.add(rightPosition);
-            }
-        }
-        return new LinkedList<>(positions.values());
     }
 
     /**
@@ -284,6 +194,57 @@ public class BinaryTree {
     }
 
     /**
+     * Given a binary tree, find the lowest common ancestor (LCA) of two given nodes p and q.
+     * The lowest common ancestor is defined as the deepest node that has both p and q as descendants
+     * (where we allow a node to be a descendant of itself).
+     * <p>
+     * 3
+     * / \
+     * 5   1
+     * / \ / \
+     * 6  2 0  8
+     * / \
+     * 7   4
+     * <p>
+     * p = 5 and q = 1
+     * In this case, the left subtree returns 5. Right subtree returns 1.
+     * Both have returned non-null values. Therefore, the parent is the LCA.
+     * <p>
+     * p = 5 and q = 6
+     * In this case, the left subtree returns 5. Right subtree returns null because 6 is not found in the right subtree.
+     * When one of the subtrees returns a non-null value, that value itself is the LCA.
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    // Runtime: O(h), where h is the height of the tree.
+    // In the case of a balanced tree, it would be O(log n).
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        // Base case: If the root is null, there is no ancestor to return, so we return null.
+        if (root == null) {
+            return null;
+        }
+
+        // If both p and q are smaller than root, LCA must be in the left subtree.
+        // Recursively search in the left subtree
+        if (p.data < root.data && q.data < root.data) {
+            return lowestCommonAncestor(root.left, p, q);
+        }
+
+        // If both p and q are greater than root, LCA must be in the right subtree.
+        // Recursively search in the right subtree
+        if (p.data > root.data && q.data > root.data) {
+            return lowestCommonAncestor(root.right, p, q);
+        }
+
+        // If p and q are on different sides of the root, root is their LCA.
+        // This also handles the case of root being either p or q. The node itself is the LCA.
+        return root;
+    }
+
+    /**
      * Given two binary trees, write a function to check if they are the same or not.
      * Two binary trees are considered the same if they are structurally identical and the nodes have the same value.
      *
@@ -307,17 +268,17 @@ public class BinaryTree {
     /**
      * Invert a Binary Tree.
      * Input:
-     *      4
-     *    /   \
-     *   2     7
-     *  / \   / \
+     * 4
+     * /   \
+     * 2     7
+     * / \   / \
      * 1   3 6   9
-
+     * <p>
      * Output:
-     *      4
-     *    /   \
-     *   7     2
-     *  / \   / \
+     * 4
+     * /   \
+     * 7     2
+     * / \   / \
      * 9   6 3   1
      *
      * @param root
@@ -368,15 +329,15 @@ public class BinaryTree {
      * Construct BST from a sorted linked list.
      * Input: -10 -> -3 -> 0 -> 5 -> 9
      */
-    public TreeNode sortedListToBST(Node head) {
+    public TreeNode sortedListToBST(TreeNode head) {
         return buildTreePreOrder(head, null);
     }
 
-    private TreeNode buildTreePreOrder(Node head, Node tail) {
+    private TreeNode buildTreePreOrder(TreeNode head, TreeNode tail) {
         if (head == tail)
             return null;
 
-        Node mid = middleElem(head, tail);
+        TreeNode mid = middleElem(head, tail);
         TreeNode node = new TreeNode(mid.data);
 
         node.left = buildTreePreOrder(head, mid);
@@ -385,9 +346,9 @@ public class BinaryTree {
         return node;
     }
 
-    private Node middleElem(Node head, Node tail) {
+    private TreeNode middleElem(TreeNode head, TreeNode tail) {
         //We need an argument for tail because we will pass the middle element to this method.
-        Node slow = head, fast = head;
+        TreeNode slow = head, fast = head;
         while (fast != tail && fast.next != tail) {
             slow = slow.next;
             fast = fast.next.next;
@@ -398,13 +359,13 @@ public class BinaryTree {
     /**
      * Given the root of a binary tree, construct a string consisting of parenthesis and integers.
      * Input:
-     *      1
-     *    /   \
-     *   2     3
-     *  /
+     * 1
+     * /   \
+     * 2     3
+     * /
      * 4
      * Output: "1(2(4))(3)"
-
+     * <p>
      * Originally, it would have been "1(2(4)())(3()())", but omit all the unnecessary empty parenthesis pairs.
      * So the output will be "1(2(4))(3)"
      *
@@ -416,7 +377,7 @@ public class BinaryTree {
     }
 
     private String preOrderUtil1(TreeNode node) {
-        if(node == null)
+        if (node == null)
             return "";
         if (node.left == null && node.right == null)
             return String.valueOf(node.data);
@@ -433,69 +394,32 @@ public class BinaryTree {
      * @param root
      * @return
      */
-    public boolean isValidBST(TreeNode root) {
+    public boolean isValidBST(TreeNode root) {  // Runtime: O(n) where n is the number of nodes
+        // Start with the entire range of valid values for a BST, using Long.MIN_VALUE and Long.MAX_VALUE
         return checkBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
     }
 
     private boolean checkBST(TreeNode root, long min, long max) {
-        if (root == null)
+        // If the node is null, it is valid by definition (an empty tree or subtree is a valid BST).
+        if (root == null) {
             return true;
-        if (root.data <= min || root.data >= max)
+        }
+        // The current node's value must be strictly between 'min' and 'max'
+        if (root.data <= min || root.data >= max) {
             return false;
-        return checkBST(root.right, root.data, max) && checkBST(root.left, min, root.data);
-    }
-
-    /**
-     * Given a binary tree, find the lowest common ancestor (LCA) of two given nodes p and q.
-     * The lowest common ancestor is defined as the deepest node that has both p and q as descendants
-     * (where we allow a node to be a descendant of itself).
-
-     *         3
-     *        / \
-     *       5   1
-     *      / \ / \
-     *     6  2 0  8
-     *       / \
-     *      7   4
-
-     * p = 5 and q = 1
-     * In this case, the left subtree returns 5. Right subtree returns 1.
-     * Both have returned non-null values. Therefore, the parent is the LCA.
-
-     * p = 5 and q = 6
-     * In this case, the left subtree returns 5. Right subtree returns null because 6 is not found in the right subtree.
-     * When one of the subtrees returns a non-null value, that value itself is the LCA.
-     *
-     * @param root
-     * @param p
-     * @param q
-     * @return
-     */
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == p || root == q) {  // If we reach a null node or if we find p or q, return the node
-            return root;
         }
-
-        // Recursively search for LCA in the left and right subtrees
-        TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.right, p, q);
-
-        // If both left and right are non-null, root is the LCA
-        if (left != null && right != null) {
-            return root;
-        }
-
-        // Otherwise, return the non-null value (either left or right)
-        return left != null ? left : right;
+        // Recursively validate the left subtree, setting the max to the current node's value.
+        // Recursively validate the right subtree, setting the min to the current node's value
+        return checkBST(root.left, min, root.data) && checkBST(root.right, root.data, max);
     }
 
     /**
      * For a binary tree, we can define a flip operation as follows:
      * Choose any node, and swap the left and right child subtrees.
-
+     * <p>
      * A binary tree X is flip equivalent to a binary tree Y if and only if
      * we can make X equal to Y after some number of flip operations.
-
+     * <p>
      * Given the roots of two binary trees root1 and root2,
      * return true if the two trees are flip equivalent or false otherwise.
      *
@@ -517,28 +441,38 @@ public class BinaryTree {
     }
 
     /**
-     * Given the root of a binary search tree, and an integer k,
-     * return the k-th smallest value (1-indexed) of all the values of the nodes in the tree.
+     * Given the root of a binary search tree, and an integer k, return the k-th smallest element.
      *
      * @param root
      * @param k
      * @return
      */
+    // Runtime: O(h+k), where h is the height of the tree. We traverse the BST until the kth node is processed.
     public int kthSmallest(TreeNode root, int k) {
+        // Use a stack for in-order traversal.
+        // In a Binary Search Tree (BST), the in-order traversal visits the nodes in ascending order.
+        // Therefore, in-order traversal is perfect for finding the k-th smallest element.
         Deque<TreeNode> stack = new ArrayDeque<>();
 
-        while(!stack.isEmpty() || root != null) {
-            if (root != null) {
-                stack.push(root);
+        while (root != null || !stack.isEmpty()) {
+            // Traverse the left subtree.
+            // Go to the left most node and reach the smallest element in the tree first.
+            while (root != null) {
+                stack.push(root);  // Keep adding the smaller nodes to the stack.
                 root = root.left;
             }
-            else {
-                k -= 1;
-                root = stack.pop();
-                if (k == 0)
-                    return root.data;
-                root = root.right;
+
+            // Pop the top of the stack, which represents the next smallest element in ascending order.
+            root = stack.pop();
+            // Decrement k because we've processed one element
+            k -= 1;
+            // If we've found the kth smallest element, return it
+            if (k == 0) {
+                return root.data;
             }
+
+            // After visiting a node, move to its right child and repeat the process.
+            root = root.right;
         }
         return -1;
     }
@@ -575,18 +509,18 @@ public class BinaryTree {
     }
 
     public TreeNode connect(TreeNode root) {
-        if(root == null)
+        if (root == null)
             return null;
         levelOrderUtil(root);
         return root;
     }
 
-    private void levelOrderUtil(TreeNode root){
+    private void levelOrderUtil(TreeNode root) {
         Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()) {
             int size = queue.size();
-            for (int i = 1; i <= size; i++){
+            for (int i = 1; i <= size; i++) {
                 TreeNode node = queue.peek();
                 if (i == size)
                     node.next = null;
@@ -609,26 +543,41 @@ public class BinaryTree {
      * @param inorder
      * @return
      */
-    HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
-    int preIndex;  //Initializing this inside the method throws ArraysIndexOutOfBoundsException during recursion.
+    // Runtime: O(n) where n is the number of nodes
+    int preIndex = 0;  // This needs to be a global variable instead of a local variable in the recursive method.
+
+    // The same preIndex needs to be used across all recursive calls.
+    // When we increment preIndex to move to the next node in the preorder array,
+    // that change persists across all recursive calls.
     public TreeNode buildTreeFromPreorderAndInorder(int[] preorder, int[] inorder) {
+        // Create a map to store the indices of elements in the inorder array
+        Map<Integer, Integer> inOrderIndices = new HashMap<>();
         for (int i = 0; i < inorder.length; i++) {
             inOrderIndices.put(inorder[i], i);
         }
-        return buildRec(preorder, 0, inorder.length - 1);
+
+        return buildRec(preorder, 0, inorder.length - 1, inOrderIndices);
     }
 
-    private TreeNode buildRec(int[] preorder, int inStart, int inEnd) {
-        if (inStart > inEnd)
+    private TreeNode buildRec(int[] preorder, int inStart, int inEnd, Map<Integer, Integer> inOrderIndices) {
+        // Base case: if there are no elements in the current subtree
+        if (inStart > inEnd) {
             return null;
+        }
 
+        // Create the root node with the current value in the preorder array.
+        // The first element in preorder is the root node
         TreeNode root = new TreeNode(preorder[preIndex]);
+        // Increment the preorder index for the next recursive call
         preIndex += 1;
 
-        int rootInIndex = inOrderIndices.get(root.data);
+        // Find the root node's index in inorder array
+        int rootIndexInInorder = inOrderIndices.get(root.data);
 
-        root.left = buildRec(preorder, inStart, rootInIndex - 1);
-        root.right = buildRec(preorder, rootInIndex + 1, inEnd);
+        // Recursively build the left subtree and right subtree
+        root.left = buildRec(preorder, inStart, rootIndexInInorder - 1, inOrderIndices);
+        root.right = buildRec(preorder, rootIndexInInorder + 1, inEnd, inOrderIndices);
+
         return root;
     }
 
@@ -643,14 +592,17 @@ public class BinaryTree {
      */
 //    HashMap<Integer, Integer> inOrderIndices = new HashMap<>();
     int postIndex;
+
     public TreeNode buildTreeFromInorderAndPostorder(int[] inorder, int[] postorder) {
         postIndex = postorder.length - 1;
-        for (int i = 0; i < inorder.length; i++){
+        Map<Integer, Integer> inOrderIndices = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
             inOrderIndices.put(inorder[i], i);
         }
-        return build(postorder, 0, inorder.length - 1);
+        return build(postorder, 0, inorder.length - 1, inOrderIndices);
     }
-    private TreeNode build(int[] postorder, int inStart, int inEnd){
+
+    private TreeNode build(int[] postorder, int inStart, int inEnd, Map<Integer, Integer> inOrderIndices) {
         if (inStart > inEnd)
             return null;
 
@@ -659,8 +611,8 @@ public class BinaryTree {
 
         int rootInIndex = inOrderIndices.get(root.data);
 
-        root.right = build(postorder, rootInIndex + 1, inEnd);
-        root.left = build(postorder, inStart, rootInIndex - 1);
+        root.right = build(postorder, rootInIndex + 1, inEnd, inOrderIndices);
+        root.left = build(postorder, inStart, rootInIndex - 1, inOrderIndices);
         return root;
     }
 
@@ -737,10 +689,10 @@ public class BinaryTree {
     /**
      * Check if a Binary Tree is symmetric.
      * Input:
-     *     1
-     *    / \
-     *   2   2
-     *  / \ / \
+     * 1
+     * / \
+     * 2   2
+     * / \ / \
      * 3  4 4  3
      * Output: true
      *
@@ -766,11 +718,11 @@ public class BinaryTree {
     /**
      * Cousins in a Binary Tree
      * Input:
-     *     1
-     *    / \
-     *   2   3
-     *    \   \
-     *     4   5
+     * 1
+     * / \
+     * 2   3
+     * \   \
+     * 4   5
      * x = 4, y = 5.
      * Output: true
      *
@@ -933,30 +885,49 @@ public class BinaryTree {
      * Given a binary tree, find the maximum path sum.
      * A path is defined as sequence of nodes from any node to any node in the tree along the parent-child connections.
      * The path must contain at least one node and does not need to go through the root.
+     * The path can go up and down the tree, as long as it does not visit the same node more than once.
+     * The path can start and end at any node in the tree.
+     * 10
+     * /  \
+     * 2    10
+     * / \     \
+     * 20  1    -25
+     * /  \
+     * 3    4
+     * The maximum path sum is 20 + 2 + 10 + 10 = 42.
      *
      * @param root
      * @return
      */
-    int maxVal;
+    int maxSum;
 
-    public int maxPathSum(TreeNode root) {
-        maxVal = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {  // Runtime: O(n) where n is the number of nodes in the tree
+        maxSum = Integer.MIN_VALUE;
         maxSum(root);
-        return maxVal;
+        return maxSum;
     }
 
-    private int maxSum(TreeNode root) {
-        if (root == null)
+    private int maxSum(TreeNode node) {
+        // If the node is null, return 0 because a null node contributes nothing.
+        if (node == null) {
             return 0;
+        }
 
-        int leftmax = Math.max(0, maxSum(root.left));
-        int rightmax = Math.max(0, maxSum(root.right));
+        // Store the maximum sum from the left and right subtrees, respectively.
+        // Ignore negative paths. That's why we are comparing with 0.
+        int leftMax = Math.max(0, maxSum(node.left));
+        int rightMax = Math.max(0, maxSum(node.right));
 
-        int currentmax = Math.max(root.data, Math.max(leftmax + root.data, rightmax + root.data));
+        // Calculate the price of a new path through the current node.
+        // Include the node itself, the best path from the left subtree, and the best path from the right subtree.
+        // This is a potential candidate for the maximum sum.
+        int newPathSum = node.data + leftMax + rightMax;
 
-        maxVal = Math.max(maxVal, leftmax + rightmax + root.data);
+        // Update the overall maxSum
+        maxSum = Math.max(maxSum, newPathSum);
 
-        return currentmax;
+        // Return the maximum gain if the current node is included in the path and one of its subtrees (left or right).
+        return node.data + Math.max(leftMax, rightMax);
     }
 
     /**
@@ -964,12 +935,12 @@ public class BinaryTree {
      * An example is the root-to-leaf path 1->2->3 which represents the number 123.
      * Find the total sum of all root-to-leaf numbers.
      * Note: A leaf is a node with no children.
-
-     * Input: [4,9,0,5,1]
-     *     4
-     *    / \
-     *   9   0
-     *  / \
+     * <p>
+     * Input:
+     * 4
+     * / \
+     * 9   0
+     * / \
      * 5   1
      * Output: 1026
      * Explanation:
@@ -982,6 +953,7 @@ public class BinaryTree {
      * @return
      */
     private int sum = 0;
+
     public int sumNumbers(TreeNode root) {
         sumRootToLeafNumbers(root, new StringBuilder());
         return sum;
@@ -1067,20 +1039,20 @@ public class BinaryTree {
     /**
      * Recover a BST in which two nodes are misplaced.
      * Input: [1,3,null,null,2]
-
-     *    1
-     *   /
-     *  3
-     *   \
-     *    2
-
+     * <p>
+     * 1
+     * /
+     * 3
+     * \
+     * 2
+     * <p>
      * Output: [3,1,null,null,2]
-
-     *    3
-     *   /
-     *  1
-     *   \
-     *    2
+     * <p>
+     * 3
+     * /
+     * 1
+     * \
+     * 2
      */
     TreeNode swapFirst = null, swapSecond = null;
     TreeNode prev;
@@ -1140,8 +1112,7 @@ public class BinaryTree {
 
         if (prevNode != null && prevNode.data == node.data) {
             modeCount += 1;
-        }
-        else {
+        } else {
             modeCount = 1;
         }
 
@@ -1149,8 +1120,7 @@ public class BinaryTree {
             maxCount = modeCount;
             result.clear();
             result.add(node.data);
-        }
-        else if (modeCount == maxCount) {
+        } else if (modeCount == maxCount) {
             result.add(node.data);
         }
 
@@ -1193,8 +1163,8 @@ public class BinaryTree {
         return root;
     }
 
-    private void reverseInOrder(TreeNode root){
-        if(root == null)
+    private void reverseInOrder(TreeNode root) {
+        if (root == null)
             return;
 
         reverseInOrder(root.right);
@@ -1202,45 +1172,64 @@ public class BinaryTree {
         root.data = sum;
         reverseInOrder(root.left);
     }
-}
 
-class SerializeAndDeserialize {
-    private final String NULL_STRING = "X";
-    private final String DELIMITER = ",";
+    /**
+     * Serialization: Convert a binary tree to a string in such a way that the structure and
+     * values of the tree can be fully reconstructed.
+     * Deserialization: Reconstruct the binary tree from the serialized string.
+     */
+    static class SerializeAndDeserialize {
+        private final String NULL_STRING = "X";
+        private final String DELIMITER = ",";
 
-    // Encodes a tree to a single string.
-    public String serialize(TreeNode root) {
-        StringBuilder sb = new StringBuilder();
-        createStringPreOrder(root, sb);
-        return sb.toString();
-    }
-
-    private void createStringPreOrder(TreeNode root, StringBuilder sb){
-        if (root == null) {
-            sb.append(NULL_STRING).append(DELIMITER);
+        // Encodes a tree to a single string.
+        public String serialize(TreeNode root) {  // Runtime: O(n) where n is the number of nodes
+            // Use StringBuilder for efficient string concatenation
+            StringBuilder sb = new StringBuilder();
+            serializeHelper(root, sb);
+            return sb.toString();
         }
-        else {
+
+        private void serializeHelper(TreeNode root, StringBuilder sb) {
+            // Base case: if the current node is null, append "null" and return
+            if (root == null) {
+                sb.append(NULL_STRING).append(DELIMITER);
+                return;
+            }
+            // Append the value of the current node followed by a delimiter
             sb.append(root.data).append(DELIMITER);
-            createStringPreOrder(root.left, sb);
-            createStringPreOrder(root.right, sb);
-        }
-    }
 
-    // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
-        Queue<String> queue = new LinkedList<>(Arrays.asList(data.split(DELIMITER)));
-        return createTreePreOrder(queue);
-    }
-
-    private TreeNode createTreePreOrder(Queue<String> queue){
-        String val = queue.remove();
-        if (val.equals(NULL_STRING)) {
-            return null;
+            // Recursively serialize the left and right subtrees
+            serializeHelper(root.left, sb);
+            serializeHelper(root.right, sb);
         }
-        else {
+
+        // Decodes your encoded data to tree.
+        public TreeNode deserialize(String data) {  // Runtime: O(n) where n is the number of nodes
+            // Split the serialized string into an array of values using commas
+            String[] nodes = data.split(DELIMITER);
+
+            // Use a queue to process nodes in the correct order
+            Queue<String> queue = new LinkedList<>(Arrays.asList(nodes));
+            return deserializeHelper(queue);
+        }
+
+        private TreeNode deserializeHelper(Queue<String> queue) {
+            // Retrieve the next value from the queue
+            String val = queue.remove();
+
+            // Base case: if the value is "null", return null (no node here)
+            if (val.equals(NULL_STRING)) {
+                return null;
+            }
+            // Create a new TreeNode with the current value
             TreeNode node = new TreeNode(Integer.parseInt(val));
-            node.left = createTreePreOrder(queue);
-            node.right = createTreePreOrder(queue);
+
+            // Recursively reconstruct the left and right subtrees
+            node.left = deserializeHelper(queue);
+            node.right = deserializeHelper(queue);
+
+            // Return the constructed node
             return node;
         }
     }

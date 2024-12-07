@@ -1,8 +1,6 @@
 package com.Algorithms;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * You have a queue of integers, you need to retrieve the first unique integer in the queue.
@@ -15,35 +13,36 @@ import java.util.Set;
  * void add(int value) insert value to the queue.
  */
 class FirstUniqueNumber {
-    Set<Integer> queue;
-    Set<Integer> set;
+    // LinkedHashMap keeps insertion order and allows efficient lookups.
+    // The key is the number, and the value is a Boolean indicating whether the number is unique.
+    LinkedHashMap<Integer, Boolean> map;
 
     public FirstUniqueNumber(int[] nums) {
-        queue = new LinkedHashSet<>();  //Ordered set
-        set = new HashSet<>();
+        map = new LinkedHashMap<>();
         for (int num : nums) {
-            if (!set.contains(num) && !queue.contains(num))
-                set.add(num);
-            else
-                set.remove(num);
-            queue.add(num);
+            add(num); // Process each number in the initial list
         }
     }
 
     public int showFirstUnique() {
-        for (int num : queue) {
-            if (set.contains(num))
-                return num;
+        // Iterate through the LinkedHashMap in insertion order
+        for (Map.Entry<Integer, Boolean> entry : map.entrySet()) {
+            if (entry.getValue()) { // Check if the number is marked as unique
+                return entry.getKey(); // Return the first unique number
+            }
         }
-        return -1;
+        return -1; // No unique number found
     }
 
+    // Method to add a number to the stream
     public void add(int num) {
-        if (!set.contains(num) && !queue.contains(num))
-            set.add(num);
-        else
-            set.remove(num);
-        queue.add(num);
+        if (map.containsKey(num)) {
+            // If the number already exists, mark it as non-unique
+            map.put(num, false);
+        } else {
+            // If the number is new, add it to the map and mark it as unique
+            map.put(num, true);
+        }
     }
 }
 
@@ -51,12 +50,12 @@ public class FetchFirstUniqueNumber {
     public static void main(String[] args) {
         int[] nums = {2, 3, 5};
         FirstUniqueNumber firstUnique = new FirstUniqueNumber(nums);
-        System.out.println(firstUnique.showFirstUnique());
+        System.out.println(firstUnique.showFirstUnique()); // Output: 2
         firstUnique.add(5);
-        System.out.println(firstUnique.showFirstUnique());
+        System.out.println(firstUnique.showFirstUnique()); // Output: 2
         firstUnique.add(2);
-        System.out.println(firstUnique.showFirstUnique());
+        System.out.println(firstUnique.showFirstUnique()); // Output: 3
         firstUnique.add(3);
-        System.out.println(firstUnique.showFirstUnique());
+        System.out.println(firstUnique.showFirstUnique()); // Output: -1
     }
 }

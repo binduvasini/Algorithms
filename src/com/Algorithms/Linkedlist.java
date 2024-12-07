@@ -2,22 +2,22 @@ package com.Algorithms;
 
 import java.util.*;
 
-class Node {
-    int data;
-    Node next;
-    Node prev;
-    Node child;
-
-    public Node(int data) {
-        this.data = data;
-    }
-    public Node(int data, Node next) {
-        this.data = data;
-        this.next = next;
-    }
-}
-
 public class Linkedlist {
+    static class Node {
+        int data;
+        Node next;
+        Node prev;
+        Node child;
+
+        public Node(int data) {
+            this.data = data;
+        }
+        public Node(int data, Node next) {
+            this.data = data;
+            this.next = next;
+        }
+    }
+
     Node head = null;
     Node tail = null;
     int size = 0;

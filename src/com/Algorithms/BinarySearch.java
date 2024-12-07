@@ -398,39 +398,4 @@ public class BinarySearch {
 
         return -1;
     }
-
-    /**
-     * Given an array nums with n objects colored red, white, or blue,
-     * sort them in-place so that objects of the same color are adjacent,
-     * with the colors in the order red, white, and blue.
-     * <p>
-     * We will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
-     * <p>
-     * Input: nums = [2,0,2,1,1,0]
-     * Output: [0,0,1,1,2,2]
-     *
-     * @param nums
-     */
-    public void sortColors(int[] nums) {  //Dutch national flag problem
-        int lo = 0, mid = 0, hi = nums.length - 1;
-
-        while (mid <= hi) {  //Look at the value in the middle position.
-            if (nums[mid] == 0) {  //If it's 0, swap it with nums[lo]. increment lo and mid.
-                swap(nums, lo, mid);
-                lo += 1;
-                mid += 1;
-            } else if (nums[mid] == 2) {  //If it's 2, swap it with nums[hi]. decrement hi.
-                swap(nums, hi, mid);
-                hi -= 1;
-            } else {  //If it's 1, no swapping is required. increment mid.
-                mid += 1;
-            }
-        }
-    }
-
-    private void swap(int[] nums, int ind1, int ind2) {
-        int temp = nums[ind1];
-        nums[ind1] = nums[ind2];
-        nums[ind2] = temp;
-    }
 }

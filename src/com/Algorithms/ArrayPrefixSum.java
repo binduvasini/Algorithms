@@ -14,8 +14,9 @@ public class ArrayPrefixSum {
      * @return
      */
     public int totalNumberOfSubarrayWhoseSumEqualsTarget(int[] nums, int target) {
+        // Use prefix sum technique.
+        // Use a HashMap to calculate the cumulative sum as we iterate through the array.
         Map<Integer, Integer> map = new HashMap<>();  // map<prefixSum, frequency of this sum>
-
         map.put(0, 1);  // To handle the prefixSum 0.
         // When we keep adding the elements, we may get the prefixSum of exact target value.
         // When we subtract this prefixSum with target, we will get 0. So there needs to be a key 0.
@@ -27,6 +28,7 @@ public class ArrayPrefixSum {
         for (int num : nums) {
             prefixSum += num;
 
+            // At each step, check if the difference prefixSum - target exists in the HashMap
             if (map.containsKey(prefixSum - target)) {
                 count += map.get(prefixSum - target);
             }
@@ -34,6 +36,37 @@ public class ArrayPrefixSum {
             map.put(prefixSum, map.getOrDefault(prefixSum, 0) + 1);
         }
         return count;
+    }
+
+    /**
+     * Find the maximum length subarray for a given sum.
+     * nums = { 10, 5, 2, 7, 1, 9 },
+     * target = 15
+     * Output: 4
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int maxLengthSubarray(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();  // map<prefixSum, index>
+        map.put(0, -1);  // Edge case.
+
+        int prefixSum = 0;
+        int longest = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            prefixSum += nums[i];
+            if (map.containsKey(prefixSum - target)) {
+                int prefixIndex = map.get(prefixSum - target);
+                longest = Math.max(longest, i - prefixIndex);
+            }
+            // Track only the first occurrence of this cumulative sum.
+            else {
+                map.put(prefixSum, i);
+            }
+        }
+        return longest;
     }
 
     /**
@@ -48,9 +81,10 @@ public class ArrayPrefixSum {
      * @return
      */
     public boolean isSubarrayDivisibleByK(int[] nums, int k) {
-        int prefixSum = 0;
         Map<Integer, Integer> map = new HashMap<>();  // map<remainder, index>
         map.put(0, -1);  // To handle the remainder 0
+
+        int prefixSum = 0;
 
         for (int i = 0; i < nums.length; i++) {
             prefixSum += nums[i];
@@ -61,7 +95,11 @@ public class ArrayPrefixSum {
                 if (i - prefixIndex >= 2) {  // As the question suggests, check if the subarray size is at least 2.
                     return true;
                 }
-            } else {
+            }
+            // Track only the first occurrence of each remainder to maximize subarray length and avoid overwriting data.
+            // This is why the map needs to be populated in the else block.
+            else {
+                // Store the remainder and index if not already in the map
                 map.put(remainder, i);
             }
         }
@@ -77,11 +115,12 @@ public class ArrayPrefixSum {
      * @param k
      * @return
      */
-    public int subarrayCountDivisibleByK(int[] nums, int k) {
-        int prefixSum = 0;
-        int count = 0;
+    public int totalNumberOfSubarrayDivisibleByK(int[] nums, int k) {
         Map<Integer, Integer> map = new HashMap<>();  // map<remainder, frequency of this remainder>
         map.put(0, 1);  // To handle the remainder 0
+
+        int prefixSum = 0;
+        int count = 0;
 
         for (int num : nums) {
             prefixSum += num;
@@ -108,13 +147,14 @@ public class ArrayPrefixSum {
      * @param nums
      * @return
      */
-    public int findMaxLength0And1(int[] nums) {
-        // We have transformed this problem to finding the longest subarray with a cumulative sum of 0.
+    public int findMaxLengthOfEqual0And1(int[] nums) {
+        // Transform this problem to finding the longest subarray with a cumulative sum of 0.
         // To achieve this, we add 1 for every 1 in the array, we subtract 1 for every 0 in the array.
-        int prefixSum = 0;
-        int maxLen = 0;
         Map<Integer, Integer> map = new HashMap<>();  // map<prefixSum, index>
         map.put(0, -1);
+
+        int prefixSum = 0;
+        int longest = 0;
 
         for (int i = 0; i < nums.length; i++) {
             int num = nums[i] == 0 ? -1 : 1;  // Replace every 0 in the array with -1
@@ -122,12 +162,15 @@ public class ArrayPrefixSum {
 
             if (map.containsKey(prefixSum)) {
                 int prefixIndex = map.get(prefixSum);
-                maxLen = Math.max(maxLen, i - prefixIndex);
-            } else {
+                longest = Math.max(longest, i - prefixIndex);
+            }
+            // Track only the first occurrence of each remainder to maximize subarray length and avoid overwriting data.
+            // This is why the map needs to be populated in the else block.
+            else {
                 map.put(prefixSum, i);
             }
         }
-        return maxLen;
+        return longest;
     }
 
     /**
@@ -141,88 +184,36 @@ public class ArrayPrefixSum {
      * @return
      */
     public int longestWPI(int[] hours) {
-        // This is similar to the above problem. We transform this problem to finding the cumulative sum.
-        int prefixSum = 0;
-        int maxLen = 0;
-
+        // Transform the problem into a numerical one by considering days with hours > 8 as +1 and others as -1.
+        // Find the longest subarray where the cumulative prefix sum is +1.
         Map<Integer, Integer> map = new HashMap<>();
         map.put(0, -1);
 
+        int prefixSum = 0;
+        int longest = 0;
         for (int i = 0; i < hours.length; i++) {
-            // Treat days with more than 8 hours of work as 1 (tiring days),
-            // and days with 8 or fewer hours as -1 (non-tiring days).
+            // Treat days with more than 8 hours of work as 1 (well-performing day),
+            // and days with 8 or fewer hours as -1 (non-well-performing day).
             int num = hours[i] > 8 ? 1 : -1;
 
             prefixSum += num;
 
-            if (prefixSum > 0) {  // If the prefixSum is positive, it means we have more tiring days than non-tiring ones.
-                maxLen = i + 1;
+            // If the prefixSum is positive, it means we have more tiring days than non-tiring ones.
+            // It means the entire interval from 0 to i is well-performing.
+            if (prefixSum > 0) {  // Case 1: prefixSum is positive.
+                longest = i + 1;
             }
-            else {
-                if (map.containsKey(prefixSum - 1)) {  // Check if we've seen this prefixSum before
-                    // We are looking for a subarray where the count of tiring days is
-                    // greater than the count of non-tiring days. So we're checking prefixSum - 1.
+            else {  // Case 2: prefixSum is negative.
+                // Look for earlier positions where the cumulative sum was just slightly smaller than the current prefixSum.
+                if (map.containsKey(prefixSum - 1)) {
+                    // We are looking for a subarray where the count of well-performing days is
+                    // greater than the count of non-well-performing days. So we're checking prefixSum - 1.
                     int prefixIndex = map.get(prefixSum - 1);
-                    maxLen = Math.max(maxLen, i - prefixIndex);
+                    longest = Math.max(longest, i - prefixIndex);
                 }
-                map.putIfAbsent(prefixSum, i);  // We are populating the map with prefixSum.
-                // So do it without the else condition.
+                map.putIfAbsent(prefixSum, i);
             }
         }
-        return maxLen;
-    }
-    /**
-     * Find the maximum length subarray for a given sum.
-     * nums = { 10, 5, 2, 7, 1, 9 },
-     * target = 15
-     * Output: 4
-     *
-     * @param nums
-     * @param target
-     * @return
-     */
-    public int maxLengthSubarray(int[] nums, int target) {
-        int prefixSum = 0;
-        int maxLen = 0;
-        Map<Integer, Integer> map = new HashMap<>();  //map<prefixSum, index>
-
-        for (int i = 0; i < nums.length; i++) {
-            prefixSum += nums[i];
-            if (map.containsKey(prefixSum - target)) {
-                int prefixIndex = map.get(prefixSum - target);
-                maxLen = Math.max(maxLen, i - prefixIndex);
-            } else {
-                map.put(prefixSum, i);
-            }
-        }
-        return maxLen;
-    }
-
-    /**
-     * A circular array means the end of the array connects to the beginning of the array.
-     * Given a circular array, find the subarray with maximum sum. Return the maximum sum.
-     * Input: [5,-3,5]
-     * Output: 10
-     *
-     * @param nums
-     * @return
-     */
-    public int circularSubarrayWithMaxSum(int[] nums) {
-        int currentMax = 0, currentMin = 0;
-        int minSum = Integer.MAX_VALUE;
-        int maxSum = Integer.MIN_VALUE;
-        int sum = 0;
-
-        for (int num : nums) {
-            currentMax = Math.max(currentMax + num, num);
-            maxSum = Math.max(maxSum, currentMax);
-
-            currentMin = Math.min(currentMin + num, num);
-            minSum = Math.min(minSum, currentMin);
-
-            sum += num;
-        }
-
-        return maxSum > 0 ? Math.max(maxSum, sum - minSum) : maxSum;  // Total sum - minimum subarray sum in the middle.
+        return longest;
     }
 }
