@@ -7,7 +7,7 @@ public class BinaryTree {
         int data;
         TreeNode left;
         TreeNode right;
-        TreeNode next;  //This field is required for only one question.
+        TreeNode next;  // This field is required for only one question.
 
         public TreeNode(int data) {
             this.data = data;

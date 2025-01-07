@@ -318,7 +318,7 @@ public class StringQuestions {
 
         // Continue checking while the pointers have not crossed each other.
         while (left < right) {
-            // Compare characters at the current pointers.
+            // Compare characters of the left and right pointers.
             if (str.charAt(left) != str.charAt(right)) {
                 // If characters do not match, it is not a palindrome.
                 return false;

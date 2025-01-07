@@ -4,70 +4,23 @@ import java.util.*;
 
 public class GraphQuestions {
 
+    // The graph is represented using an adjacency list.
     Map<Integer, List<Integer>> graph = new HashMap<>();
-
-    /**
-     * Find the shortest path from source to destination using BFS.
-     *
-     * @param source
-     * @param destination
-     * @return
-     */
-    public int bfsShortestPath(Integer source, Integer destination) {
-        // Initialize a queue for BFS and add the starting node (source)
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(source);
-
-        // Maintain a Set to keep track of visited nodes to avoid cycles
-        Set<Integer> visited = new HashSet<>();
-        visited.add(source);
-
-        int distance = 0;
-
-        while (!queue.isEmpty()) {
-            // distance represents the shortest path length,
-            // incrementing by 1 at each level to measure how far we've traversed from the source.
-            distance += 1;
-
-            // Number of nodes at the current level
-            int nodesAtCurrentLevel = queue.size();
-            // processes all nodes at the same distance level.
-            for (int i = 0; i < nodesAtCurrentLevel; i++) {
-                Integer node = queue.remove();
-
-                if (graph.containsKey(node)) {
-                    // Iterate through each neighbor of the current node
-                    for (Integer neighbor : graph.get(node)) {
-                        if (neighbor.equals(destination)) {
-                            return distance;
-                        }
-                        // If the neighbor hasn't been visited, add it to the queue and mark as visited
-                        if (!visited.contains(neighbor)) {
-                            queue.add(neighbor);
-                            visited.add(neighbor);
-                        }
-                    }
-                }
-            }
-        }
-        return -1;
-    }
 
     /**
      * There are a total of numCourses courses you have to take. Some courses may have prerequisites,
      * for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
      * Given the total number of courses and a list of prerequisite pairs,
      * is it possible for you to finish all courses?
-     * Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+     * Input: courses = [[1,0],[0,1]]
      * Output: false
      * There are a total of 2 courses to take.
      * To take course 1 you should have finished course 0,
      * and to take course 0 you should also have finished course 1. So it is impossible.
+     *
      */
-//    graph = new HashMap<>();
-    public boolean canFinishCourses(int[][] courses) {
-        // Runtime: O(V+E), where V is the number of courses and E is the number of prerequisites.
-        // We go through each course and its prerequisites once.
+    public boolean canFinishCourses(int[][] courses) {  // Runtime: O(V + E)
+        // Populate the graph.
         for (int[] course : courses) {
             graph.putIfAbsent(course[1], new ArrayList<>());
             // [1, 0] means that course 1 depends on course 0.
@@ -88,7 +41,7 @@ public class GraphQuestions {
         return true;
     }
 
-    //No need to do topological sort (DFS) for this question. We just need to detect a cycle
+    // No need to do topological sort (DFS) for this question. We just need to detect a cycle
 
     // A node has 3 possible states:
     // visited - node has been added to the output. We never have to visit this node again.
@@ -98,13 +51,11 @@ public class GraphQuestions {
     private boolean hasCycle(Integer course, Set<Integer> visited, Set<Integer> visiting) {
         visited.add(course);
         visiting.add(course);
-        if (graph.containsKey(course)) {
-            for (Integer prereq : graph.get(course)) {
-                if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting)) {
-                    return true;
-                } else if (visiting.contains(prereq)) {
-                    return true;
-                }
+        for (Integer prereq : graph.get(course)) {
+            if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting)) {
+                return true;
+            } else if (visiting.contains(prereq)) {
+                return true;
             }
         }
         // We need to clear this node from the visiting set.
@@ -122,13 +73,13 @@ public class GraphQuestions {
      * return the ordering of courses you should take to finish all courses.
      * There may be multiple correct orders, you just need to return one of them.
      * If it is impossible to finish all courses, return an empty array.
-     * Input: numCourses = 4, [[1,0],[2,0],[3,1],[3,2]]
+     * Input: courses = [[1,0],[2,0],[3,1],[3,2]]
      * Output: [0,1,2,3] or [0,2,1,3]
      * There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2.
      * Both courses 1 and 2 should be taken after you finished course 0.
      * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
+     *
      */
-//    graph = new HashMap<>();
     public int[] findOrderOfCourses(int numCourses, int[][] courses) {
         Deque<Integer> courseOrder = new ArrayDeque<>(); // Stack
 
@@ -146,49 +97,45 @@ public class GraphQuestions {
         Set<Integer> visiting = new HashSet<>();
         for (Integer course : graph.keySet()) {
             if (!visited.contains(course) && dfsCycleCheck(course, visited, visiting, courseOrder)) {
-                return new int[0];  //return an empty array because there is a cycle.
+                return new int[0];  // return an empty array because there is a cycle.
             }
         }
 
-        return courseOrder.stream().mapToInt(i -> i).toArray();
+        return courseOrder.stream().mapToInt(Integer::intValue).toArray();
     }
 
     private boolean dfsCycleCheck(
             Integer course, Set<Integer> visited, Set<Integer> visiting, Deque<Integer> courseOrder
     ) {
         visited.add(course);
-        visiting.add(course); //To detect a cycle
-        if (graph.containsKey(course)) {
-            //We need to check this cuz we come back here during recursion with the actual course of prerequisites
-            for (Integer prereq : graph.get(course)) {
-                if (!visited.contains(prereq) && dfsCycleCheck(prereq, visited, visiting, courseOrder)) {
-                    return true;
-                } else if (visiting.contains(prereq)) {
-                    return true;
-                }
+        visiting.add(course); // To detect a cycle
+        for (Integer prereq : graph.get(course)) {
+            if (!visited.contains(prereq) && dfsCycleCheck(prereq, visited, visiting, courseOrder)) {
+                return true;
+            } else if (visiting.contains(prereq)) {
+                return true;
             }
         }
         visiting.remove(course);
-        courseOrder.push(course); //Store the sorted elements
+        courseOrder.push(course); // Store the sorted courses
         return false;
     }
-
 
     /**
      * Change the color of a starting pixel and all connected pixels (up, down, left, right)
      * that have the same initial color as the starting pixel to a new color.
      * Input:
      * [
-     *   [1,1,1],
-     *   [1,1,0],
-     *   [1,0,1]
+     * [1,1,1],
+     * [1,1,0],
+     * [1,0,1]
      * ]
      * sr = 1, sc = 1, newColor = 2
      * Output:
      * [
-     *   [2,2,2],
-     *   [2,2,0],
-     *   [2,0,1]
+     * [2,2,2],
+     * [2,2,0],
+     * [2,0,1]
      * ]
      *
      * @param image
@@ -231,6 +178,111 @@ public class GraphQuestions {
     }
 
     /**
+     * Given n nodes and a list of edges where each edge is a pair of nodes.
+     * Check if the graph is a valid tree. A valid tree must satisfy:
+     * The graph is connected (all nodes are reachable from any node).
+     * The graph is acyclic (no cycles).
+     *
+     * @param edges
+     * @return
+     */
+    public boolean isGraphValidTree(int[][] edges) {  // Runtime: O(V + E)
+        // Build the adjacency list for the graph.
+        int n = edges.length;
+        for (int i = 0; i < n; i++) {
+            graph.putIfAbsent(i, new ArrayList<>());
+
+            int[] edge = edges[i];
+            graph.get(edge[0]).add(edge[1]);
+            graph.get(edge[1]).add(edge[0]);
+        }
+
+        // Use a set to track visited nodes.
+        Set<Integer> visited = new HashSet<>();
+
+        // Start DFS from node 0.
+        if (hasCycle(0, -1, visited)) {
+            return false;  // Cycle detected.
+        }
+
+        // Ensure all nodes are visited (i.e., the graph is connected).
+        return visited.size() == n;
+    }
+
+    private boolean hasCycle(int node, int parent, Set<Integer> visited) {
+        // Mark the current node as visited.
+        visited.add(node);
+
+        // Traverse all neighbors of the current node.
+        for (int neighbor : graph.get(node)) {
+            // Ignore the edge leading back to the parent.
+            // The graph is undirected. Every edge creates a two-way connection.
+            // During the traversal, one of the nodes will definitely be a parent node.
+            // Therefore, this check is necessary.
+            if (neighbor == parent) {
+                continue;
+            }
+
+            // If the neighbor is already visited, we found a cycle.
+            if (visited.contains(neighbor) ||
+                    // Recurse for the neighbor
+                    hasCycle(neighbor, node, visited)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Find the shortest path from source to destination using BFS.
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    public int bfsShortestPath(Integer source, Integer destination) {  // Runtime: O(V + E)
+        // Initialize a queue.
+        Queue<Integer> queue = new LinkedList<>();
+        // Add the source to the queue.
+        queue.add(source);
+
+        // Maintain a Set to keep track of visited nodes to avoid cycles
+        Set<Integer> visited = new HashSet<>();
+        // Mark the source node visited.
+        visited.add(source);
+
+        // distance represents the shortest path length
+        int distance = 0;
+
+        while (!queue.isEmpty()) {
+            // increment distance by 1 at each level to measure how far we've traversed from the source.
+            distance += 1;
+
+            // The size of the queue represents the number of nodes at the current level
+            int nodesAtCurrentLevel = queue.size();
+            // process all nodes at this level. They all have the same distance.
+            for (int i = 0; i < nodesAtCurrentLevel; i++) {
+                // Remove the node from the queue.
+                Integer node = queue.remove();
+
+                // Iterate through each neighbor of the current node
+                for (Integer neighbor : graph.get(node)) {
+                    if (neighbor.equals(destination)) {
+                        return distance;
+                    }
+                    // If the neighbor hasn't been visited, add it to the queue and mark as visited
+                    if (!visited.contains(neighbor)) {
+                        queue.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Given a 2D grid of integers where:
      * -1 represents a wall or obstacle.
      * 0 represents a gate.
@@ -241,13 +293,15 @@ public class GraphQuestions {
      * @param rooms
      */
     private static final int INF = Integer.MAX_VALUE;
+
     public void wallsAndGates(int[][] rooms) {
         // Run BFS from the gates.
-        int rows = rooms.length;
-        int cols = rooms[0].length;
+        // Initialize a queue.
         Queue<int[]> queue = new LinkedList<>();
 
-        // Step 1: Add all gates to the queue
+        int rows = rooms.length;
+        int cols = rooms[0].length;
+        // Add all gates to the queue. (considering them as source nodes)
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (rooms[row][col] == 0) {
@@ -256,12 +310,13 @@ public class GraphQuestions {
             }
         }
 
-        // Step 2: BFS from each gate
+        // We don't need a visited set.
+        // BFS from each gate
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         while (!queue.isEmpty()) {
-            int[] point = queue.poll();
-            int row = point[0];
-            int col = point[1];
+            int[] cell = queue.poll();
+            int row = cell[0];
+            int col = cell[1];
 
             // Explore neighbors
             for (int[] direction : directions) {
@@ -341,11 +396,12 @@ public class GraphQuestions {
      * and w is the time it takes for a signal to travel from source to target.
      * We send a signal from a certain node source.
      * How long will it take for all nodes to receive the signal? If it is impossible, return -1.
-     * times = [
-     *          [1,2,1],
-     *          [2,3,2],
-     *          [1,3,4]
-     *         ]
+     * times =
+     * [
+     * [1,2,1],
+     * [2,3,2],
+     * [1,3,4]
+     * ]
      * N = 3
      * source = 1
      * output: 3.
@@ -398,10 +454,10 @@ public class GraphQuestions {
      * your task is to find the cheapest price from source to dest with up to k stops.
      * If there is no such route, return -1.
      * N = 3, flights = [
-     *                   [0,1,100],
-     *                   [1,2,100],
-     *                   [0,2,500]
-     *                  ]
+     * [0,1,100],
+     * [1,2,100],
+     * [0,2,500]
+     * ]
      * source = 0, dest = 2, K = 0
      * Output: 500
      *
@@ -448,12 +504,12 @@ public class GraphQuestions {
      * reconstruct the itinerary in order. All the tickets belong to a man who departs from JFK.
      * Thus, the itinerary must begin with JFK.
      * Input: [
-     *         ["JFK","SFO"],
-     *         ["JFK","ATL"],
-     *         ["SFO","ATL"],
-     *         ["ATL","JFK"],
-     *         ["ATL","SFO"]
-     *        ]
+     * ["JFK","SFO"],
+     * ["JFK","ATL"],
+     * ["SFO","ATL"],
+     * ["ATL","JFK"],
+     * ["ATL","SFO"]
+     * ]
      * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
      *
      * @param tickets
@@ -461,6 +517,7 @@ public class GraphQuestions {
      */
     Map<String, Queue<String>> itineraryGraph = new HashMap<>();
     LinkedList<String> orderedItinerary = new LinkedList<>();
+
     public List<String> orderItinerary(List<List<String>> tickets) {
         for (List<String> ticket : tickets) {
             itineraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
@@ -483,20 +540,17 @@ public class GraphQuestions {
 
     /**
      * In a given grid, each cell can have one of three values:
-
      * the value 0 representing an empty cell;
      * the value 1 representing a fresh orange;
      * the value 2 representing a rotten orange.
      * Every minute, any fresh orange that is adjacent (4-directionally) to a rotten orange becomes rotten.
-
      * Return the minimum number of minutes that must elapse until no cell has a fresh orange.
      * If this is impossible, return -1 instead.
-
      * Input:
      * [
-     *   [2,1,1],
-     *   [1,1,0],
-     *   [0,1,1]
+     * [2,1,1],
+     * [1,1,0],
+     * [0,1,1]
      * ]
      * Output: 4
      *
@@ -515,8 +569,7 @@ public class GraphQuestions {
             for (int c = 0; c < cols; c++) {
                 if (grid[r][c] == 2) {
                     queue.add(new int[]{r, c});
-                }
-                else if (grid[r][c] == 1) {
+                } else if (grid[r][c] == 1) {
                     freshOranges += 1;
                 }
             }
@@ -556,7 +609,7 @@ public class GraphQuestions {
     }
 
     public void alienDictionary() {
-        String[] dictionary =  {"wrt", "wrp", "er", "ett", "rmtt"};
+        String[] dictionary = {"wrt", "wrp", "er", "ett", "rmtt"};
         Map<Character, List<Character>> graph = new HashMap<>();
         for (String word : dictionary) {
             for (char c : word.toCharArray()) {

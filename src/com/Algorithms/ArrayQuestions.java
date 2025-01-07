@@ -163,6 +163,8 @@ public class ArrayQuestions {
 
     /**
      * Best day to buy stock and the best day to sell it. Find the maximum profit given you buy and sell a stock once.
+     * prices = [7,1,5,3,6,4]
+     * output: 5
      *
      * @param prices
      * @return
@@ -188,8 +190,11 @@ public class ArrayQuestions {
     }
 
     /**
-     * Best day to buy stock and the best day to sell it. You can only hold at most one share of the stock at any time.
-     * However, you can buy it then immediately sell it on the same day. You should sell before you buy another stock.
+     * Best day to buy and sell a stock multiple times. You can only hold at most one share of the stock at any time.
+     * You should sell before you buy another stock. Find the maximum profit.
+     * prices = [7,1,5,3,6,4]
+     * output: 7
+     * Buy on 2nd day, sell on 3rd day. Again buy on 4th day and sell on 5th day.
      *
      * @param prices
      * @return
@@ -577,18 +582,17 @@ public class ArrayQuestions {
         return totalGas >= totalCost ? start : -1;
     }
 
-
     /**
      * Given an array nums with n objects colored red, white, or blue,
      * sort them in-place so that objects of the same color are adjacent,
      * with the colors in the order red, white, and blue.
      * We will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+     * Dutch national flag problem.
      * Input: nums = [2,0,2,1,1,0]
      * Output: [0,0,1,1,2,2]
      *
      * @param nums
      */
-    // Dutch national flag problem
     public void sortColors(int[] nums) {
         // Use two pointers to partition the array.
         // The left pointer ensures all elements to its left are 0s.
