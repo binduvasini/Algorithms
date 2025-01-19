@@ -10,8 +10,7 @@ public class GraphQuestions {
     /**
      * There are a total of numCourses courses you have to take. Some courses may have prerequisites,
      * for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
-     * Given the total number of courses and a list of prerequisite pairs,
-     * is it possible for you to finish all courses?
+     * Given a list of prerequisite pairs, is it possible for you to finish all courses?
      * Input: courses = [[1,0],[0,1]]
      * Output: false
      * There are a total of 2 courses to take.
@@ -21,12 +20,12 @@ public class GraphQuestions {
      */
     public boolean canFinishCourses(int[][] courses) {  // Runtime: O(V + E)
         // Populate the graph.
+        // [1, 0] means that course 1 depends on course 0.
+        // This is represented as an edge in the graph where 0 -> 1.
+        // We want the prerequisite to point to dependent courses.
+        // prerequisites = [[1, 0], [2, 1], [3, 2]] means 0 → 1 → 2 → 3
         for (int[] course : courses) {
             graph.putIfAbsent(course[1], new ArrayList<>());
-            // [1, 0] means that course 1 depends on course 0.
-            // This is represented as an edge in the graph where 0 -> 1.
-            // We want the prerequisite to point to dependent courses.
-            // prerequisites = [[1, 0], [2, 1], [3, 2]] means 0 → 1 → 2 → 3
             graph.get(course[1]).add(course[0]);
         }
 
@@ -54,7 +53,8 @@ public class GraphQuestions {
         for (Integer prereq : graph.get(course)) {
             if (!visited.contains(prereq) && hasCycle(prereq, visited, visiting)) {
                 return true;
-            } else if (visiting.contains(prereq)) {
+            }
+            if (visiting.contains(prereq)) {
                 return true;
             }
         }
@@ -80,19 +80,19 @@ public class GraphQuestions {
      * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
      *
      */
-    public int[] findOrderOfCourses(int numCourses, int[][] courses) {
+    public int[] findOrderOfCourses(int[][] courses) {
         Deque<Integer> courseOrder = new ArrayDeque<>(); // Stack
 
+        // [1, 0] means that course 1 depends on course 0.
+        // This is represented as an edge in the graph where 0 -> 1.
+        // We want the prerequisite to point to dependent courses.
+        // prerequisites = [[1, 0], [2, 1], [3, 2]] means 0 → 1 → 2 → 3
         for (int[] course : courses) {
             graph.putIfAbsent(course[1], new ArrayList<>());
-            // [1, 0] means that course 1 depends on course 0.
-            // This is represented as an edge in the graph where 0 -> 1.
-            // We want the prerequisite to point to dependent courses.
-            // prerequisites = [[1, 0], [2, 1], [3, 2]] means 0 → 1 → 2 → 3
             graph.get(course[1]).add(course[0]);
         }
 
-        //Use topological sort.
+        // Use topological sort.
         Set<Integer> visited = new HashSet<>();
         Set<Integer> visiting = new HashSet<>();
         for (Integer course : graph.keySet()) {
@@ -112,7 +112,8 @@ public class GraphQuestions {
         for (Integer prereq : graph.get(course)) {
             if (!visited.contains(prereq) && dfsCycleCheck(prereq, visited, visiting, courseOrder)) {
                 return true;
-            } else if (visiting.contains(prereq)) {
+            }
+            if (visiting.contains(prereq)) {
                 return true;
             }
         }
@@ -148,16 +149,18 @@ public class GraphQuestions {
         // Store the original color of the starting pixel
         int origColor = image[startRow][startCol];
 
-        if (origColor != newColor) {
-            // Start the DFS to fill the region
-            dfs(image, startRow, startCol, origColor, newColor);
+        if (origColor == newColor) {
+            return new int[][]{};
         }
+
+        // Start the DFS to fill the region
+        dfs(image, startRow, startCol, origColor, newColor);
 
         return image;
     }
 
     private void dfs(int[][] image, int r, int c, int origColor, int newColor) {
-        // Check if the current pixel is out of bounds
+        // Boundary check: Check if the current pixel is out of bounds
         if (r < 0 || r >= image.length || c < 0 || c >= image[0].length) {
             return;
         }
@@ -179,7 +182,7 @@ public class GraphQuestions {
 
     /**
      * Given n nodes and a list of edges where each edge is a pair of nodes.
-     * Check if the graph is a valid tree. A valid tree must satisfy:
+     * Check if the graph is a valid tree. A valid tree must satisfy the following conditions:
      * The graph is connected (all nodes are reachable from any node).
      * The graph is acyclic (no cycles).
      *
@@ -255,13 +258,18 @@ public class GraphQuestions {
         // distance represents the shortest path length
         int distance = 0;
 
+        // Iterate through the queue. Continue until the queue is empty.
         while (!queue.isEmpty()) {
             // increment distance by 1 at each level to measure how far we've traversed from the source.
             distance += 1;
 
             // The size of the queue represents the number of nodes at the current level
             int nodesAtCurrentLevel = queue.size();
-            // process all nodes at this level. They all have the same distance.
+            // Process all nodes at this level. They all have the same distance.
+            // This for loop is crucial for finding the shortest path in an unweighted graph.
+            // All the nodes at the current level need to be processed before the distance is incremented.
+            // The concept of "levels" is critical in this problem
+            //   because all nodes at the same level have the same distance from the source.
             for (int i = 0; i < nodesAtCurrentLevel; i++) {
                 // Remove the node from the queue.
                 Integer node = queue.remove();
@@ -358,6 +366,7 @@ public class GraphQuestions {
         for (int[] dislike : dislikes) {
             graph.putIfAbsent(dislike[0], new ArrayList<>());
             graph.get(dislike[0]).add(dislike[1]);
+
             graph.putIfAbsent(dislike[1], new ArrayList<>());
             graph.get(dislike[1]).add(dislike[0]);
         }
@@ -461,14 +470,13 @@ public class GraphQuestions {
      * source = 0, dest = 2, K = 0
      * Output: 500
      *
-     * @param N
      * @param flights
      * @param source
      * @param dest
      * @param K
      * @return
      */
-    public int findCheapestPrice(int N, int[][] flights, int source, int dest, int K) {
+    public int findCheapestPrice(int[][] flights, int source, int dest, int K) {
         Map<Integer, Map<Integer, Integer>> graph = new HashMap<>();
         for (int[] flight : flights) {
             graph.putIfAbsent(flight[0], new HashMap<>());
@@ -501,8 +509,7 @@ public class GraphQuestions {
 
     /**
      * Given a list of airline tickets represented by pairs of departure and arrival airports [from, to],
-     * reconstruct the itinerary in order. All the tickets belong to a man who departs from JFK.
-     * Thus, the itinerary must begin with JFK.
+     * Reconstruct the itinerary in a lexicographically smallest order starting from the airport "JFK".
      * Input: [
      * ["JFK","SFO"],
      * ["JFK","ATL"],
@@ -511,31 +518,57 @@ public class GraphQuestions {
      * ["ATL","SFO"]
      * ]
      * Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+     *         JFK -> ATL -> JFK -> SFO -> ATL -> SFO
      *
      * @param tickets
      * @return
      */
+    // Graph to store the itinerary as an adjacency list
     Map<String, Queue<String>> itineraryGraph = new HashMap<>();
+    // LinkedList to store the final reconstructed itinerary in order
     LinkedList<String> orderedItinerary = new LinkedList<>();
 
+    // Runtime: O(E log E) where E is the number of edges. log E comes from inserting into the priority queue.
     public List<String> orderItinerary(List<List<String>> tickets) {
+        // Represent the graph as an adjacency list.
+        // Each airport is a node, and each ticket is a directed edge between nodes.
+        // Using PriorityQueue ensures that the destinations are automatically sorted in lexicographical order.
+        // Each airport points to a priority queue of destinations.
         for (List<String> ticket : tickets) {
-            itineraryGraph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
-            itineraryGraph.get(ticket.get(0)).add(ticket.get(1));
+            String from = ticket.get(0);
+            String to = ticket.get(1);
+            itineraryGraph.putIfAbsent(from, new PriorityQueue<>());
+            itineraryGraph.get(from).add(to);
         }
 
+        // Start DFS from the fixed starting point "JFK"
         dfsUtil("JFK");
+
+        // Return the reconstructed itinerary
         return orderedItinerary;
     }
 
-    private void dfsUtil(String flight) {
-        if (itineraryGraph.containsKey(flight)) {
-            Queue<String> connectingFlights = itineraryGraph.get(flight);
-            while (!connectingFlights.isEmpty()) {
-                dfsUtil(connectingFlights.remove());
+    // Note that we are not using a visited set for this problem.
+    // Once an edge (ticket) is processed, it is removed from the graph.
+    // This ensures that we don't process the same ticket even if there are cycles in the graph.
+    private void dfsUtil(String currentNode) {
+        if (itineraryGraph.containsKey(currentNode)) {
+
+            // Get the priority queue of destinations for the current airport
+            Queue<String> destinations = itineraryGraph.get(currentNode);
+
+            // Traverse all destinations in lexicographical order
+            while (!destinations.isEmpty()) {
+                // Recursively visit the next airport
+                String nextNode = destinations.poll();
+                dfsUtil(nextNode);
             }
         }
-        orderedItinerary.addFirst(flight);
+
+        // The DFS visits all destinations for a given airport before adding this current airport to the itinerary.
+        // Add the current airport to the itinerary at the beginning of the list.
+        // This ensures the itinerary is constructed in reverse order (post-order traversal).
+        orderedItinerary.addFirst(currentNode);
     }
 
     /**

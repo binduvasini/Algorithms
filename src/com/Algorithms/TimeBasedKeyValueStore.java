@@ -19,12 +19,12 @@ import java.util.HashMap;
  * timeMap.get("foo", 4);         // return "bar2"
  * timeMap.get("foo", 5);         // return "bar2"
  */
-class TimeMap {
+public class TimeBasedKeyValueStore {
     Map<String, TreeMap<Integer, String>> map;  //TreeMap has the timestamp as key and the string as the value
     //The question asks to find a previous timestamp for this value.
     // TreeMap has a function that helps achieve this.
 
-    public TimeMap() {
+    public TimeBasedKeyValueStore() {
         map = new HashMap<>();
     }
 

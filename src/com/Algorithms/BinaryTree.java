@@ -18,7 +18,7 @@ public class BinaryTree {
 
     TreeNode root = null;
 
-    void addNodeSorted(int newData) {
+    public void addNodeSorted(int newData) {
         TreeNode newNode = new TreeNode(newData);
         if (root == null) {
             root = newNode;
@@ -29,19 +29,23 @@ public class BinaryTree {
 
     private void addNodeSortedRec(TreeNode current, TreeNode newNode) {
         if (newNode.data <= current.data) {
-            if (current.left != null)
+            if (current.left != null) {
                 addNodeSortedRec(current.left, newNode);
-            else
+            }
+            else {
                 current.left = newNode;
+            }
         } else {
-            if (current.right != null)
+            if (current.right != null) {
                 addNodeSortedRec(current.right, newNode);
-            else
+            }
+            else {
                 current.right = newNode;
+            }
         }
     }
 
-    boolean contains(int value) {
+    public boolean containsBST(int value) {
         if (root == null) {
             return false;
         }
@@ -49,19 +53,19 @@ public class BinaryTree {
     }
 
     private boolean containsRec(TreeNode current, int value) {  //Use the same method for searching a value in a BST.
-        if (current.data == value)
+        if (current.data == value) {
             return true;
-        if (value < current.data) {
-            if (current.left != null)
-                return containsRec(current.left, value);
-            else
-                return false;
-        } else {
-            if (current.right != null)
-                return containsRec(current.right, value);
-            else
-                return false;
         }
+        if (value < current.data) {
+            if (current.left != null) {
+                return containsRec(current.left, value);
+            }
+        } else {
+            if (current.right != null) {
+                return containsRec(current.right, value);
+            }
+        }
+        return false;
     }
 
     int heightRec(TreeNode root) {
@@ -160,18 +164,19 @@ public class BinaryTree {
     int predecessor, successor;
 
     public void predSuc(TreeNode root, int data) {
-        if (root == null)
+        if (root == null) {
             return;
+        }
 
-        if (data == root.data) {  //The value is at the root.
-            if (root.left != null) {  //LST is not null, so go to the right most element
+        if (data == root.data) {  // The value is at the root.
+            if (root.left != null) {  // LST is not null, so go to the right most element
                 TreeNode node = root.left;
                 while (node.right != null) {
                     node = node.right;
                 }
                 predecessor = node.data;
             }
-            if (root.right != null) {  //RST is not null, so go to the left most element
+            if (root.right != null) {  // RST is not null, so go to the left most element
                 TreeNode node = root.right;
                 while (node.left != null) {
                     node = node.left;
@@ -185,7 +190,7 @@ public class BinaryTree {
             successor = root.data;
             predSuc(root.left, data);
         } else {
-            //During the recursion, the value will match the root,
+            // During the recursion, the value will match the root,
             // and it might not have LST, so the predecessor might not be set.
             // So, here we are setting it and calling the recursion.
             predecessor = root.data;
@@ -197,19 +202,16 @@ public class BinaryTree {
      * Given a binary tree, find the lowest common ancestor (LCA) of two given nodes p and q.
      * The lowest common ancestor is defined as the deepest node that has both p and q as descendants
      * (where we allow a node to be a descendant of itself).
-     * <p>
-     * 3
-     * / \
-     * 5   1
-     * / \ / \
-     * 6  2 0  8
-     * / \
+     *        3
+     *       / \
+     *     5    1
+     *    / \  / \
+     *   6  2 0  8
+     *  / \
      * 7   4
-     * <p>
      * p = 5 and q = 1
      * In this case, the left subtree returns 5. Right subtree returns 1.
      * Both have returned non-null values. Therefore, the parent is the LCA.
-     * <p>
      * p = 5 and q = 6
      * In this case, the left subtree returns 5. Right subtree returns null because 6 is not found in the right subtree.
      * When one of the subtrees returns a non-null value, that value itself is the LCA.
@@ -219,29 +221,25 @@ public class BinaryTree {
      * @param q
      * @return
      */
-    // Runtime: O(h), where h is the height of the tree.
-    // In the case of a balanced tree, it would be O(log n).
+    // Runtime: O(n), where n is the number of nodes in the tree.
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        // Base case: If the root is null, there is no ancestor to return, so we return null.
-        if (root == null) {
-            return null;
+        // Base case: if the root is null, we return null. The tree is empty or we've reached the end of a branch.
+        // if the root is p or q, return the root. This means one of the nodes has been found.
+        if (root == null || root == p || root == q) {
+            return root;
         }
 
-        // If both p and q are smaller than root, LCA must be in the left subtree.
-        // Recursively search in the left subtree
-        if (p.data < root.data && q.data < root.data) {
-            return lowestCommonAncestor(root.left, p, q);
+        // Recurse on the left and right subtrees
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        // If both left and right are non-null, root is the LCA
+        if (left != null && right != null) {
+            return root;
         }
 
-        // If both p and q are greater than root, LCA must be in the right subtree.
-        // Recursively search in the right subtree
-        if (p.data > root.data && q.data > root.data) {
-            return lowestCommonAncestor(root.right, p, q);
-        }
-
-        // If p and q are on different sides of the root, root is their LCA.
-        // This also handles the case of root being either p or q. The node itself is the LCA.
-        return root;
+        // Otherwise, return the non-null result (either left or right)
+        return left != null ? left : right;
     }
 
     /**
@@ -290,8 +288,9 @@ public class BinaryTree {
     }
 
     private void preorderUtil(TreeNode root) {
-        if (root == null)
+        if (root == null) {
             return;
+        }
 
         TreeNode temp = root.left;
         root.left = root.right;
@@ -313,8 +312,9 @@ public class BinaryTree {
     }
 
     private TreeNode buildTreePreOrder(int[] nums, int lo, int hi) {
-        if (lo > hi)
+        if (lo > hi) {
             return null;
+        }
 
         int mid = (lo + hi) / 2;
         TreeNode node = new TreeNode(nums[mid]);
@@ -334,8 +334,9 @@ public class BinaryTree {
     }
 
     private TreeNode buildTreePreOrder(TreeNode head, TreeNode tail) {
-        if (head == tail)
+        if (head == tail) {
             return null;
+        }
 
         TreeNode mid = middleElem(head, tail);
         TreeNode node = new TreeNode(mid.data);
@@ -359,13 +360,12 @@ public class BinaryTree {
     /**
      * Given the root of a binary tree, construct a string consisting of parenthesis and integers.
      * Input:
-     * 1
-     * /   \
-     * 2     3
-     * /
+     *       1
+     *     /   \
+     *    2     3
+     *   /
      * 4
      * Output: "1(2(4))(3)"
-     * <p>
      * Originally, it would have been "1(2(4)())(3()())", but omit all the unnecessary empty parenthesis pairs.
      * So the output will be "1(2(4))(3)"
      *
@@ -416,10 +416,8 @@ public class BinaryTree {
     /**
      * For a binary tree, we can define a flip operation as follows:
      * Choose any node, and swap the left and right child subtrees.
-     * <p>
      * A binary tree X is flip equivalent to a binary tree Y if and only if
      * we can make X equal to Y after some number of flip operations.
-     * <p>
      * Given the roots of two binary trees root1 and root2,
      * return true if the two trees are flip equivalent or false otherwise.
      *
@@ -447,34 +445,33 @@ public class BinaryTree {
      * @param k
      * @return
      */
-    // Runtime: O(h+k), where h is the height of the tree. We traverse the BST until the kth node is processed.
+    int count = 0;
+    int kthSmallest = -1;
+    // Runtime: O(n), where n is the number of nodes in the tree.
     public int kthSmallest(TreeNode root, int k) {
-        // Use a stack for in-order traversal.
         // In a Binary Search Tree (BST), the in-order traversal visits the nodes in ascending order.
         // Therefore, in-order traversal is perfect for finding the k-th smallest element.
-        Deque<TreeNode> stack = new ArrayDeque<>();
+        inOrderTraversal(root, k);
+        return kthSmallest;
+    }
 
-        while (root != null || !stack.isEmpty()) {
-            // Traverse the left subtree.
-            // Go to the left most node and reach the smallest element in the tree first.
-            while (root != null) {
-                stack.push(root);  // Keep adding the smaller nodes to the stack.
-                root = root.left;
-            }
-
-            // Pop the top of the stack, which represents the next smallest element in ascending order.
-            root = stack.pop();
-            // Decrement k because we've processed one element
-            k -= 1;
-            // If we've found the kth smallest element, return it
-            if (k == 0) {
-                return root.data;
-            }
-
-            // After visiting a node, move to its right child and repeat the process.
-            root = root.right;
+    private void inOrderTraversal(TreeNode node, int k) {
+        if (node == null) {
+            return;
         }
-        return -1;
+
+        // Traverse the LST
+        inOrderTraversal(node.left, k);
+
+        // Increment the counter because we've processed one element
+        count += 1;
+        if (count == k) {
+            kthSmallest = node.data;
+            return;
+        }
+
+        // Traverse the RST
+        inOrderTraversal(node.right, k);
     }
 
     /**
@@ -1178,12 +1175,13 @@ public class BinaryTree {
      * values of the tree can be fully reconstructed.
      * Deserialization: Reconstruct the binary tree from the serialized string.
      */
+    // Runtime: O(n) where n is the number of nodes
     static class SerializeAndDeserialize {
         private final String NULL_STRING = "X";
         private final String DELIMITER = ",";
 
         // Encodes a tree to a single string.
-        public String serialize(TreeNode root) {  // Runtime: O(n) where n is the number of nodes
+        public String serialize(TreeNode root) {
             // Use StringBuilder for efficient string concatenation
             StringBuilder sb = new StringBuilder();
             serializeHelper(root, sb);
@@ -1205,8 +1203,8 @@ public class BinaryTree {
         }
 
         // Decodes your encoded data to tree.
-        public TreeNode deserialize(String data) {  // Runtime: O(n) where n is the number of nodes
-            // Split the serialized string into an array of values using commas
+        public TreeNode deserialize(String data) {
+            // Split the serialized string into an array of values using the delimiter
             String[] nodes = data.split(DELIMITER);
 
             // Use a queue to process nodes in the correct order
