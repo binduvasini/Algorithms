@@ -142,7 +142,9 @@ public class BinarySearch {
      * @return
      */
     public int[] searchFirstAndLastIndexOfTarget(int[] nums, int target) {
+        // Perform binary search twice.
         int lo = 0, hi = nums.length - 1;
+        // Initialize the necessary variables.
         int firstIndex = -1, lastIndex = -1;
 
         while (lo <= hi) {
@@ -192,16 +194,16 @@ public class BinarySearch {
      * @param h
      * @return
      */
+    // Runtime: O(n log(max(piles)))
+    // n is the number of piles.
+    // max(piles) is the size of the largest pile, which determines the range for the binary search.
     public int minEatingSpeed(int[] piles, int h) {
-        // Runtime: O(n log(max(piles)))
-        // n is the number of piles.
-        // max(piles) is the size of the largest pile, which determines the range for the binary search.
         int left = 1;
         int right = Arrays.stream(piles).max().getAsInt();
 
-        while (left < right) { //We want to break the loop when left == right.
+        while (left < right) { // We want to break the loop when left == right.
             int mid = left + (right - left) / 2;
-            if (canFinish(piles, mid, h)) {
+            if (canFinish(piles, h, mid)) {
                 right = mid;
             } else {
                 left = mid + 1;
@@ -211,7 +213,7 @@ public class BinarySearch {
         return left;
     }
 
-    private boolean canFinish(int[] piles, int rate, int h) {
+    private boolean canFinish(int[] piles, int h, int rate) {
         // The rate here means the number of bananas Koko eats per hour.
         int hours = 0;
         for (int pile : piles) {
@@ -377,6 +379,9 @@ public class BinarySearch {
     /**
      * A peak element is an element that is strictly greater than its neighbors.
      * If the array contains multiple peaks, return the index to any of the peaks.
+     * No adjacent elements are equal. There is a guaranteed peak.
+     * nums = [1,2,1,3,5,6,4]
+     * output: 5
      *
      * @param nums
      * @return
@@ -384,18 +389,19 @@ public class BinarySearch {
     public int findPeakElementIndex(int[] nums) {
         int lo = 0, hi = nums.length - 1;
 
-        while (lo <= hi) {
-            if (lo == hi)
-                return lo;
-
+        while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
 
-            if (nums[mid] > nums[mid + 1])
+            // The right half looks to be in a descending slope.
+            // This means the peak could be at mid or somewhere left.
+            if (nums[mid] > nums[mid + 1]) {
                 hi = mid;
-            else
+            }
+            else {
                 lo = mid + 1;
+            }
         }
 
-        return -1;
+        return lo;
     }
 }

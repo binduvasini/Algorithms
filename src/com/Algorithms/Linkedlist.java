@@ -4,16 +4,16 @@ import java.util.*;
 
 public class Linkedlist {
     static class Node {
-        int data;
+        int val;
         Node next;
         Node prev;
         Node child;
 
         public Node(int data) {
-            this.data = data;
+            this.val = data;
         }
         public Node(int data, Node next) {
-            this.data = data;
+            this.val = data;
             this.next = next;
         }
     }
@@ -54,9 +54,11 @@ public class Linkedlist {
     public Node reverseList(Node head) {
         Node curr = head;
         Node prev = null;
+
         while (curr != null) {
             Node temp = curr.next;
             curr.next = prev;
+
             prev = curr;
             curr = temp;
         }
@@ -81,15 +83,17 @@ public class Linkedlist {
             return false;
 
         Node slow = head;
-        Node fast = head.next;
+        Node fast = head;
 
-        while (slow != fast) {
-            if (fast == null || fast.next == null)
-                return false;
-            slow = slow.next;
-            fast = fast.next.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next; // Moves one step
+            fast = fast.next.next; // Moves two steps
+
+            if (slow == fast) { // Cycle detected
+                return true;
+            }
         }
-        return true;
+        return false; // No cycle found
     }
 
     public Node getIntersectionNode(Node headA, Node headB) {
@@ -109,35 +113,18 @@ public class Linkedlist {
         Node curr = head;
 
         while (curr != null) {
-            stack.push(curr.data);
+            stack.push(curr.val);
             curr = curr.next;
         }
 
         while (head != null) {
             int val = stack.pop();
-            if (val != head.data) {
+            if (val != head.val) {
                 return false;
             }
             head = head.next;
         }
         return true;
-    }
-
-    Node headCopy;
-
-    public boolean isPalindromeRecursive(Node head) {
-        headCopy = head;
-        return isPalindromeRec(head);
-    }
-
-    private boolean isPalindromeRec(Node curr) {
-        if (curr == null) {
-            return true;
-        }
-        boolean isEqual = isPalindromeRec(curr.next);
-        boolean isPalindrome = headCopy.data == curr.data;
-        headCopy = headCopy.next;
-        return isEqual && isPalindrome;
     }
 
     public Node addTwoNumbers(Node l1, Node l2) {
@@ -147,7 +134,7 @@ public class Linkedlist {
         int carry = 0, sum;
 
         while (l1 != null || l2 != null) {
-            sum = carry + ((l1 != null) ? l1.data : 0) + ((l2 != null) ? l2.data : 0);
+            sum = carry + ((l1 != null) ? l1.val : 0) + ((l2 != null) ? l2.val : 0);
 
             carry = sum / 10;
 
@@ -178,7 +165,7 @@ public class Linkedlist {
 
         while (list1 != null && list2 != null) {
             // Compare the current nodes of both lists
-            if (list1.data <= list2.data) {
+            if (list1.val <= list2.val) {
                 curr.next = list1;  // Attach list1's node to the merged list
                 list1 = list1.next; // Move list1 pointer forward
             }
@@ -208,7 +195,7 @@ public class Linkedlist {
      * @return
      */
     public Node mergeKLists(Node[] lists) {
-        Queue<Node> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o.data));
+        Queue<Node> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
         Node merged = new Node(0);
         Node head = merged;
 
@@ -248,15 +235,15 @@ public class Linkedlist {
             fast = fast.next.next;
         }
 
+        Node rightHead = mid.next;
         mid.next = null;  //Separating the left half from the right half. TLE if this is not done.
 
         //sort each half
         Node l1 = sortList(head);
-        Node l2 = sortList(slow);  //slow points at the middle position
+        Node l2 = sortList(rightHead);
 
         //merge l1 and l2
-        return mergeKLists(new Node[]{l1, l2});  //Use the mergeKLists method.
-        // It can be tweaked to just take the 2 lists as arguments.
+        return mergeTwoLists(l1, l2);
     }
 
     /**
@@ -279,11 +266,11 @@ public class Linkedlist {
         Node curr = head;
 
         while (curr != null) {
-            if (curr.data == 0) {
+            if (curr.val == 0) {
                 zero.next = curr;
                 zero = zero.next;
             }
-            else if (curr.data == 1) {
+            else if (curr.val == 1) {
                 one.next = curr;
                 one = one.next;
             }
@@ -370,8 +357,9 @@ public class Linkedlist {
         Node curr = head;
         while (curr != null) {
             if (curr.child != null) {
-                if (curr.next != null)
+                if (curr.next != null) {
                     stack.push(curr.next);
+                }
                 curr.child.prev = curr;
                 curr.next = curr.child;
                 curr.child = null;
@@ -399,7 +387,7 @@ public class Linkedlist {
     public Node removeElements(Node head, int val) {
         Node curr = head, prev = new Node(0, head), newHead = prev;
         while (curr != null) {
-            if (curr.data == val)
+            if (curr.val == val)
                 prev.next = curr.next;
             else
                 prev = prev.next;
@@ -417,7 +405,7 @@ public class Linkedlist {
      * @param n
      * @return
      */
-    public Node removeNthFromEnd(Node head, int n) {
+    public Node removeNthFromTail(Node head, int n) {
         Node head1 = new Node(0);
         head1.next = head;
         Node fast = head1;

@@ -45,7 +45,7 @@ public class Intervals {
      * @param meetings
      * @return
      */
-    public int meetingRooms(int[][] meetings) {
+    public int meetingRooms(int[][] meetings) {  // Runtime: O(n log n)
         // Sort the meetings based on the start times of meetings
         Arrays.sort(meetings, Comparator.comparingInt(o -> o[0]));
 
@@ -53,6 +53,7 @@ public class Intervals {
         // We store the end times of the meetings.
         Queue<Integer> minHeap = new PriorityQueue<>();
 
+        // Iterate through the sorted meetings.
         for (int[] meeting : meetings) {
             // The root of the minHeap gives the earliest ending meeting.
             // Compare it with the current meeting's start time.
@@ -61,6 +62,7 @@ public class Intervals {
                 // This meeting has finished before the current meeting starts. So free up the room.
                 minHeap.poll();
             }
+            // Add the current meeting's end time to the heap.
             minHeap.offer(meeting[1]);
         }
 

@@ -80,7 +80,7 @@ public class GraphQuestions {
      * So one correct course order is [0,1,2,3]. Another correct order is [0,2,1,3]
      *
      */
-    public int[] findOrderOfCourses(int[][] courses) {
+    public int[] findOrderOfCourses(int[][] courses) {  // Runtime: O(V + E)
         Deque<Integer> courseOrder = new ArrayDeque<>(); // Stack
 
         // [1, 0] means that course 1 depends on course 0.
@@ -101,7 +101,10 @@ public class GraphQuestions {
             }
         }
 
-        return courseOrder.stream().mapToInt(Integer::intValue).toArray();
+        return courseOrder
+                .stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
     }
 
     private boolean dfsCycleCheck(
@@ -109,6 +112,7 @@ public class GraphQuestions {
     ) {
         visited.add(course);
         visiting.add(course); // To detect a cycle
+
         for (Integer prereq : graph.get(course)) {
             if (!visited.contains(prereq) && dfsCycleCheck(prereq, visited, visiting, courseOrder)) {
                 return true;
@@ -117,8 +121,8 @@ public class GraphQuestions {
                 return true;
             }
         }
-        visiting.remove(course);
         courseOrder.push(course); // Store the sorted courses
+        visiting.remove(course);
         return false;
     }
 
@@ -552,17 +556,14 @@ public class GraphQuestions {
     // Once an edge (ticket) is processed, it is removed from the graph.
     // This ensures that we don't process the same ticket even if there are cycles in the graph.
     private void dfsUtil(String currentNode) {
-        if (itineraryGraph.containsKey(currentNode)) {
+        // Get the priority queue of destinations for the current airport
+        Queue<String> destinations = itineraryGraph.get(currentNode);
 
-            // Get the priority queue of destinations for the current airport
-            Queue<String> destinations = itineraryGraph.get(currentNode);
-
-            // Traverse all destinations in lexicographical order
-            while (!destinations.isEmpty()) {
-                // Recursively visit the next airport
-                String nextNode = destinations.poll();
-                dfsUtil(nextNode);
-            }
+        // Traverse all destinations in lexicographical order
+        while (!destinations.isEmpty()) {
+            // Recursively visit the next airport
+            String nextNode = destinations.poll();
+            dfsUtil(nextNode);
         }
 
         // The DFS visits all destinations for a given airport before adding this current airport to the itinerary.
@@ -641,6 +642,20 @@ public class GraphQuestions {
         return freshOranges > 0 ? -1 : minutes;
     }
 
+    /**
+     * Given a list of words from an alien language's dictionary,
+     * where the words are sorted lexicographically according to the language's unknown alphabetical order.
+     * Derive the order of the characters in this alien language.
+     * If there is no valid ordering, return an empty string.
+     * If there are multiple valid orderings, return any one of them.
+     * Input: words = ["wrt", "wrf", "er", "ett", "rftt"]
+     * Output: "wertf"
+     * From "wrt" and "wrf", we know 't' comes before 'f'.
+     * From "wrf" and "er", we know 'w' comes before 'e'.
+     * From "er" and "ett", we know 'r' comes before 't'.
+     * From "ett" and "rftt", we know 'e' comes before 'r'.
+     *
+     */
     public void alienDictionary() {
         String[] dictionary = {"wrt", "wrp", "er", "ett", "rmtt"};
         Map<Character, List<Character>> graph = new HashMap<>();

@@ -20,24 +20,24 @@ import java.util.HashMap;
  * timeMap.get("foo", 5);         // return "bar2"
  */
 public class TimeBasedKeyValueStore {
-    Map<String, TreeMap<Integer, String>> map;  //TreeMap has the timestamp as key and the string as the value
+    Map<String, TreeMap<Integer, String>> store;  //TreeMap has the timestamp as key and the string as the value
     //The question asks to find a previous timestamp for this value.
     // TreeMap has a function that helps achieve this.
 
     public TimeBasedKeyValueStore() {
-        map = new HashMap<>();
+        store = new HashMap<>();
     }
 
     // runs in O(log n) because adding a new key in a TreeMap takes logarithmic time.
     public void put(String key, String value, int timestamp) {
-        map.putIfAbsent(key, new TreeMap<>());
-        map.get(key).put(timestamp, value);
+        store.putIfAbsent(key, new TreeMap<>());
+        store.get(key).put(timestamp, value);
     }
 
     // runs in O(log n) due to the floorKey() lookup, which again takes logarithmic time.
     public String get(String key, int timestamp) {
-        if (map.containsKey(key)) {
-            TreeMap<Integer, String> treeMap = map.get(key);
+        if (store.containsKey(key)) {
+            TreeMap<Integer, String> treeMap = store.get(key);
 
             Integer floorKey = treeMap.floorKey(timestamp);
 

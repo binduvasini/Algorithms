@@ -85,9 +85,9 @@ public class ArrayQuestions {
     }
 
     /**
-     * Subarray with maximum sum. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
+     * Find the maximum sum subarray.
+     * nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4].
      * The subarray with maximum sum is 6: [4, -1, 2, 1].
-     * Return the maximum sum.
      *
      * @param nums
      * @return
@@ -96,12 +96,13 @@ public class ArrayQuestions {
         // Use a running sum.
         int currentSum = 0;
 
+        // Initialize the result to the minimum value.
         int maxSum = Integer.MIN_VALUE;
 
         for (int num : nums) {
             // Update currentSum:
-            // - Either start a new subarray with 'num' (if currentSum + num is less than num)
-            // - Or extend the current subarray by adding 'num' to currentSum
+            // - Either start a new subarray with the current element (if currentSum + num is less than num)
+            // - Or extend the subarray by adding the current element to currentSum
             currentSum = Math.max(num, currentSum + num);
 
             // Update maxSum to hold the maximum sum encountered so far
@@ -112,53 +113,54 @@ public class ArrayQuestions {
     }
 
     /**
-     * Given an array nums of size n, return the majority element.
-     * The majority element is the element that appears more than ⌊n / 2⌋ times.
-     * You may assume that the majority element always exists in the array.
+     * Find the maximum product subarray.
+     * Input: nums = [2, 3, -2, 4]
+     * Output: 6
      *
      * @param nums
      * @return
      */
-    public int majorityElement(int[] nums) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int num : nums) {
-            map.put(num, map.getOrDefault(num, 0) + 1);
+    public int maxProduct(int[] nums) {
+        // Initialize the variables to the first element.
+        // - currentMax: The maximum product of the subarray ending at the current index.
+        int currentMax = nums[0];
+        // - currentMin: The minimum product of the subarray ending at the current index.
+        // This is necessary because multiplying a -ve number by a -ve minimum product can become a maximum product.
+        int currentMin = nums[0];
+
+        // Track the overall maximum product found so far.
+        int maxProd = nums[0];
+
+        // We have initialized our variables to the first element.
+        // Therefore, iterate through the array starting from the second element.
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+
+            // Store the current maximum value in a temporary variable
+            // This is necessary because the currentMax value will be updated
+            // and we still need its previous value to calculate currentMin.
+            int tempMax = currentMax;
+
+            // Update currentMax:
+            // - Take the maximum of:
+            //   1. The current number (num) alone (starting a new subarray),
+            //   2. The product of num and the previous currentMax (extending the subarray),
+            //   3. The product of num and the previous currentMin (extending the subarray)
+            currentMax = Math.max(num, Math.max(num * currentMax, num * currentMin));
+
+            // Update currentMin:
+            // - Take the minimum of:
+            //   1. The current number (num) alone,
+            //   2. The product of num and the previous currentMax (stored in tempMax),
+            //   3. The product of num and the previous currentMin.
+            // This ensures that we keep track of the smallest product at this index, which is
+            // useful for handling negative numbers in subsequent iterations.
+            currentMin = Math.min(num, Math.min(num * tempMax, num * currentMin));
+
+            maxProd = Math.max(maxProd, currentMax);
         }
-        for (int num : map.keySet()) {
-            if (map.get(num) > nums.length / 2) {
-                return num;
-            }
-        }
-        return -1;
-    }
 
-    /**
-     * Merge two sorted arrays.
-     *
-     * @param leftArr
-     * @param rightArr
-     * @return
-     */
-    public int[] mergeSortedArrays(int[] leftArr, int[] rightArr) {
-        int[] merged = new int[leftArr.length + rightArr.length];
-        int i = 0, lefti = 0, righti = 0;
-
-        while (lefti < leftArr.length && righti < rightArr.length) {
-            if (leftArr[lefti] <= rightArr[righti]) {
-                merged[i] = leftArr[lefti];
-                lefti += 1;
-            } else {
-                merged[i] = rightArr[righti];
-                righti += 1;
-            }
-            i += 1;
-        }
-
-        //when one of the indices goes out of bounds, we copy the remaining elements from that array to the main array
-        System.arraycopy(leftArr, lefti, merged, i, leftArr.length - lefti);
-        System.arraycopy(rightArr, righti, merged, i, rightArr.length - righti);
-
-        return merged;
+        return maxProd;
     }
 
     /**
@@ -170,10 +172,10 @@ public class ArrayQuestions {
      * @return
      */
     public int maxProfitSellOnce(int[] prices) {
-        // Keep track of the maximum profit found so far
-        int maxProfit = 0;
         // Keep track of the least price encountered so far (initialized to a very high value)
         int leastPrice = Integer.MAX_VALUE;
+        // Keep track of the maximum profit found so far
+        int maxProfit = 0;
 
         // Iterate through the array of prices
         for (int price : prices) {
@@ -214,54 +216,6 @@ public class ArrayQuestions {
     }
 
     /**
-     * Find a contiguous subarray that has the largest product. Return the product.
-     * Input: nums = [-2,4,-1]
-     * Output: 4
-     *
-     * @param nums
-     * @return
-     */
-    public int maxProduct(int[] nums) {
-        // Initialize the variables to the first element.
-        // - currentMax: The maximum product of the subarray ending at the current index.
-        // - currentMin: The minimum product of the subarray ending at the current index.
-        // - maxProd: Tracks the overall maximum product found so far.
-        int currentMax = nums[0];
-        int currentMin = nums[0];
-        int maxProd = nums[0];
-
-        // Iterate through the array starting from the second element.
-        for (int i = 1; i < nums.length; i++) {
-            int num = nums[i];
-
-            // Store the current maximum value in a temporary variable
-            // This is necessary because the currentMax value will be updated
-            // and we still need its previous value to calculate currentMin.
-            int tempMax = currentMax;
-
-            // Update currentMax:
-            // - Take the maximum of:
-            //   1. The current number (num) alone (starting a new subarray),
-            //   2. The product of num and the previous currentMax (extending the subarray),
-            //   3. The product of num and the previous currentMin (extending the subarray
-            currentMax = Math.max(num, Math.max(num * currentMax, num * currentMin));
-
-            // Update currentMin:
-            // - Take the minimum of:
-            //   1. The current number (num) alone,
-            //   2. The product of num and the previous currentMax (stored in tempMax),
-            //   3. The product of num and the previous currentMin.
-            // This ensures that we keep track of the smallest product at this index, which is
-            // useful for handling negative numbers in subsequent iterations.
-            currentMin = Math.min(num, Math.min(num * tempMax, num * currentMin));
-
-            maxProd = Math.max(maxProd, currentMax);
-        }
-
-        return maxProd;
-    }
-
-    /**
      * Given an unsorted array of integers, find the length of the longest consecutive sequence of elements.
      * The question asks for the sequence. Not a subsequence. Therefore, the elements left and right are considered.
      * Input: [100, 4, 200, 1, 3, 2]
@@ -271,7 +225,7 @@ public class ArrayQuestions {
      * @param nums
      * @return
      */
-    public int longestConsecutive(int[] nums) {  // Runtime: O(n).
+    public int longestConsecutiveSequence(int[] nums) {  // Runtime: O(n).
         // Use a HashSet to process only unique numbers from the input array.
         // It also allows O(1) average time complexity for insertion and lookup.
         Set<Integer> set = new HashSet<>();
@@ -391,6 +345,35 @@ public class ArrayQuestions {
         }
 
         return maxArea;
+    }
+
+    /**
+     * Merge two sorted arrays.
+     *
+     * @param leftArr
+     * @param rightArr
+     * @return
+     */
+    public int[] mergeSortedArrays(int[] leftArr, int[] rightArr) {
+        int[] merged = new int[leftArr.length + rightArr.length];
+        int i = 0, lefti = 0, righti = 0;
+
+        while (lefti < leftArr.length && righti < rightArr.length) {
+            if (leftArr[lefti] <= rightArr[righti]) {
+                merged[i] = leftArr[lefti];
+                lefti += 1;
+            } else {
+                merged[i] = rightArr[righti];
+                righti += 1;
+            }
+            i += 1;
+        }
+
+        //when one of the indices goes out of bounds, we copy the remaining elements from that array to the main array
+        System.arraycopy(leftArr, lefti, merged, i, leftArr.length - lefti);
+        System.arraycopy(rightArr, righti, merged, i, rightArr.length - righti);
+
+        return merged;
     }
 
     /**

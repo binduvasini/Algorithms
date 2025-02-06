@@ -17,6 +17,7 @@ public class StringQuestions {
         // Sliding window with HashSet.
         int start = 0, end = 0;
 
+        // Store the visited characters in this set.
         Set<Character> set = new HashSet<>();
 
         int longest = 0;
@@ -197,7 +198,7 @@ public class StringQuestions {
                         currentMatch -= 1;
                     }
 
-                    tFreqMap.put(startChar, tFreqMap.get(startChar) + 1);  //Now we are visiting this character.
+                    tFreqMap.put(startChar, tFreqMap.get(startChar) + 1);  // Now we are visiting this character.
                     // Increase the count.
                 }
                 start += 1;
@@ -258,19 +259,18 @@ public class StringQuestions {
      * @return
      */
     public String minimumWindowSubstring(String s, String t) {  // Runtime: O(s + t)
-        int start = 0, end = 0;
-
         Map<Character, Integer> tFreqMap = new HashMap<>();
         for (char tc : t.toCharArray()) {
             tFreqMap.put(tc, tFreqMap.getOrDefault(tc, 0) + 1);
         }
 
-        int currentMatch = 0;
         int requiredMatch = tFreqMap.size();
+        int currentMatch = 0;
 
         int minWindLen = Integer.MAX_VALUE;  //This is crucial. Initialize to the maximum number possible.
         int minWindStart = 0;
 
+        int start = 0, end = 0;
         while (end < s.length()) {
             char endChar = s.charAt(end);
             if (tFreqMap.containsKey(endChar)) {
